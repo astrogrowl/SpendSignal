@@ -328,49 +328,35 @@ footer p { font-size:13px; color:#94a3b8; }
 .foot-logo { display:flex; align-items:center; gap:8px; background:none; -webkit-text-fill-color:initial; }
 .foot-logo .brand-logo-img { width:28px; height:28px; }
 .mascot-scene-img { position:absolute; pointer-events:none; user-select:none; z-index:2; object-fit:contain; filter:drop-shadow(0 18px 30px rgba(79,70,229,.18)); }
-.hero-scout-main { width:150px; right:max(24px,calc(50% - 615px)); bottom:190px; animation:mascotFloat 6s ease-in-out infinite; }
-.hero-scout-joy { width:112px; left:max(18px,calc(50% - 600px)); bottom:290px; animation:mascotFloat 5.4s .6s ease-in-out infinite; opacity:.94; }
 .bank-section,
 #demo,
 #chat,
 #spreadsheet,
 #cta { overflow:visible; }
-.bank-scout-main { width:116px; left:max(14px,calc(50% - 555px)); bottom:18px; animation:mascotBreathe 5.5s ease-in-out infinite; opacity:.96; }
 .demo-scene { position:relative; max-width:900px; margin:0 auto; }
 .demo-scene .demo-card { position:relative; z-index:2; }
-.demo-scout-lean { width:142px; right:-34px; top:56px; z-index:3; animation:mascotFloat 6.5s .4s ease-in-out infinite; }
+.demo-scout-lean { width:142px; right:-34px; bottom:0; z-index:3; animation:none; }
 .chat-section-layout { position:relative; }
-.chat-scout-rest { width:138px; right:-64px; bottom:-58px; z-index:1; animation:mascotBreathe 7s ease-in-out infinite; opacity:.92; }
 .chat-window,
 .prompts-side { position:relative; z-index:2; }
 .chat-win-avatar { overflow:hidden; background:rgba(255,255,255,.92); box-shadow:0 4px 14px rgba(124,58,237,.16), inset 0 1px 0 rgba(255,255,255,.9); }
 .chat-win-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
-.cta-scout-joy { width:132px; left:34px; bottom:18px; z-index:2; animation:mascotFloat 5.8s ease-in-out infinite; filter:drop-shadow(0 16px 26px rgba(15,23,42,.22)); }
 .cta-wrap h2,
 .cta-wrap p,
 .cta-form,
 #beta-msg { position:relative; z-index:3; }
 
 @media (max-width:1120px) {
-  .hero-scout-main { right:18px; bottom:210px; width:124px; opacity:.82; }
-  .hero-scout-joy { left:14px; bottom:300px; width:92px; opacity:.72; }
-  .bank-scout-main { display:none; }
-  .demo-scout-lean { right:-18px; width:116px; }
-  .chat-scout-rest { right:-18px; width:112px; opacity:.72; }
+  .demo-scout-lean { right:-18px; width:116px; bottom:0; }
 }
 @media (max-width:760px) {
   .brand-logo-img { width:28px; height:28px; }
-  .hero-scout-main,
-  .hero-scout-joy,
-  .chat-scout-rest { display:none; }
   .demo-scene { max-width:720px; }
-  .demo-scout-lean { width:96px; right:8px; top:-46px; opacity:.94; }
-  .cta-scout-joy { width:88px; left:16px; bottom:10px; opacity:.72; }
+  .demo-scout-lean { width:96px; right:8px; bottom:0; opacity:.94; }
 }
 @media (max-width:430px) {
   .nav-logo .brand-word { font-size:17px; }
-  .demo-scout-lean { width:78px; right:12px; top:-38px; }
-  .cta-scout-joy { display:none; }
+  .demo-scout-lean { width:78px; right:12px; bottom:0; }
 }
 
 /* ════════════════════════════════════
@@ -804,8 +790,6 @@ footer p { font-size:13px; color:#94a3b8; }
 
 <!-- ── Hero ── -->
 <div class="hero">
-  <img class="mascot-scene-img hero-scout-main" src="public/Main1.png" alt="" aria-hidden="true"/>
-  <img class="mascot-scene-img hero-scout-joy" src="public/Main2.png" alt="" aria-hidden="true"/>
   <div class="hero-badge">
     <div class="badge-dot"></div>
     Your all-in-one AI budget coach
@@ -881,7 +865,6 @@ footer p { font-size:13px; color:#94a3b8; }
 
 <!-- ── Bank balance lies ── -->
 <div class="bank-section" id="why">
-  <img class="mascot-scene-img bank-scout-main" src="public/Main1.png" alt="" aria-hidden="true"/>
   <div class="bank-eyebrow">The problem</div>
   <h2 class="bank-headline">Your bank balance lies.<br><span class="grad">SpendSignal shows reality.</span></h2>
   <p class="bank-sub">That $3,500 in your account is not all yours to spend. SpendSignal subtracts bills, goals, and upcoming expenses before giving you a real safe number.</p>
@@ -1103,7 +1086,6 @@ footer p { font-size:13px; color:#94a3b8; }
   <p class="sec-sub">Just type what happened. SpendSignal updates your numbers, explains what changed, and helps you decide what to do next.</p>
 
   <div class="chat-section-layout">
-    <img class="mascot-scene-img chat-scout-rest" src="public/Main3.png" alt="" aria-hidden="true"/>
     <!-- Chat window -->
     <div class="chat-window">
       <div class="chat-win-header">
@@ -1362,7 +1344,6 @@ footer p { font-size:13px; color:#94a3b8; }
   <div class="cta-wrap">
     <div class="cta-orb1"></div>
     <div class="cta-orb2"></div>
-    <img class="mascot-scene-img cta-scout-joy" src="public/Main2.png" alt="" aria-hidden="true"/>
     <h2>Stop guessing.<br>Check the signal.</h2>
     <p>Join the beta for the all-in-one AI budget coach that shows what you can actually spend — no bank login or card credentials required.</p>
     <div class="cta-form">
