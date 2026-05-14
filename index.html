@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SpendSignal — Your AI Budget Coach</title>
+<link rel="icon"          type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="shortcut icon" type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="apple-touch-icon"               href="public/Logo4.png?v=2"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { font-family: 'Inter', sans-serif; background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 55%, #fdf4ff 100%); color: #0f172a; overflow-x: hidden; min-height: 100vh; }
+
+/* ── Waves ── */
+.wave-bg { position: fixed; bottom: 0; left: 0; right: 0; height: 55vh; pointer-events: none; z-index: 0; }
+.wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; will-change: transform; transform: translate3d(0,0,0); }
+.w1 { animation: wv 22s linear infinite;         opacity: 0.18; bottom: 0; }
+.w2 { animation: wv 30s linear infinite reverse; opacity: 0.14; bottom: 45px; }
+.w3 { animation: wv 26s linear infinite;         opacity: 0.13; bottom: 95px; }
+.w4 { animation: wv 36s linear infinite reverse; opacity: 0.11; bottom: 150px; }
+@keyframes wv { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+
+/* ── Navbar ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 16px 56px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.85); }
+.nav-logo { font-size: 19px; font-weight: 900; letter-spacing: -0.5px; background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; gap: 8px; }
+.nav-links { display: flex; gap: 32px; }
+.nav-links a { text-decoration: none; color: #64748b; font-size: 14px; font-weight: 500; transition: color .2s; }
+.nav-links a:hover { color: #0f172a; }
+.nav-cta { background: linear-gradient(135deg, #7c3aed, #3b82f6); color: white; border: none; padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 0 4px 18px rgba(124,58,237,.28); transition: transform .2s, box-shadow .2s; }
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(124,58,237,.38); }
+@media (max-width: 700px) { nav { padding: 14px 20px; } .nav-links { display: none; } }
+
+/* ── Hero ── */
+.hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 130px 24px 90px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.88); border: 1px solid rgba(167,139,250,0.35); border-radius: 50px; padding: 8px 18px; font-size: 12.5px; font-weight: 700; color: #7c3aed; margin-bottom: 30px; backdrop-filter: blur(12px); box-shadow: 0 2px 12px rgba(124,58,237,0.1); animation: fadeDown .7s ease both; letter-spacing: 0.2px; }
+.badge-dot { width: 7px; height: 7px; background: #7c3aed; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.5)} }
+.hero h1 { font-size: clamp(44px, 6.5vw, 84px); font-weight: 900; line-height: 1.06; letter-spacing: -2.5px; margin-bottom: 20px; animation: fadeDown .7s .08s ease both; }
+.grad { background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { font-size: clamp(15px, 1.7vw, 18px); color: #64748b; max-width: 560px; line-height: 1.7; margin-bottom: 14px; font-weight: 400; animation: fadeDown .7s .16s ease both; }
+.hero-sub2 { font-size: clamp(13px, 1.4vw, 15px); color: #94a3b8; max-width: 480px; line-height: 1.6; margin-bottom: 40px; font-weight: 400; animation: fadeDown .7s .22s ease both; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; margin-bottom: 64px; animation: fadeDown .7s .28s ease both; flex-wrap: wrap; }
+.btn-primary { background: linear-gradient(135deg, #7c3aed, #3b82f6); color: white; border: none; padding: 15px 34px; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 0 8px 28px rgba(124,58,237,.32); transition: transform .2s, box-shadow .2s; }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(124,58,237,.44); }
+.btn-secondary { background: rgba(255,255,255,.88); color: #0f172a; border: 1.5px solid rgba(0,0,0,.09); padding: 15px 34px; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; backdrop-filter: blur(12px); transition: transform .2s, box-shadow .2s; }
+.btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,.1); }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Hero card ── */
+.hero-card-wrap { position: relative; animation: fadeDown .8s .36s ease both; max-width: 480px; width: 100%; perspective: 980px; transform-style: preserve-3d; }
+.hero-card-tilt { transform-style: preserve-3d; will-change: transform; transform: rotateX(0deg) rotateY(0deg); }
+.chip-float { position: absolute; background: rgba(255,255,255,0.95); backdrop-filter: blur(14px); border: 1.5px solid rgba(190,205,225,0.65); border-radius: 50px; padding: 9px 17px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,.1); white-space: nowrap; z-index: 2; pointer-events: none; will-change: transform; transform-style: preserve-3d; --chip-x:0px; --chip-y:0px; --chip-z:0px; --chip-rx:0deg; --chip-ry:0deg; }
+.cf1 { top:10px; left:-140px; animation: cfloat1 5s ease-in-out infinite; color:#16a34a; }
+.cf2 { top:80px; right:-150px; animation: cfloat2 6s ease-in-out infinite; color:#d97706; }
+.cf3 { bottom:120px; left:-130px; animation: cfloat3 7s ease-in-out infinite; color:#7c3aed; }
+.cf4 { bottom:60px; right:-140px; animation: cfloat1 5.5s 1s ease-in-out infinite; color:#0284c7; }
+.cf5 { top:-28px; left:50%; transform:translateX(-50%); animation: cfloat5 6.5s .5s ease-in-out infinite; color:#64748b; }
+@keyframes cfloat1 { 0%,100%{transform:translate3d(var(--chip-x),var(--chip-y),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} 50%{transform:translate3d(var(--chip-x),calc(var(--chip-y) - 8px),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} }
+@keyframes cfloat2 { 0%,100%{transform:translate3d(var(--chip-x),var(--chip-y),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} 50%{transform:translate3d(var(--chip-x),calc(var(--chip-y) - 10px),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} }
+@keyframes cfloat3 { 0%,100%{transform:translate3d(var(--chip-x),var(--chip-y),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} 50%{transform:translate3d(var(--chip-x),calc(var(--chip-y) - 6px),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} }
+@keyframes cfloat5 { 0%,100%{transform:translateX(-50%) translate3d(var(--chip-x),var(--chip-y),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} 50%{transform:translateX(-50%) translate3d(var(--chip-x),calc(var(--chip-y) - 10px),var(--chip-z)) rotateX(var(--chip-rx)) rotateY(var(--chip-ry))} }
+@media (max-width: 640px) { .cf1,.cf2,.cf3,.cf4{display:none} .cf5{position:relative;top:auto;left:auto;transform:none;animation:none;margin:0 auto 16px;display:inline-flex} .hero-card-wrap{overflow:visible} }
+.hero-card { background: rgba(255,255,255,0.88); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1.5px solid rgba(200,210,230,0.38); border-radius: 28px; padding: 28px 32px; box-shadow: 0 24px 64px rgba(15,23,42,.115), inset 0 1px 0 rgba(255,255,255,0.88); animation: float 5s 1s ease-in-out infinite; position: relative; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.card-title { font-size:13px; font-weight:700; color:#94a3b8; letter-spacing:0.3px; text-transform:uppercase; }
+.card-tag { font-size:11px; font-weight:800; padding:4px 10px; border-radius:20px; background:linear-gradient(135deg,#ede9fe,#dbeafe); color:#7c3aed; }
+.card-input-mock { background:#f8fafc; border:1.5px solid rgba(148,163,184,0.42); border-radius:14px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.75); }
+.card-input-mock span { font-size:15px; font-weight:600; color:#0f172a; }
+.card-input-mock .search-icon { font-size:15px; color:#94a3b8; flex-shrink:0; }
+.signal-row { display:flex; align-items:center; gap:18px; margin-bottom:18px; }
+.orb-wrap { position:relative; flex-shrink:0; }
+.orb { width:68px; height:68px; border-radius:50%; background:radial-gradient(circle at 38% 36%,#fef3c7,#f59e0b); box-shadow:0 0 0 8px rgba(245,158,11,.14),0 0 0 18px rgba(245,158,11,.07),0 8px 28px rgba(245,158,11,.38); animation:orbPulse 2.4s ease-in-out infinite; display:flex; align-items:center; justify-content:center; font-size:26px; }
+@keyframes orbPulse { 0%,100%{box-shadow:0 0 0 8px rgba(245,158,11,.14),0 0 0 18px rgba(245,158,11,.07),0 8px 28px rgba(245,158,11,.35)} 50%{box-shadow:0 0 0 13px rgba(245,158,11,.20),0 0 0 26px rgba(245,158,11,.09),0 8px 44px rgba(245,158,11,.48)} }
+.signal-text { text-align:left; }
+.signal-result { font-size:26px; font-weight:900; letter-spacing:-0.8px; color:#0f172a; margin-bottom:4px; }
+.signal-verdict { font-size:13px; color:#64748b; line-height:1.5; max-width:240px; }
+.mini-bars { display:flex; flex-direction:column; gap:11px; margin-top:4px; }
+.mbar-row { display:flex; align-items:center; gap:10px; }
+.mbar-lbl { font-size:13px; font-weight:700; color:#64748b; width:115px; text-align:left; }
+.mbar-track { flex:1; height:9px; background:#e8edf2; border-radius:10px; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(148,163,184,0.24); }
+.mbar-fill { height:100%; border-radius:10px; animation:barIn 1.4s .8s ease both; }
+@keyframes barIn { from { width:0 !important; } }
+.mbar-val { font-size:13px; font-weight:800; width:40px; text-align:right; }
+.card-divider { height:1px; background:rgba(148,163,184,0.22); margin:16px 0; }
+.status-pills { display:flex; gap:7px; flex-wrap:wrap; }
+.spill { padding:5px 12px; border-radius:20px; font-size:11.5px; font-weight:700; }
+
+/* ── Bank section ── */
+.bank-section { position:relative; z-index:1; padding:100px 24px 80px; }
+.bank-eyebrow { text-align:center; font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#7c3aed; margin-bottom:16px; }
+.bank-headline { text-align:center; font-size:clamp(30px,4vw,50px); font-weight:900; letter-spacing:-1.5px; margin-bottom:12px; line-height:1.1; }
+.bank-sub { text-align:center; color:#64748b; font-size:17px; max-width:500px; margin:0 auto 52px; line-height:1.6; }
+.compare-wrap { max-width:820px; margin:0 auto; display:grid; grid-template-columns:1fr auto 1fr; background:rgba(255,255,255,0.78); backdrop-filter:blur(24px); border:1px solid rgba(200,210,230,0.34); border-radius:28px; box-shadow:0 16px 56px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,0.86); overflow:hidden; }
+.compare-wrap,
+.sheet-card,
+.cta-wrap { transform-style:preserve-3d; transform-origin:center bottom; will-change:transform; }
+.compare-side { padding:40px 36px; }
+.compare-side.left { background:rgba(248,250,252,0.6); border-right:1px solid rgba(148,163,184,0.22); }
+.compare-side.right { background:rgba(240,253,244,0.5); }
+.c-label { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
+.c-label.bank-l { color:#94a3b8; }
+.c-label.sig-l  { color:#16a34a; }
+.c-amount { font-size:clamp(32px,4vw,46px); font-weight:900; letter-spacing:-2px; margin-bottom:6px; }
+.c-amount.bank-a { color:#0f172a; }
+.c-amount.sig-a { background:linear-gradient(135deg,#16a34a,#059669); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.c-tagline { font-size:13px; color:#94a3b8; font-weight:500; margin-bottom:28px; }
+.c-tagline.sig-t { color:#16a34a; font-weight:600; }
+.breakdown { display:flex; flex-direction:column; gap:10px; }
+.breakdown-row { display:flex; justify-content:space-between; align-items:center; font-size:14px; padding:10px 14px; border-radius:12px; background:rgba(255,255,255,0.7); box-shadow:inset 0 0 0 1px rgba(148,163,184,0.18); }
+.breakdown-row span:first-child { color:#64748b; font-weight:500; }
+.breakdown-row span:last-child  { font-weight:700; color:#ef4444; }
+.compare-vs { display:flex; align-items:center; justify-content:center; padding:0 20px; font-size:20px; font-weight:900; color:#cbd5e1; }
+@media (max-width:640px) { .compare-wrap{grid-template-columns:1fr;grid-template-rows:auto auto auto} .compare-side.left{border-right:none;border-bottom:1px solid rgba(148,163,184,0.22)} .compare-vs{padding:14px 0} }
+
+/* ── Sections shared ── */
+section { position:relative; z-index:1; padding:110px 24px; }
+#why,
+#system,
+#demo,
+#chat,
+#spreadsheet,
+#cta { scroll-margin-top:110px; }
+#system { scroll-margin-top:24px; }
+@media (max-width:700px) {
+  #why,
+  #system,
+  #demo,
+  #chat,
+  #spreadsheet,
+  #cta { scroll-margin-top:92px; }
+  #system { scroll-margin-top:20px; }
+}
+.sec-label { font-size:12.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#7c3aed; margin-bottom:14px; text-align:center; }
+.sec-title { font-size:clamp(30px,4vw,50px); font-weight:900; letter-spacing:-1.5px; text-align:center; margin-bottom:14px; line-height:1.1; }
+.sec-sub { font-size:17px; color:#64748b; text-align:center; max-width:520px; margin:0 auto 58px; line-height:1.65; }
+
+/* ── Showcase (4-card) ── */
+.showcase-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; max-width:1120px; margin:0 auto; }
+.showcase-card { background:rgba(255,255,255,0.84); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); border:1.5px solid rgba(200,210,230,0.34); border-radius:22px; padding:26px; box-shadow:0 8px 32px rgba(15,23,42,.065),inset 0 1px 0 rgba(255,255,255,0.74); opacity:0; transform:translateY(24px); transition:transform .3s,box-shadow .3s; }
+.showcase-card.show { animation:revUp .55s ease forwards; }
+.showcase-card:hover { transform:translateY(-6px) !important; box-shadow:0 20px 52px rgba(0,0,0,.12); }
+.sc-head { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.sc-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.sc-title { font-size:15px; font-weight:800; color:#0f172a; letter-spacing:-.3px; }
+/* mini signal pill */
+.mini-signal { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px; font-size:12px; font-weight:700; margin-bottom:10px; }
+.mini-verdict { font-size:12.5px; color:#64748b; line-height:1.5; }
+/* mini sheet table */
+.mini-sheet { width:100%; border-collapse:collapse; font-size:12.5px; }
+.mini-sheet tr { border-bottom:1px solid rgba(148,163,184,0.2); }
+.mini-sheet tr:last-child { border-bottom:none; }
+.mini-sheet td { padding:6px 2px; color:#64748b; }
+.mini-sheet td:last-child { text-align:right; font-weight:700; }
+.mini-sheet .safe-row td { color:#16a34a !important; font-weight:800; padding-top:10px; }
+/* chat bubbles in card */
+.mini-chat { display:flex; flex-direction:column; gap:7px; }
+.mchat-bubble { padding:8px 12px; border-radius:14px; font-size:12px; line-height:1.45; max-width:90%; }
+.mchat-bubble.user { background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white; align-self:flex-end; border-bottom-right-radius:4px; }
+.mchat-bubble.bot { background:#f1f5f9; color:#0f172a; align-self:flex-start; border-bottom-left-radius:4px; }
+/* mock bar chart in card */
+.mock-bars { display:flex; align-items:flex-end; gap:5px; height:68px; }
+.mock-bar { flex:1; border-radius:4px 4px 0 0; }
+.mock-donut { width:64px; height:64px; border-radius:50%; background:conic-gradient(#7c3aed 0% 40%, #3b82f6 40% 65%, #06b6d4 65% 80%, #e2e8f0 80% 100%); mask:radial-gradient(farthest-side,transparent 55%,black 56%); -webkit-mask:radial-gradient(farthest-side,transparent 55%,black 56%); flex-shrink:0; }
+.chart-legend { font-size:11px; color:#64748b; }
+.chart-legend div { margin-bottom:4px; display:flex; align-items:center; gap:5px; }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* ── Features ── */
+.feat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(275px,1fr)); gap:20px; max-width:1080px; margin:0 auto; }
+.feat-card { background:rgba(255,255,255,0.76); backdrop-filter:blur(20px); border:1px solid rgba(200,210,230,0.32); border-radius:22px; padding:34px 30px; box-shadow:0 4px 22px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,0.7); transition:transform .3s,box-shadow .3s; opacity:0; transform:translateY(28px); }
+.feat-card.show { animation:revUp .55s ease forwards; }
+@keyframes revUp { to { opacity:1; transform:translateY(0); } }
+.feat-card:hover { transform:translateY(-7px); box-shadow:0 18px 48px rgba(0,0,0,.11); }
+.feat-icon { width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:20px; }
+.feat-card h3 { font-size:18px; font-weight:800; margin-bottom:9px; letter-spacing:-.4px; }
+.feat-card p  { font-size:14.5px; color:#64748b; line-height:1.65; }
+
+/* ── Stats ── */
+.stats-wrap { display:flex; justify-content:center; flex-wrap:wrap; max-width:900px; margin:0 auto; background:rgba(255,255,255,0.76); backdrop-filter:blur(20px); border:1px solid rgba(200,210,230,.32); border-radius:24px; box-shadow:0 4px 22px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,0.7); overflow:hidden; }
+.stat-item { flex:1; min-width:180px; padding:40px 30px; text-align:center; border-right:1px solid rgba(148,163,184,0.2); opacity:0; transform:translateY(20px); }
+.stat-item:last-child { border-right:none; }
+.stat-item.show { animation:revUp .55s ease forwards; }
+.stat-num { font-size:44px; font-weight:900; letter-spacing:-2px; background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:6px; }
+.stat-lbl { font-size:13.5px; color:#64748b; font-weight:500; line-height:1.4; }
+
+/* ── Spreadsheet section ── */
+.sheet-card { background:rgba(255,255,255,0.84); backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px); border:1.5px solid rgba(200,210,230,0.34); border-radius:28px; padding:0; max-width:1100px; margin:0 auto; box-shadow:0 16px 56px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,0.86); overflow:hidden; }
+.sheet-layout { display:grid; grid-template-columns:1.15fr 1fr; }
+@media (max-width:860px) { .sheet-layout { grid-template-columns:1fr; } }
+.sheet-left { padding:40px 36px; border-right:1px solid rgba(148,163,184,0.22); }
+.sheet-right { padding:40px 32px; background:rgba(248,250,252,0.5); }
+.sheet-label { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#94a3b8; margin-bottom:18px; }
+.data-table { width:100%; border-collapse:collapse; font-size:14px; }
+.data-table th { text-align:left; padding:10px 12px; font-size:11.5px; font-weight:700; color:#94a3b8; letter-spacing:.8px; text-transform:uppercase; border-bottom:1.5px solid rgba(148,163,184,0.24); }
+.data-table th:last-child,.data-table td:last-child { text-align:center; }
+.data-table td { padding:12px 12px; border-bottom:1px solid rgba(148,163,184,0.14); color:#0f172a; font-weight:500; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table td:nth-child(2),.data-table td:nth-child(3) { color:#64748b; }
+.status-badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:700; }
+.s-ok    { background:#dcfce7; color:#16a34a; }
+.s-safe  { background:#dbeafe; color:#1d4ed8; }
+.s-care  { background:#fef3c7; color:#d97706; }
+/* summary cards */
+.summary-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.sum-card { background:rgba(255,255,255,0.9); border:1px solid rgba(148,163,184,0.32); border-radius:14px; padding:14px 16px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.7); }
+.sum-card-label { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+.sum-card-value { font-size:20px; font-weight:900; letter-spacing:-0.5px; }
+/* chart containers */
+.chart-block { margin-bottom:20px; }
+.chart-block-label { font-size:12px; font-weight:700; color:#64748b; margin-bottom:10px; letter-spacing:.3px; }
+.bar-chart-wrap { display:flex; align-items:flex-end; gap:6px; height:72px; }
+.bcbar { border-radius:5px 5px 0 0; }
+.bcbar-lbl { font-size:9.5px; color:#94a3b8; text-align:center; margin-top:4px; font-weight:600; }
+.bcbar-col { display:flex; flex-direction:column; align-items:center; flex:1; }
+/* line chart svg */
+.line-chart-svg { width:100%; height:60px; overflow:visible; }
+.donut-row { display:flex; align-items:center; gap:16px; }
+
+/* ── Chat section ── */
+.chat-section-layout { display:grid; grid-template-columns:1fr 1fr; gap:32px; max-width:1100px; margin:0 auto; align-items:start; }
+@media (max-width:860px) { .chat-section-layout { grid-template-columns:1fr; } }
+.chat-window { background:rgba(255,255,255,0.86); backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px); border:1.5px solid rgba(200,210,230,0.34); border-radius:26px; overflow:hidden; box-shadow:0 16px 52px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,0.8); }
+.chat-win-header { padding:16px 22px; background:rgba(248,250,252,0.8); border-bottom:1px solid rgba(148,163,184,0.22); display:flex; align-items:center; gap:12px; }
+.chat-win-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#3b82f6); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.chat-win-name { font-size:14px; font-weight:800; color:#0f172a; }
+.chat-win-status { font-size:11px; color:#16a34a; font-weight:600; }
+.chat-messages { padding:22px; display:flex; flex-direction:column; gap:10px; }
+.chat-msg { max-width:82%; }
+.chat-msg.user { align-self:flex-end; }
+.chat-msg.bot  { align-self:flex-start; }
+.chat-bubble { padding:11px 16px; border-radius:18px; font-size:13.5px; line-height:1.5; }
+.chat-msg.user .chat-bubble { background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white; border-bottom-right-radius:5px; }
+.chat-msg.bot  .chat-bubble { background:#f1f5f9; color:#0f172a; border-bottom-left-radius:5px; }
+.chat-time { font-size:10px; color:#cbd5e1; font-weight:600; margin-top:4px; text-align:right; }
+.chat-time.left { text-align:left; }
+.chat-win-input { padding:14px 18px; border-top:1px solid rgba(148,163,184,0.22); display:flex; align-items:center; gap:10px; background:rgba(248,250,252,0.7); }
+.chat-input-fake { flex:1; background:white; border:1.5px solid rgba(148,163,184,0.38); border-radius:50px; padding:10px 18px; font-size:13px; color:#94a3b8; font-family:inherit; }
+.chat-send { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#3b82f6); border:none; color:white; font-size:16px; cursor:default; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+/* prompt chips */
+.prompts-side { display:flex; flex-direction:column; gap:16px; }
+.prompts-label { font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; }
+.prompt-chips { display:flex; flex-direction:column; gap:10px; }
+.prompt-chip { background:rgba(255,255,255,0.84); backdrop-filter:blur(14px); border:1.5px solid rgba(148,163,184,0.34); border-radius:14px; padding:13px 18px; font-size:14px; font-weight:600; color:#0f172a; box-shadow:0 2px 10px rgba(15,23,42,.065),inset 0 1px 0 rgba(255,255,255,0.72); display:flex; align-items:center; gap:10px; }
+.chip-prefix { font-size:16px; }
+.response-chips { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.response-chip { background:rgba(240,253,244,0.9); border:1.5px solid rgba(34,197,94,0.26); border-radius:14px; padding:11px 16px; font-size:13.5px; font-weight:600; color:#15803d; }
+
+/* ── Demo ── */
+.demo-card { max-width:720px; margin:0 auto; background:rgba(255,255,255,0.82); backdrop-filter:blur(24px); border:1.5px solid rgba(200,210,230,0.34); border-radius:26px; padding:40px 44px; box-shadow:0 12px 48px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,0.86); }
+.demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+@media (max-width:560px) { .demo-grid{grid-template-columns:1fr} }
+.demo-field label { display:block; font-size:12.5px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+.demo-input-wrap { display:flex; align-items:center; background:#f8fafc; border:1.5px solid rgba(148,163,184,0.42); border-radius:12px; overflow:hidden; transition:border-color .2s; box-shadow:inset 0 1px 0 rgba(255,255,255,0.75); }
+.demo-input-wrap:focus-within { border-color:#a78bfa; }
+.demo-currency { padding:12px 12px 12px 16px; font-size:15px; font-weight:700; color:#94a3b8; flex-shrink:0; }
+.demo-input-wrap input { border:none; background:transparent; padding:12px 16px 12px 4px; font-size:15px; font-weight:700; color:#0f172a; font-family:inherit; width:100%; outline:none; }
+.demo-btn { width:100%; padding:15px; border:none; border-radius:14px; background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white; font-size:15px; font-weight:800; font-family:inherit; cursor:pointer; transition:transform .2s,box-shadow .2s; box-shadow:0 6px 22px rgba(124,58,237,.28); }
+.demo-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,58,237,.38); }
+.demo-result { margin-top:24px; padding-top:22px; border-top:1px solid rgba(148,163,184,0.22); animation:fadeDown .4s ease; }
+.demo-orb-row { display:flex; align-items:center; gap:18px; margin-bottom:14px; }
+.demo-orb { width:58px; height:58px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; animation:orbPulse 2.4s ease-in-out infinite; }
+.demo-signal-label { font-size:24px; font-weight:900; letter-spacing:-.5px; margin-bottom:4px; }
+.demo-verdict { font-size:14px; color:#64748b; line-height:1.5; }
+.demo-after { background:#f8fafc; border-radius:12px; padding:13px 16px; font-size:14px; color:#64748b; font-weight:500; box-shadow:inset 0 0 0 1px rgba(148,163,184,0.2); }
+.demo-after strong { color:#0f172a; font-weight:800; }
+.demo-footnote { text-align:center; font-size:13.5px; color:#94a3b8; margin-top:20px; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.6; }
+
+/* ── CTA ── */
+.cta-wrap { max-width:760px; margin:0 auto; background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%); border-radius:30px; padding:72px 52px; text-align:center; position:relative; overflow:hidden; box-shadow:0 28px 72px rgba(124,58,237,.32); }
+.cta-orb1 { position:absolute;width:380px;height:380px;background:rgba(255,255,255,.09);border-radius:50%;top:-120px;right:-100px;animation:float 7s ease-in-out infinite; }
+.cta-orb2 { position:absolute;width:260px;height:260px;background:rgba(255,255,255,.06);border-radius:50%;bottom:-80px;left:-60px;animation:float 9s 1s ease-in-out infinite; }
+.cta-wrap h2 { font-size:clamp(26px,3.8vw,44px); font-weight:900; color:white; letter-spacing:-1.5px; margin-bottom:14px; position:relative; line-height:1.15; }
+.cta-wrap p { font-size:17px; color:rgba(255,255,255,.78); margin-bottom:36px; position:relative; }
+.cta-form { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; position:relative; }
+.cta-email { background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.52); color:white; padding:14px 22px; border-radius:50px; font-size:15px; font-family:inherit; outline:none; width:260px; transition:background .2s,border-color .2s; box-shadow:inset 0 1px 0 rgba(255,255,255,.18); }
+.cta-email::placeholder { color:rgba(255,255,255,.6); }
+.cta-email:focus { background:rgba(255,255,255,.25); border-color:rgba(255,255,255,.72); }
+.btn-white { background:white; color:#7c3aed; border:none; padding:14px 32px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 6px 24px rgba(0,0,0,.14); transition:transform .2s,box-shadow .2s; position:relative; }
+.btn-white:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.2); }
+
+/* ── Trust section ── */
+.trust-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; max-width:960px; margin:0 auto; }
+.trust-card { background:rgba(255,255,255,0.80); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(200,210,230,0.32); border-radius:20px; padding:28px 26px; box-shadow:0 4px 20px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,0.7); opacity:0; transform:translateY(22px); transition:transform .3s,box-shadow .3s; }
+.trust-card.show { animation:revUp .55s ease forwards; }
+.trust-card:hover { transform:translateY(-5px); box-shadow:0 14px 38px rgba(0,0,0,.09); }
+.trust-icon { font-size:28px; margin-bottom:14px; line-height:1; }
+.trust-card h3 { font-size:16px; font-weight:800; margin-bottom:8px; letter-spacing:-.3px; color:#0f172a; }
+.trust-card p { font-size:14px; color:#64748b; line-height:1.6; }
+
+/* ── Hero trust line ── */
+.hero-trust { font-size:12.5px; color:#94a3b8; margin-bottom:44px; display:flex; align-items:center; justify-content:center; gap:5px; animation: fadeDown .7s .34s ease both; letter-spacing:.1px; }
+
+/* ── Demo teaser ── */
+.demo-teaser { background:linear-gradient(135deg,rgba(237,233,254,0.7),rgba(219,234,254,0.7)); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1.5px solid rgba(124,58,237,0.22); border-radius:18px; padding:22px 26px; margin-top:20px; animation:fadeDown .4s ease; }
+.demo-teaser-title { font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.demo-teaser p { font-size:13.5px; color:#64748b; line-height:1.55; margin-bottom:14px; }
+.demo-teaser-btn { background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white; border:none; padding:11px 26px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; box-shadow:0 4px 16px rgba(124,58,237,.28); transition:transform .2s,box-shadow .2s; }
+.demo-teaser-btn:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(124,58,237,.38); }
+/* blurred preview */
+.teaser-preview-wrap { position:relative; margin-bottom:16px; border-radius:14px; overflow:hidden; }
+.teaser-preview { background:rgba(255,255,255,0.76); border:1px solid rgba(148,163,184,0.3); border-radius:14px; padding:14px 16px; filter:blur(2px); opacity:0.72; pointer-events:none; user-select:none; }
+.teaser-preview-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:14px; background:linear-gradient(160deg,rgba(237,233,254,0.18),rgba(219,234,254,0.28)); }
+.teaser-badge { background:rgba(255,255,255,0.96); border:1.5px solid rgba(124,58,237,0.28); border-radius:50px; padding:7px 16px; font-size:12px; font-weight:800; color:#7c3aed; display:flex; align-items:center; gap:6px; box-shadow:0 4px 16px rgba(124,58,237,.18); letter-spacing:.1px; }
+.teaser-sum-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.teaser-sum-card { background:rgba(255,255,255,0.85); border:1px solid rgba(148,163,184,0.28); border-radius:10px; padding:9px 12px; }
+.teaser-sum-lbl { font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+.teaser-sum-val { font-size:16px; font-weight:900; letter-spacing:-.4px; }
+.teaser-charts { display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:end; }
+.teaser-chart-lbl { font-size:9px; font-weight:700; color:#94a3b8; letter-spacing:.3px; margin-bottom:6px; }
+.teaser-bars { display:flex; align-items:flex-end; gap:3px; height:38px; }
+.teaser-bar { flex:1; border-radius:3px 3px 0 0; }
+
+/* ── Footer ── */
+footer { position:relative; z-index:1; padding:36px 56px; display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(0,0,0,.06); background:rgba(255,255,255,.5); backdrop-filter:blur(12px); flex-wrap:wrap; gap:12px; }
+.foot-logo { font-size:16px; font-weight:900; letter-spacing:-0.4px; background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+footer p { font-size:13px; color:#94a3b8; }
+
+/* Scout environment assets */
+.brand-lockup { display:inline-flex; align-items:center; gap:9px; min-width:0; }
+.brand-logo-img { width:30px; height:30px; object-fit:contain; display:block; filter:drop-shadow(0 4px 10px rgba(124,58,237,.16)); }
+.nav-logo .brand-word,
+.foot-logo .brand-word {
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.foot-logo { display:flex; align-items:center; gap:8px; background:none; -webkit-text-fill-color:initial; }
+.foot-logo .brand-logo-img { width:28px; height:28px; }
+.mascot-scene-img { position:absolute; pointer-events:none; user-select:none; z-index:2; object-fit:contain; filter:drop-shadow(0 18px 30px rgba(79,70,229,.18)); }
+.bank-section,
+#demo,
+#chat,
+#spreadsheet,
+#cta { overflow:visible; }
+.demo-scene { position:relative; max-width:900px; margin:0 auto; }
+.demo-scene .demo-card { position:relative; z-index:2; }
+.demo-scout-lean { width:142px; right:-34px; bottom:0; z-index:3; animation:none; }
+.chat-section-layout { position:relative; }
+.chat-window,
+.prompts-side { position:relative; z-index:2; }
+.chat-win-avatar { overflow:hidden; background:rgba(255,255,255,.92); box-shadow:0 4px 14px rgba(124,58,237,.16), inset 0 1px 0 rgba(255,255,255,.9); }
+.chat-win-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+.cta-wrap h2,
+.cta-wrap p,
+.cta-form,
+#beta-msg { position:relative; z-index:3; }
+
+@media (max-width:1120px) {
+  .demo-scout-lean { right:-18px; width:116px; bottom:0; }
+}
+@media (max-width:760px) {
+  .brand-logo-img { width:28px; height:28px; }
+  .demo-scene { max-width:720px; }
+  .demo-scout-lean { width:96px; right:8px; bottom:0; opacity:.94; }
+}
+@media (max-width:430px) {
+  .nav-logo .brand-word { font-size:17px; }
+  .demo-scout-lean { width:78px; right:12px; bottom:0; }
+}
+
+/* ════════════════════════════════════
+   ANIMATION LAYER
+   ════════════════════════════════════ */
+
+/* Hero card — checking indicator */
+#hc-checking { display:none; align-items:center; justify-content:center; gap:6px; padding:9px 0 4px; }
+.hc-dot { width:5px; height:5px; border-radius:50%; background:#a78bfa; display:inline-block; animation:dotPop 1s ease-in-out infinite; }
+.hc-dot:nth-child(2){animation-delay:.17s} .hc-dot:nth-child(3){animation-delay:.34s}
+@keyframes dotPop { 0%,80%,100%{transform:scale(.5);opacity:.2} 40%{transform:scale(1);opacity:1} }
+.hc-check-label { font-size:12.5px; font-weight:600; color:#94a3b8; }
+
+/* Bank section scroll reveal */
+.bank-row-hide { opacity:0; transform:translateX(-10px); }
+.bank-row-in  { opacity:1 !important; transform:none !important; transition:opacity .38s ease,transform .38s ease; }
+.bank-amt-hide { opacity:0; transform:translateY(10px); }
+.bank-amt-in  { opacity:1 !important; transform:none !important; transition:opacity .5s ease,transform .5s ease; }
+@keyframes taglinePulse { 0%,100%{color:#16a34a;text-shadow:none} 45%,55%{color:#059669;text-shadow:0 0 14px rgba(5,150,105,.4)} }
+.sig-tagline-pulse { animation:taglinePulse 1.8s ease 1; }
+
+/* Spreadsheet cell & summary card highlights */
+@keyframes cellFlash { 0%,100%{background:transparent} 35%,65%{background:rgba(124,58,237,.09);border-radius:6px} }
+.cell-flash { animation:cellFlash .7s ease 2 !important; }
+@keyframes sumGlow { 0%,100%{box-shadow:0 0 0 0 transparent} 50%{box-shadow:0 0 0 3px rgba(124,58,237,.22),0 4px 18px rgba(124,58,237,.1)} }
+.sum-glow { animation:sumGlow .8s ease 2; }
+
+/* Demo button shimmer */
+.demo-btn { position:relative; overflow:hidden; }
+.demo-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); transform:translateX(-120%); pointer-events:none; border-radius:inherit; }
+.demo-btn.shimmer::after { animation:demoShimmer .55s ease forwards; }
+@keyframes demoShimmer { to{transform:translateX(120%)} }
+.demo-btn:disabled { opacity:.75; cursor:default; transform:none !important; box-shadow:none !important; }
+
+/* Demo result slide-in */
+.result-enter { animation:resultSlide .44s cubic-bezier(.34,1.4,.64,1) both !important; }
+@keyframes resultSlide { from{opacity:0;transform:translateY(16px) scale(.975)} to{opacity:1;transform:translateY(0) scale(1)} }
+.teaser-enter { animation:resultSlide .38s .08s ease both !important; }
+
+/* Demo orb glow variants (override base orbPulse per signal colour) */
+.demo-orb { transition:box-shadow .4s ease; }
+.demo-orb.orb-glow-green { animation:orbGreen 2.4s ease-in-out infinite !important; }
+.demo-orb.orb-glow-yellow { animation:orbYellow 2.4s ease-in-out infinite !important; }
+.demo-orb.orb-glow-red   { animation:orbRed   2.4s ease-in-out infinite !important; }
+@keyframes orbGreen  { 0%,100%{box-shadow:0 0 0 8px rgba(34,197,94,.12),0 0 0 18px rgba(34,197,94,.06),0 8px 28px rgba(34,197,94,.28)} 50%{box-shadow:0 0 0 14px rgba(34,197,94,.18),0 0 0 28px rgba(34,197,94,.09),0 12px 40px rgba(34,197,94,.42)} }
+@keyframes orbYellow { 0%,100%{box-shadow:0 0 0 8px rgba(245,158,11,.12),0 0 0 18px rgba(245,158,11,.06),0 8px 28px rgba(245,158,11,.28)} 50%{box-shadow:0 0 0 14px rgba(245,158,11,.18),0 0 0 28px rgba(245,158,11,.09),0 12px 40px rgba(245,158,11,.42)} }
+@keyframes orbRed    { 0%,100%{box-shadow:0 0 0 8px rgba(239,68,68,.12),0 0 0 18px rgba(239,68,68,.06),0 8px 28px rgba(239,68,68,.28)} 50%{box-shadow:0 0 0 14px rgba(239,68,68,.18),0 0 0 28px rgba(239,68,68,.09),0 12px 40px rgba(239,68,68,.42)} }
+
+/* Chat bubble reveal */
+.chat-msg-hidden { opacity:0; transform:translateY(8px); }
+@keyframes chatIn { to{opacity:1;transform:translateY(0)} }
+.chat-msg-hidden.chat-in { animation:chatIn .3s ease forwards; }
+
+/* SVG line draw (spreadsheet + showcase) */
+.svg-line-draw { stroke-dashoffset:600; }
+.svg-line-draw.line-drawn { animation:drawLine 1.15s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes drawLine { to{stroke-dashoffset:0} }
+.svg-dot-hide { opacity:0; }
+.svg-dot-hide.dot-in { animation:dotFade .25s ease forwards; }
+@keyframes dotFade { to{opacity:1} }
+
+/* Bar chart grow from baseline */
+.mock-bar.bcbar { transform:scaleY(0); transform-origin:bottom center; }
+.mock-bar.bcbar.bar-grown { animation:barScale .52s cubic-bezier(.34,1.25,.64,1) forwards; }
+@keyframes barScale { to{transform:scaleY(1)} }
+
+/* Card hover tilt */
+.feat-card:nth-child(odd):hover     { transform:translateY(-7px) rotate(0.5deg) !important; }
+.feat-card:nth-child(even):hover    { transform:translateY(-7px) rotate(-0.5deg) !important; }
+.trust-card:nth-child(odd):hover    { transform:translateY(-5px) rotate(0.45deg) !important; }
+.trust-card:nth-child(even):hover   { transform:translateY(-5px) rotate(-0.45deg) !important; }
+.showcase-card:nth-child(odd):hover { transform:translateY(-6px) rotate(0.4deg) !important; }
+.showcase-card:nth-child(even):hover{ transform:translateY(-6px) rotate(-0.4deg) !important; }
+
+/* Button shine sweep */
+.btn-primary, .nav-cta, .btn-white, .demo-teaser-btn { position:relative; overflow:hidden; }
+.btn-primary::before,.nav-cta::before,.btn-white::before,.demo-teaser-btn::before { content:''; position:absolute; top:0; left:-50%; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.26),transparent); pointer-events:none; }
+.btn-primary:hover::before,.nav-cta:hover::before,.btn-white:hover::before,.demo-teaser-btn:hover::before { animation:btnShine .48s ease; }
+@keyframes btnShine { from{left:-50%} to{left:110%} }
+
+/* Input focus glow */
+.demo-input-wrap:focus-within { border-color:#a78bfa; box-shadow:0 0 0 3px rgba(167,139,250,.16); }
+.cta-email:focus { box-shadow:0 0 0 3px rgba(255,255,255,.18); }
+
+/* Cursor glow (desktop only, behind content) */
+#cursor-glow { position:fixed; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle,rgba(124,58,237,.028) 0%,transparent 68%); pointer-events:none; z-index:0; transform:translate(-50%,-50%); top:-230px; left:-230px; }
+@media (max-width:768px){ #cursor-glow{display:none !important} }
+
+/* ── Reduced motion — show everything immediately, skip all transitions ── */
+@media (prefers-reduced-motion:reduce) {
+  .wave-svg,.hero-card,.chip-float,.orb,.demo-orb,.badge-dot,.cta-orb1,.cta-orb2 { animation:none !important; }
+  .mbar-fill { animation:none !important; }
+  #cursor-glow { display:none !important; }
+  .chat-msg-hidden { opacity:1 !important; transform:none !important; animation:none !important; }
+  .bank-row-hide,.bank-amt-hide { opacity:1 !important; transform:none !important; transition:none !important; }
+  .mock-bar.bcbar { transform:scaleY(1) !important; animation:none !important; }
+  .svg-line-draw { stroke-dashoffset:0 !important; animation:none !important; }
+  .svg-dot-hide { opacity:1 !important; }
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+
+/* ════════════════════════════════════
+   WOW EFFECTS
+   ════════════════════════════════════ */
+
+/* 1. Sig amount green glow sweep */
+@keyframes sigSweep { 0%{background-position:0% center} 100%{background-position:220% center} }
+.sig-amount-shine {
+  background: linear-gradient(105deg,#16a34a 18%,#bbf7d0 42%,#fff 50%,#86efac 58%,#059669 74%) !important;
+  background-size: 300% auto !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: sigSweep .72s ease both !important;
+}
+
+/* 3. Deduction row tick — flash red/coral */
+@keyframes deductTick { 0%,100%{} 35%,65%{color:#fb7185 !important;text-shadow:0 0 8px rgba(251,113,133,.5)} }
+.deduct-tick { animation:deductTick .5s ease !important; }
+
+/* 4. Safe tagline confirm */
+@keyframes safeConfirm { 0%{} 28%{color:#059669;transform:scale(1.04)} 100%{color:#16a34a;transform:scale(1)} }
+.safe-confirm { animation:safeConfirm .72s ease forwards !important; }
+
+/* 5. Hero input shimmer sweep */
+.input-shimmer-now { position:relative !important; overflow:hidden !important; }
+.input-shimmer-now::after { content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
+  animation:inputSweep .38s ease forwards; border-radius:inherit; pointer-events:none; }
+@keyframes inputSweep { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+/* 6. Signal rings around hero orb */
+.orb-ring { position:absolute; border-radius:50%; top:50%; left:50%;
+  transform:translate(-50%,-50%); pointer-events:none; box-sizing:border-box; opacity:0; }
+.orb-ring-1 { border:1.5px solid rgba(245,158,11,.5); animation:ringExpand 2.8s 2.4s ease-out infinite; }
+.orb-ring-2 { border:1.5px solid rgba(245,158,11,.26); animation:ringExpand 2.8s 3.7s ease-out infinite; }
+@keyframes ringExpand { 0%{width:68px;height:68px;opacity:.6} 100%{width:124px;height:124px;opacity:0} }
+
+/* 7. Demo result lock-in scale (.975→1) + card border glow */
+.demo-card-glow-green  { animation:dcGlowG  .68s ease forwards !important; }
+.demo-card-glow-yellow { animation:dcGlowY  .68s ease forwards !important; }
+.demo-card-glow-red    { animation:dcGlowR  .68s ease forwards !important; }
+@keyframes dcGlowG { 0%,100%{box-shadow:0 12px 48px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,.86)} 40%{box-shadow:0 0 0 1px rgba(34,197,94,.22),0 14px 48px rgba(34,197,94,.1),inset 0 1px 0 rgba(255,255,255,.86)} }
+@keyframes dcGlowY { 0%,100%{box-shadow:0 12px 48px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,.86)} 40%{box-shadow:0 0 0 1px rgba(245,158,11,.22),0 14px 48px rgba(245,158,11,.1),inset 0 1px 0 rgba(255,255,255,.86)} }
+@keyframes dcGlowR { 0%,100%{box-shadow:0 12px 48px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,.86)} 40%{box-shadow:0 0 0 1px rgba(239,68,68,.22),0 14px 48px rgba(239,68,68,.1),inset 0 1px 0 rgba(255,255,255,.86)} }
+
+/* 8. Teaser preview — bars grow + badge delays in */
+.teaser-bar { transform-origin:bottom center; transform:scaleY(0); }
+.teaser-bar.t-bar-in { animation:barScale .5s cubic-bezier(.34,1.25,.64,1) forwards; }
+.teaser-badge-wrap { opacity:0; }
+.teaser-badge-wrap.badge-in { animation:badgeFadeIn .42s ease forwards; }
+@keyframes badgeFadeIn { to{opacity:1} }
+
+/* 9. Premium card border shimmer (slow breathing box-shadow) */
+@keyframes heroBorder {
+  0%,100%{box-shadow:0 24px 64px rgba(15,23,42,.115),inset 0 1px 0 rgba(255,255,255,.88)}
+  50%{box-shadow:0 0 0 1px rgba(167,139,250,.08),0 24px 64px rgba(15,23,42,.115),0 0 28px rgba(167,139,250,.04),inset 0 1px 0 rgba(255,255,255,.88)}
+}
+.hero-card { animation:float 5s 1s ease-in-out infinite, heroBorder 7s 2s ease-in-out infinite; }
+@keyframes demoBorder {
+  0%,100%{box-shadow:0 12px 48px rgba(15,23,42,.085),inset 0 1px 0 rgba(255,255,255,.86)}
+  50%{box-shadow:0 0 0 1px rgba(124,58,237,.07),0 12px 48px rgba(15,23,42,.085),0 0 24px rgba(124,58,237,.035),inset 0 1px 0 rgba(255,255,255,.86)}
+}
+#demo-card { animation:demoBorder 8.5s 1s ease-in-out infinite; }
+@keyframes ctaBorder {
+  0%,100%{box-shadow:0 28px 72px rgba(124,58,237,.32)}
+  50%{box-shadow:0 28px 72px rgba(124,58,237,.32),0 0 0 1px rgba(255,255,255,.12),0 0 44px rgba(255,255,255,.035)}
+}
+.cta-wrap { animation:ctaBorder 9s ease-in-out infinite; }
+
+/* 10. Mascot placeholder classes (for future use) */
+@keyframes mascotFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes mascotBreathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+@keyframes mascotBlink { 0%,88%,100%{transform:scaleY(1)} 91%,95%{transform:scaleY(0.06)} }
+.mascot-bob { animation:mascotFloat 3.5s ease-in-out infinite; }
+.mascot-breathe { animation:mascotBreathe 3s ease-in-out infinite; }
+.mascot-blink { animation:mascotBlink 4.5s ease-in-out infinite; }
+
+/* ════════════════════════════════════
+   MOBILE OVERFLOW FIXES ≤ 430px
+   ════════════════════════════════════ */
+@media (max-width:430px) {
+  /* Hero card — reduce horizontal padding */
+  .hero-card { padding:22px 20px; }
+
+  /* Bank compare sides — already stack at 640px, reduce padding */
+  .compare-side { padding:26px 20px; }
+
+  /* Demo card — 44px horizontal padding is too much */
+  .demo-card { padding:28px 22px; }
+  /* Demo teaser — nested inside the already-tight card */
+  .demo-teaser { padding:16px 16px; }
+
+  /* Spreadsheet — shrink padding so 4 columns actually fit */
+  .sheet-left  { padding:26px 18px; }
+  .sheet-right { padding:24px 18px; }
+  .data-table  { font-size:12px; }
+  .data-table th,
+  .data-table td { padding:7px 6px; }
+  .status-badge { font-size:10px; padding:2px 6px; }
+
+  /* CTA form — email input (260px fixed) overflows ~238px container */
+  .cta-wrap  { padding:52px 28px; }
+  .cta-form  { flex-direction:column; align-items:stretch; }
+  .cta-email { width:100%; }
+  .btn-white { width:100%; }
+
+  /* Footer — 56px side padding leaves only 278px at 390px */
+  footer { padding:28px 24px; }
+}
+
+/* ════════════════════════════════════
+   HERO + DEMO — MOBILE ≤ 430px
+   ════════════════════════════════════ */
+@media (max-width:430px) {
+
+  /* ── Hero spacing ── */
+  .hero { padding:88px 20px 48px; }
+  .hero-badge { margin-bottom:18px; }
+  .hero h1 { font-size:36px; letter-spacing:-1px; line-height:1.1; margin-bottom:14px; }
+  .hero-sub { font-size:15px; margin-bottom:10px; }
+  .hero-sub2 { font-size:13px; margin-bottom:16px; }
+  .hero-trust { margin-bottom:20px; font-size:12px; }
+
+  /* ── Hero buttons — full-width stack ── */
+  .hero-btns { flex-direction:column; align-items:stretch; gap:10px; margin-bottom:28px; width:100%; }
+  .btn-primary, .btn-secondary { width:100%; padding:14px 24px; }
+
+  /* ── Hero card — kill float + border-shimmer (battery) ── */
+  .hero-card { animation:none; }
+
+  /* ── Orb — static glow only, kill expanding rings ── */
+  .orb { animation:none; box-shadow:0 0 0 8px rgba(245,158,11,.13),0 6px 20px rgba(245,158,11,.28); }
+  .orb-ring-1,.orb-ring-2 { display:none; }
+
+  /* ── Demo section padding (inline style needs !important) ── */
+  #demo { padding:52px 20px 72px !important; }
+
+  /* ── Demo result — slightly smaller orb + label ── */
+  .demo-orb { width:48px; height:48px; font-size:18px; }
+  .demo-orb-row { gap:12px; margin-bottom:12px; }
+  .demo-signal-label { font-size:20px; }
+  .demo-verdict { font-size:13px; }
+  .demo-after { font-size:13px; padding:11px 14px; }
+
+  /* ── Demo teaser ── */
+  .demo-teaser-title { font-size:14px; }
+  .demo-teaser p { font-size:13px; }
+}
+
+/* ════════════════════════════════════
+   CHAT + SPREADSHEET — MOBILE ≤ 430px
+   ════════════════════════════════════ */
+@media (max-width:430px) {
+
+  /* ── Chat section ── */
+  #chat { padding:52px 20px 68px !important; }
+
+  /* Chat window chrome */
+  .chat-win-header { padding:12px 16px; }
+  .chat-win-input  { padding:11px 14px; }
+  .chat-input-fake { padding:9px 14px; font-size:12.5px; }
+
+  /* Messages */
+  .chat-messages { padding:14px 16px; gap:8px; }
+  .chat-msg      { max-width:90%; }
+  .chat-bubble   { padding:9px 13px; font-size:13px; line-height:1.45; }
+  .chat-time     { font-size:9.5px; }
+
+  /* Prompts panel */
+  .prompts-side   { gap:10px; }
+  .prompt-chips   { gap:7px; }
+  .prompt-chip    { padding:10px 14px; font-size:13px; }
+  .chip-prefix    { font-size:14px; }
+  .response-chips { gap:7px; }
+  .response-chip  { padding:9px 13px; font-size:13px; }
+  .prompts-label  { font-size:12px; }
+
+  /* ── Spreadsheet section ── */
+  #spreadsheet { padding:52px 20px 68px !important; }
+
+  /* Sheet label spacing */
+  .sheet-label { margin-bottom:12px; font-size:11px; }
+
+  /* Summary cards — tighten padding + slightly smaller value */
+  .summary-cards  { gap:8px; margin-bottom:18px; }
+  .sum-card       { padding:10px 12px; }
+  .sum-card-label { font-size:10px; }
+  .sum-card-value { font-size:17px; }
+
+  /* Chart blocks */
+  .chart-block       { margin-bottom:14px; }
+  .chart-block-label { font-size:11.5px; margin-bottom:7px; }
+  .donut-row         { gap:12px; }
+  .chart-legend      { font-size:10.5px; }
+  .chart-legend div  { margin-bottom:3px; }
+}
+
+/* ════════════════════════════════════
+   MOBILE QA — ≤ 768px
+   Covers tablet + all phone widths
+   ════════════════════════════════════ */
+@media (max-width:768px) {
+
+  /* ── Section vertical padding — 110px is desktop sizing ── */
+  section        { padding:80px 24px; }
+  .bank-section  { padding:70px 24px 56px; }
+  .sec-sub       { font-size:16px; margin-bottom:44px; }
+  .bank-sub      { font-size:16px; margin-bottom:40px; }
+
+  /* ── Kill continuous box-shadow breathing animations ── */
+  /* These repaint the compositor layer on every frame — no value on mobile */
+  #demo-card     { animation:none; }
+  .cta-wrap      { animation:none; }
+  .cta-orb1,
+  .cta-orb2      { animation:none; }
+
+  /* ── Demo orb colour glows — replace 3-layer looping shadow with static ── */
+  .demo-orb.orb-glow-green  { animation:none !important; box-shadow:0 0 0 8px rgba(34,197,94,.15),0 4px 18px rgba(34,197,94,.28); }
+  .demo-orb.orb-glow-yellow { animation:none !important; box-shadow:0 0 0 8px rgba(245,158,11,.15),0 4px 18px rgba(245,158,11,.28); }
+  .demo-orb.orb-glow-red    { animation:none !important; box-shadow:0 0 0 8px rgba(239,68,68,.15), 0 4px 18px rgba(239,68,68,.28); }
+
+  /* ── Waves — drop 2 of 4 layers (visually preserved, half compositing cost) ── */
+  .w3,.w4 { display:none; }
+
+  /* ── Hover tilt — remove rotation on touch targets ── */
+  /* Touch devices never fire :hover during scroll; rotate() adds a composite layer for nothing */
+  .feat-card:nth-child(odd):hover,
+  .feat-card:nth-child(even):hover     { transform:translateY(-7px) !important; }
+  .trust-card:nth-child(odd):hover,
+  .trust-card:nth-child(even):hover    { transform:translateY(-5px) !important; }
+  .showcase-card:nth-child(odd):hover,
+  .showcase-card:nth-child(even):hover { transform:translateY(-6px) !important; }
+
+  /* ── Force grids to 2-col on tablet ── */
+  .showcase-grid { grid-template-columns: 1fr 1fr !important; }
+  .feat-grid     { grid-template-columns: 1fr 1fr !important; }
+}
+
+@media (max-width:640px) {
+  .showcase-grid { grid-template-columns: 1fr !important; }
+  .feat-grid     { grid-template-columns: 1fr !important; }
+}
+
+/* ════════════════════════════════════
+   MOBILE QA — ≤ 430px additions
+   Fixes not yet covered by earlier blocks
+   ════════════════════════════════════ */
+@media (max-width:430px) {
+
+  /* ── Section default padding — #system and #features have no inline style ── */
+  /* At 360px, 110px top+bottom = 220px of empty space per section */
+  section        { padding:60px 20px; }
+  .sec-title     { letter-spacing:-1px; }
+  .sec-sub       { font-size:15px; margin-bottom:34px; }
+
+  /* ── Bank section ── */
+  .bank-section  { padding:52px 20px 44px; }
+  .bank-headline { letter-spacing:-1px; }
+  .bank-sub      { font-size:15px; margin-bottom:32px; }
+  .c-tagline     { margin-bottom:16px; }
+
+  /* ── Feature cards — 30px horizontal padding at 360px leaves only 252px ── */
+  .feat-card     { padding:24px 22px; }
+  .feat-icon     { width:44px; height:44px; font-size:20px; margin-bottom:14px; }
+  .feat-card h3  { font-size:16px; }
+  .feat-card p   { font-size:14px; }
+
+  /* ── Trust cards ── */
+  .trust-card    { padding:22px 20px; }
+
+  /* ── Showcase cards ── */
+  .showcase-card { padding:20px 18px; }
+
+  /* ── Force grids to single column on phones ── */
+  .showcase-grid { grid-template-columns: 1fr !important; }
+  .feat-grid     { grid-template-columns: 1fr !important; }
+}
+
+/* 11. Reduced motion — wow effects off */
+@media (prefers-reduced-motion:reduce) {
+  .sig-amount-shine { animation:none !important; background-position:0% center !important; }
+  .deduct-tick { animation:none !important; }
+  .safe-confirm { animation:none !important; color:#16a34a !important; transform:none !important; }
+  .input-shimmer-now::after { display:none !important; }
+  .orb-ring-1,.orb-ring-2 { display:none !important; }
+  .teaser-bar { transform:scaleY(1) !important; }
+  .teaser-badge-wrap { opacity:1 !important; }
+  .demo-card-glow-green,.demo-card-glow-yellow,.demo-card-glow-red { animation:none !important; }
+  .hero-card { animation:none !important; }
+  #demo-card { animation:none !important; }
+  .cta-wrap { animation:none !important; }
+  .mascot-bob,.mascot-breathe,.mascot-blink { animation:none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Waves -->
+<div class="wave-bg">
+  <svg class="wave-svg w1" viewBox="0 0 1440 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,65 C360,130 720,0 1080,65 C1260,98 1380,32 1440,65 L1440,130 L0,130Z" fill="#c4b5fd"/>
+    <path d="M1440,65 C1800,130 2160,0 2520,65 C2700,98 2820,32 2880,65 L2880,130 L1440,130Z" fill="#c4b5fd"/>
+  </svg>
+  <svg class="wave-svg w2" viewBox="0 0 1440 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,55 C240,115 480,10 720,60 C960,110 1200,12 1440,55 L1440,130 L0,130Z" fill="#93c5fd"/>
+    <path d="M1440,55 C1680,115 1920,10 2160,60 C2400,110 2640,12 2880,55 L2880,130 L1440,130Z" fill="#93c5fd"/>
+  </svg>
+  <svg class="wave-svg w3" viewBox="0 0 1440 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,80 C300,22 600,118 900,72 C1100,40 1300,100 1440,80 L1440,130 L0,130Z" fill="#6ee7b7"/>
+    <path d="M1440,80 C1740,22 2040,118 2340,72 C2540,40 2740,100 2880,80 L2880,130 L1440,130Z" fill="#6ee7b7"/>
+  </svg>
+  <svg class="wave-svg w4" viewBox="0 0 1440 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,60 C360,8 720,118 1080,60 C1260,30 1380,90 1440,60 L1440,130 L0,130Z" fill="#f9a8d4"/>
+    <path d="M1440,60 C1800,8 2160,118 2520,60 C2700,30 2820,90 2880,60 L2880,130 L1440,130Z" fill="#f9a8d4"/>
+  </svg>
+</div>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo brand-lockup">
+    <img class="brand-logo-img" src="public/Logo4.png" alt="SpendSignal logo"/>
+    <span class="brand-word">SpendSignal</span>
+  </div>
+  <div class="nav-links">
+    <a href="#system">Features</a>
+    <a href="#demo">Try it</a>
+    <a href="#cta">Join beta</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Join the beta →</button>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Your all-in-one AI budget coach
+  </div>
+
+  <h1>Know before you buy.<br><span class="grad">Check your spending signal.</span></h1>
+  <p class="hero-sub">SpendSignal shows what you can actually spend before you buy — then helps track the rest with AI chat, a smart spreadsheet, and visual insights.</p>
+  <p class="hero-sub2">Budgeting, purchase checks, and money tracking in one place.</p>
+
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Check a purchase →</button>
+    <button class="btn-secondary" onclick="document.getElementById('system').scrollIntoView({behavior:'smooth'})">See what's inside</button>
+  </div>
+
+  <p class="hero-trust">🔒 No bank login. No card credentials. Just your numbers and friendly guidance.</p>
+
+  <div class="hero-card-wrap">
+    <div class="chip-float cf1">🟢 Safe to buy</div>
+    <div class="chip-float cf2">🟡 Careful</div>
+    <div class="chip-float cf3">🎯 Goal protected</div>
+    <div class="chip-float cf4">Still on track ✓</div>
+    <div class="chip-float cf5">⚡ Impulse check</div>
+    <div class="hero-card-tilt">
+    <div class="hero-card">
+      <div class="card-top">
+        <span class="card-title">Can I buy this?</span>
+        <span class="card-tag">SpendSignal</span>
+      </div>
+      <div class="card-input-mock">
+        <span class="search-icon">🔍</span>
+        <span>$120 hoodie</span>
+      </div>
+      <div class="signal-row">
+        <div class="orb-wrap"><div class="orb">🟡</div></div>
+        <div class="signal-text">
+          <div class="signal-result">Careful</div>
+          <div class="signal-verdict">You can buy it, but your weekend budget drops to $18/day.</div>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="mini-bars">
+        <div class="mbar-row">
+          <span class="mbar-lbl">Safe daily spend</span>
+          <div class="mbar-track"><div class="mbar-fill" style="width:58%;background:linear-gradient(90deg,#86efac,#22c55e)"></div></div>
+          <span class="mbar-val" style="color:#16a34a">$18</span>
+        </div>
+        <div class="mbar-row">
+          <span class="mbar-lbl">Week left</span>
+          <div class="mbar-track"><div class="mbar-fill" style="width:44%;background:linear-gradient(90deg,#fde68a,#f59e0b)"></div></div>
+          <span class="mbar-val" style="color:#d97706">$168</span>
+        </div>
+        <div class="mbar-row">
+          <span class="mbar-lbl">Savings goal</span>
+          <div class="mbar-track"><div class="mbar-fill" style="width:82%;background:linear-gradient(90deg,#a78bfa,#7c3aed)"></div></div>
+          <span class="mbar-val" style="color:#7c3aed">82%</span>
+        </div>
+        <div class="mbar-row">
+          <span class="mbar-lbl">Fun budget</span>
+          <div class="mbar-track"><div class="mbar-fill" style="width:31%;background:linear-gradient(90deg,#fca5a5,#ef4444)"></div></div>
+          <span class="mbar-val" style="color:#dc2626">$62</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="status-pills">
+        <span class="spill" style="background:#dcfce7;color:#16a34a">✓ Goal still reachable</span>
+        <span class="spill" style="background:#fef3c7;color:#d97706">⚠ Month: tight</span>
+        <span class="spill" style="background:#f3f4f6;color:#64748b">Risk: medium</span>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Bank balance lies ── -->
+<div class="bank-section" id="why">
+  <div class="bank-eyebrow">The problem</div>
+  <h2 class="bank-headline">Your bank balance lies.<br><span class="grad">SpendSignal shows reality.</span></h2>
+  <p class="bank-sub">That $3,500 in your account is not all yours to spend. SpendSignal subtracts bills, goals, and upcoming expenses before giving you a real safe number.</p>
+  <div class="compare-wrap">
+    <div class="compare-side left" id="bank-left">
+      <div class="c-label bank-l">🏦 Bank says</div>
+      <div class="c-amount bank-a">$3,500</div>
+      <div class="c-tagline">Available balance</div>
+      <div class="breakdown">
+        <div class="breakdown-row"><span>Rent coming up</span><span>-$1,200</span></div>
+        <div class="breakdown-row"><span>Bills due</span><span>-$280</span></div>
+        <div class="breakdown-row"><span>Savings goal</span><span>-$500</span></div>
+        <div class="breakdown-row"><span>Food estimate</span><span>-$380</span></div>
+      </div>
+    </div>
+    <div class="compare-vs">≠</div>
+    <div class="compare-side right">
+      <div class="c-label sig-l">🟢 SpendSignal reality</div>
+      <div class="c-amount sig-a" id="sig-amount">$900</div>
+      <div class="c-tagline sig-t" id="sig-tagline">Actually safe to spend</div>
+      <div class="breakdown">
+        <div class="breakdown-row" style="background:rgba(220,252,231,0.6)"><span style="color:#15803d;font-weight:600">Goal protected</span><span style="color:#16a34a">✓</span></div>
+        <div class="breakdown-row" style="background:rgba(220,252,231,0.6)"><span style="color:#15803d;font-weight:600">Bills covered</span><span style="color:#16a34a">✓</span></div>
+        <div class="breakdown-row" style="background:rgba(254,243,199,0.6)"><span style="color:#92400e;font-weight:600">Buying this delays goal</span><span style="color:#d97706">2 days</span></div>
+        <div class="breakdown-row" style="background:rgba(254,243,199,0.6)"><span style="color:#92400e;font-weight:600">Daily budget after</span><span style="color:#d97706">$18</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── More than a purchase checker ── -->
+<section id="system">
+  <div class="sec-label">All-in-one</div>
+  <h2 class="sec-title">More than a purchase checker.<br><span class="grad">It's your money system.</span></h2>
+  <p class="sec-sub">SpendSignal combines a budget coach, a real-time spreadsheet, an AI chatbot, and visual graphs — all in one place.</p>
+
+  <div class="showcase-grid">
+    <!-- Card 1: Purchase checker -->
+    <div class="showcase-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:#dcfce7">🟢</div>
+        <span class="sc-title">Can I buy this?</span>
+      </div>
+      <div class="card-input-mock" style="margin-bottom:14px;padding:10px 14px">
+        <span class="search-icon" style="font-size:13px">🔍</span>
+        <span style="font-size:13px;font-weight:600">$120 hoodie</span>
+      </div>
+      <div class="mini-signal" style="background:#fef3c7;color:#d97706">🟡 Careful</div>
+      <div class="mini-verdict">You can buy it, but your flexible budget gets tight for the rest of the month.</div>
+    </div>
+
+    <!-- Card 2: Smart spreadsheet -->
+    <div class="showcase-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:#dbeafe">📊</div>
+        <span class="sc-title">Smart spreadsheet</span>
+      </div>
+      <table class="mini-sheet">
+        <tr><td>Income</td><td style="color:#16a34a">$3,500</td></tr>
+        <tr><td>Rent</td><td style="color:#ef4444">-$1,200</td></tr>
+        <tr><td>Bills</td><td style="color:#ef4444">-$280</td></tr>
+        <tr><td>Savings</td><td style="color:#ef4444">-$500</td></tr>
+        <tr><td>Food</td><td style="color:#ef4444">-$380</td></tr>
+        <tr class="safe-row"><td>Safe to spend</td><td>$900</td></tr>
+      </table>
+    </div>
+
+    <!-- Card 3: AI Chat -->
+    <div class="showcase-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:#ede9fe">💬</div>
+        <span class="sc-title">AI chat</span>
+      </div>
+      <div class="mini-chat">
+        <div class="mchat-bubble user">I spent $18 on Uber.</div>
+        <div class="mchat-bubble bot">Logged under Transport. You're still safe 🟢</div>
+        <div class="mchat-bubble user">How much can I spend this weekend?</div>
+        <div class="mchat-bubble bot">Careful 🟡. Around $168 keeps you on track.</div>
+      </div>
+    </div>
+
+    <!-- Card 4: Graphs -->
+    <div class="showcase-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:#ecfeff">📈</div>
+        <span class="sc-title">Graphs & insights</span>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Spending by category</div>
+      <div class="mock-bars" style="margin-bottom:16px">
+        <div class="bcbar-col"><div class="mock-bar bcbar bar-anim" style="height:68px;background:linear-gradient(to top,#a78bfa,#7c3aed)"></div><div class="bcbar-lbl">Rent</div></div>
+        <div class="bcbar-col"><div class="mock-bar bcbar bar-anim" style="height:28px;background:linear-gradient(to top,#93c5fd,#3b82f6)"></div><div class="bcbar-lbl">Bills</div></div>
+        <div class="bcbar-col"><div class="mock-bar bcbar bar-anim" style="height:38px;background:linear-gradient(to top,#6ee7b7,#10b981)"></div><div class="bcbar-lbl">Food</div></div>
+        <div class="bcbar-col"><div class="mock-bar bcbar bar-anim" style="height:22px;background:linear-gradient(to top,#fde68a,#f59e0b)"></div><div class="bcbar-lbl">Trans.</div></div>
+        <div class="bcbar-col"><div class="mock-bar bcbar bar-anim" style="height:46px;background:linear-gradient(to top,#c4b5fd,#7c3aed)"></div><div class="bcbar-lbl">Savings</div></div>
+      </div>
+      <div class="donut-row">
+        <div class="mock-donut"></div>
+        <div class="chart-legend">
+          <div><span class="legend-dot" style="background:#7c3aed"></span>Rent 34%</div>
+          <div><span class="legend-dot" style="background:#3b82f6"></span>Food 11%</div>
+          <div><span class="legend-dot" style="background:#06b6d4"></span>Bills 8%</div>
+          <div><span class="legend-dot" style="background:#e2e8f0"></span>Other 47%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Try the signal demo ── -->
+<section id="demo" style="padding:60px 24px 100px">
+  <div class="sec-label">Live demo</div>
+  <h2 class="sec-title">Try the signal.<br><span class="grad">Right now.</span></h2>
+  <p class="sec-sub">Enter your numbers and see what SpendSignal would tell you.</p>
+
+  <div class="demo-scene">
+  <img class="mascot-scene-img demo-scout-lean" src="public/Main4.png" alt="" aria-hidden="true"/>
+  <div class="demo-card" id="demo-card">
+    <div class="demo-grid">
+      <div class="demo-field">
+        <label for="d-income">Monthly income</label>
+        <div class="demo-input-wrap"><span class="demo-currency">$</span><input id="d-income" type="number" inputmode="decimal" value="3500" min="0"/></div>
+      </div>
+      <div class="demo-field">
+        <label for="d-expenses">Fixed expenses</label>
+        <div class="demo-input-wrap"><span class="demo-currency">$</span><input id="d-expenses" type="number" inputmode="decimal" value="2100" min="0"/></div>
+      </div>
+      <div class="demo-field">
+        <label for="d-savings">Savings goal</label>
+        <div class="demo-input-wrap"><span class="demo-currency">$</span><input id="d-savings" type="number" inputmode="decimal" value="500" min="0"/></div>
+      </div>
+      <div class="demo-field">
+        <label for="d-purchase">Purchase amount</label>
+        <div class="demo-input-wrap"><span class="demo-currency">$</span><input id="d-purchase" type="number" inputmode="decimal" value="120" min="0"/></div>
+      </div>
+    </div>
+    <button class="demo-btn" onclick="runDemo()">Check the signal →</button>
+    <div class="demo-result" id="demo-result" style="display:none">
+      <div class="demo-orb-row">
+        <div class="demo-orb" id="demo-orb"></div>
+        <div>
+          <div class="demo-signal-label" id="demo-signal"></div>
+          <div class="demo-verdict" id="demo-verdict"></div>
+        </div>
+      </div>
+      <div class="demo-after">
+        Safe money after purchase: <strong id="demo-after-amt"></strong>
+      </div>
+    </div>
+    <div class="demo-teaser" id="demo-teaser" style="display:none">
+      <div class="demo-teaser-title"><span>🔒</span> Want the full picture?</div>
+      <p>The quick check is only a preview. The full app remembers your budget, updates your spreadsheet, tracks your month, shows graphs, and lets you chat with your money in real time.</p>
+
+      <!-- Blurred dashboard preview -->
+      <div class="teaser-preview-wrap">
+        <div class="teaser-preview">
+          <!-- 2 summary cards -->
+          <div class="teaser-sum-row">
+            <div class="teaser-sum-card">
+              <div class="teaser-sum-lbl">Safe to spend</div>
+              <div class="teaser-sum-val" style="color:#16a34a">$900</div>
+            </div>
+            <div class="teaser-sum-card">
+              <div class="teaser-sum-lbl">Month status</div>
+              <div class="teaser-sum-val" style="color:#d97706">Careful</div>
+            </div>
+          </div>
+          <!-- Charts row -->
+          <div class="teaser-charts">
+            <!-- Line chart -->
+            <div>
+              <div class="teaser-chart-lbl">Spend trend</div>
+              <svg viewBox="0 0 120 38" style="width:100%;height:38px;overflow:visible">
+                <defs>
+                  <linearGradient id="tg1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#7c3aed" stop-opacity=".2"/>
+                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,32 C15,28 30,22 45,26 C60,30 75,16 90,12 C105,8 112,10 120,8 L120,38 L0,38Z" fill="url(#tg1)"/>
+                <path d="M0,32 C15,28 30,22 45,26 C60,30 75,16 90,12 C105,8 112,10 120,8" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <circle cx="0" cy="32" r="2.5" fill="#7c3aed"/>
+                <circle cx="45" cy="26" r="2.5" fill="#7c3aed"/>
+                <circle cx="90" cy="12" r="2.5" fill="#7c3aed"/>
+                <circle cx="120" cy="8" r="2.5" fill="#3b82f6"/>
+              </svg>
+            </div>
+            <!-- Bar chart -->
+            <div>
+              <div class="teaser-chart-lbl">By category</div>
+              <div class="teaser-bars">
+                <div class="teaser-bar" style="height:38px;background:linear-gradient(to top,#a78bfa,#7c3aed)"></div>
+                <div class="teaser-bar" style="height:18px;background:linear-gradient(to top,#93c5fd,#3b82f6)"></div>
+                <div class="teaser-bar" style="height:24px;background:linear-gradient(to top,#6ee7b7,#10b981)"></div>
+                <div class="teaser-bar" style="height:14px;background:linear-gradient(to top,#fde68a,#f59e0b)"></div>
+                <div class="teaser-bar" style="height:30px;background:linear-gradient(to top,#c4b5fd,#7c3aed)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Overlay badge -->
+        <div class="teaser-preview-overlay">
+          <div class="teaser-badge-wrap" id="teaser-badge-wrap">
+            <div class="teaser-badge">🔒 Available in beta</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="demo-teaser-btn" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Join the beta →</button>
+    </div>
+  </div>
+  </div>
+  <p class="demo-footnote">This quick check is only a taste. SpendSignal becomes powerful when it remembers your month, tracks changes, and helps you manage the full picture.</p>
+</section>
+
+<!-- ── Talk to your money ── -->
+<section id="chat" style="padding:80px 24px 110px">
+  <div class="sec-label">AI chat</div>
+  <h2 class="sec-title">Talk to your money.<br><span class="grad">It listens.</span></h2>
+  <p class="sec-sub">Just type what happened. SpendSignal updates your numbers, explains what changed, and helps you decide what to do next.</p>
+
+  <div class="chat-section-layout">
+    <!-- Chat window -->
+    <div class="chat-window">
+      <div class="chat-win-header">
+        <div class="chat-win-avatar"><img src="public/LogoSS.png" alt="Scout"/></div>
+        <div>
+          <div class="chat-win-name">SpendSignal AI</div>
+          <div class="chat-win-status">● Online</div>
+        </div>
+      </div>
+      <div class="chat-messages">
+        <div class="chat-msg user">
+          <div class="chat-bubble">I got paid $3,500 today.</div>
+          <div class="chat-time">10:02 AM</div>
+        </div>
+        <div class="chat-msg bot">
+          <div class="chat-bubble">Income updated ✓. Your safe monthly spend is <strong>$900</strong> after goals and bills. You're looking good 🟢</div>
+          <div class="chat-time left">10:02 AM</div>
+        </div>
+        <div class="chat-msg user">
+          <div class="chat-bubble">I spent $18 on Uber.</div>
+          <div class="chat-time">11:34 AM</div>
+        </div>
+        <div class="chat-msg bot">
+          <div class="chat-bubble">Transport logged. $185 used of $220 budgeted. You're still on track 🟢</div>
+          <div class="chat-time left">11:34 AM</div>
+        </div>
+        <div class="chat-msg user">
+          <div class="chat-bubble">Can I buy a $120 hoodie this weekend?</div>
+          <div class="chat-time">3:17 PM</div>
+        </div>
+        <div class="chat-msg bot">
+          <div class="chat-bubble">Careful 🟡. You can buy it, but your daily safe spend drops to <strong>$18</strong> for the rest of the month. Your savings goal stays protected.</div>
+          <div class="chat-time left">3:17 PM</div>
+        </div>
+      </div>
+      <div class="chat-win-input">
+        <div class="chat-input-fake">Type what happened with your money...</div>
+        <div class="chat-send">↑</div>
+      </div>
+    </div>
+
+    <!-- Prompts -->
+    <div class="prompts-side">
+      <div class="prompts-label">What you can say</div>
+      <div class="prompt-chips">
+        <div class="prompt-chip"><span class="chip-prefix">💰</span>"I got paid $3,500 today."</div>
+        <div class="prompt-chip"><span class="chip-prefix">🚗</span>"I spent $18 on Uber."</div>
+        <div class="prompt-chip"><span class="chip-prefix">🎯</span>"Add $300 to my savings goal."</div>
+        <div class="prompt-chip"><span class="chip-prefix">🛍</span>"Can I buy a $120 hoodie?"</div>
+        <div class="prompt-chip"><span class="chip-prefix">📅</span>"How much can I safely spend this week?"</div>
+        <div class="prompt-chip"><span class="chip-prefix">📊</span>"What changed since last week?"</div>
+      </div>
+
+      <div class="prompts-label" style="margin-top:24px">What SpendSignal says back</div>
+      <div class="response-chips">
+        <div class="response-chip">✓ Income updated. Safe spend is now $900.</div>
+        <div class="response-chip">✓ Transport logged. Still on track 🟢</div>
+        <div class="response-chip">🟡 Careful. Daily budget drops to $18 if you buy.</div>
+        <div class="response-chip">📈 Food spending is running 12% above plan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Spreadsheet that thinks for you ── -->
+<section id="spreadsheet" style="padding:80px 24px 110px">
+  <div class="sec-label">Smart spreadsheet</div>
+  <h2 class="sec-title">The spreadsheet that<br><span class="grad">thinks for you.</span></h2>
+  <p class="sec-sub">Every chat message, every logged expense, every purchase check — all of it updates this sheet behind the scenes.</p>
+
+  <div class="sheet-card">
+    <div class="sheet-layout">
+      <!-- Left: table -->
+      <div class="sheet-left">
+        <div class="sheet-label">This month · May 2025</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Budgeted</th>
+              <th>Actual</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700">Income</td>
+              <td>$3,500</td>
+              <td id="cell-income-actual" style="color:#16a34a;font-weight:700">$3,500</td>
+              <td><span class="status-badge s-ok">✓</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Rent</td>
+              <td>$1,200</td>
+              <td>$1,200</td>
+              <td><span class="status-badge s-ok">✓</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Bills</td>
+              <td>$280</td>
+              <td style="color:#16a34a">$240</td>
+              <td><span class="status-badge s-ok">✓</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Food</td>
+              <td>$380</td>
+              <td>$295</td>
+              <td><span class="status-badge s-safe">Safe</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Transport</td>
+              <td>$220</td>
+              <td id="cell-transport-actual" style="color:#d97706">$185</td>
+              <td><span class="status-badge s-care">Careful</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700">Savings</td>
+              <td>$500</td>
+              <td style="color:#7c3aed;font-weight:700">$500</td>
+              <td><span class="status-badge s-ok">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right: charts + summary -->
+      <div class="sheet-right">
+        <div class="sheet-label">Summary</div>
+        <div class="summary-cards">
+          <div class="sum-card" id="sum-safe">
+            <div class="sum-card-label">Safe to spend</div>
+            <div class="sum-card-value" style="color:#16a34a">$900</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card-label">Daily safe spend</div>
+            <div class="sum-card-value" style="color:#3b82f6">$30</div>
+          </div>
+          <div class="sum-card" id="sum-status">
+            <div class="sum-card-label">Month status</div>
+            <div class="sum-card-value" style="color:#d97706">Careful</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card-label">Savings goal</div>
+            <div class="sum-card-value" style="color:#7c3aed">On track</div>
+          </div>
+        </div>
+
+        <div class="chart-block">
+          <div class="chart-block-label">Monthly spend trend</div>
+          <svg class="line-chart-svg" viewBox="0 0 280 60" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7c3aed" stop-opacity=".25"/>
+                <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="20" x2="280" y2="20" stroke="#f1f5f9" stroke-width="1"/>
+            <line x1="0" y1="40" x2="280" y2="40" stroke="#f1f5f9" stroke-width="1"/>
+            <path d="M0,52 C28,46 56,38 84,42 C112,46 140,30 168,26 C196,22 224,30 252,22 C266,18 276,16 280,15 L280,60 L0,60Z" fill="url(#lg1)"/>
+            <path class="svg-line-draw" style="stroke-dasharray:600" d="M0,52 C28,46 56,38 84,42 C112,46 140,30 168,26 C196,22 224,30 252,22 C266,18 276,16 280,15" stroke="#7c3aed" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle class="svg-dot-hide" cx="0"   cy="52" r="3.5" fill="#7c3aed"/>
+            <circle class="svg-dot-hide" cx="84"  cy="42" r="3.5" fill="#7c3aed"/>
+            <circle class="svg-dot-hide" cx="168" cy="26" r="3.5" fill="#7c3aed"/>
+            <circle class="svg-dot-hide" cx="252" cy="22" r="3.5" fill="#7c3aed"/>
+            <circle class="svg-dot-hide" cx="280" cy="15" r="3.5" fill="#3b82f6"/>
+          </svg>
+        </div>
+
+        <div class="chart-block">
+          <div class="chart-block-label">Spending split</div>
+          <div class="donut-row">
+            <div class="mock-donut" style="width:72px;height:72px"></div>
+            <div class="chart-legend">
+              <div><span class="legend-dot" style="background:#7c3aed"></span>Rent · $1,200</div>
+              <div><span class="legend-dot" style="background:#3b82f6"></span>Food · $295</div>
+              <div><span class="legend-dot" style="background:#06b6d4"></span>Bills · $240</div>
+              <div><span class="legend-dot" style="background:#e2e8f0"></span>Other · $185</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section id="features">
+  <div class="sec-label">Features</div>
+  <h2 class="sec-title">Everything your money needs.<br><span class="grad">Nothing it doesn't.</span></h2>
+  <p class="sec-sub">No confusing dashboards to maintain. Just ask, check, track, and understand.</p>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#dcfce7">🟢</div>
+      <h3>Purchase checker</h3>
+      <p>Get a clear <strong>Safe, Careful, or Don't Buy</strong> answer before you spend — in seconds.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#dbeafe">📊</div>
+      <h3>Smart spreadsheet</h3>
+      <p>Income, bills, goals, and spending tracked automatically — no manual math required.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#ede9fe">💬</div>
+      <h3>Real-time AI chat</h3>
+      <p>Type what happened. SpendSignal updates your numbers and explains what changed.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#ecfeff">📈</div>
+      <h3>Graphs & insights</h3>
+      <p>Trends, category breakdowns, and savings progress — visual and always up to date.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#fef3c7">🎯</div>
+      <h3>Goal protection</h3>
+      <p>Savings goals stay locked in before SpendSignal gives you the green light on anything.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:#fce7f3">🧠</div>
+      <h3>All-in-one coach</h3>
+      <p>One place for everything — no app-switching, no spreadsheet maintenance, no guessing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Trust section ── -->
+<section id="trust" style="padding:0 24px 100px">
+  <div class="sec-label">Why we're different</div>
+  <h2 class="sec-title">Money help without<br><span class="grad">the weird stuff.</span></h2>
+  <p class="sec-sub">SpendSignal is built to be a friendly coach, not another app asking for sensitive financial access.</p>
+  <div class="trust-grid">
+    <div class="trust-card">
+      <div class="trust-icon">🔒</div>
+      <h3>No card credentials</h3>
+      <p>We'll never ask for your debit or credit card details.</p>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🏦</div>
+      <h3>No bank login required</h3>
+      <p>Start with manual inputs and stay in control of what you share.</p>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">💬</div>
+      <h3>Friendly AI coach</h3>
+      <p>Get clear guidance without judgment, pressure, or finance jargon.</p>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🎯</div>
+      <h3>Your numbers, your rules</h3>
+      <p>Set your own income, expenses, goals, and comfort level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section id="cta" style="padding:40px 24px 130px">
+  <div class="cta-wrap">
+    <div class="cta-orb1"></div>
+    <div class="cta-orb2"></div>
+    <h2>Stop guessing.<br>Check the signal.</h2>
+    <p>Join the beta for the all-in-one AI budget coach that shows what you can actually spend — no bank login or card credentials required.</p>
+    <div class="cta-form">
+      <input class="cta-email" id="beta-email" type="email" placeholder="your@email.com"/>
+      <button class="btn-white" onclick="joinBeta()">Join the beta →</button>
+    </div>
+    <div id="beta-msg" style="margin-top:14px;font-size:14px;font-weight:600;min-height:20px;position:relative;"></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="foot-logo brand-lockup">
+    <img class="brand-logo-img" src="public/Logo4.png" alt="SpendSignal logo"/>
+    <span class="brand-word">SpendSignal</span>
+  </div>
+  <p>Know before you buy.</p>
+  <p>Built with care · Privacy in mind</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════
+   UTILITIES
+   ════════════════════════════════════ */
+const pRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.addEventListener('pageshow', e => {
+  const nav = performance.getEntriesByType('navigation')[0];
+  if (e.persisted || !nav || nav.type === 'reload') window.scrollTo(0, 0);
+});
+
+/* ════════════════════════════════════
+   SCROLL REVEAL (cards + bars)
+   ════════════════════════════════════ */
+const revealEls = document.querySelectorAll('.feat-card, .stat-item, .showcase-card, .trust-card');
+if (!('IntersectionObserver' in window)) {
+  revealEls.forEach(el => el.classList.add('show'));
+} else {
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    el.classList.add('show');
+    /* Animate bars inside showcase card 4 when it appears */
+    if (!pRM && el.classList.contains('showcase-card')) {
+      el.querySelectorAll('.mock-bar.bcbar.bar-anim').forEach((bar, i) => {
+        setTimeout(() => bar.classList.add('bar-grown'), i * 75);
+      });
+    }
+    io.unobserve(el);
+  });
+}, { threshold: 0.12 });
+
+revealEls.forEach((el, i) => {
+  el.style.animationDelay = (i % 4) * 0.08 + 's';
+  io.observe(el);
+});
+}
+
+/* ════════════════════════════════════
+   CURSOR GLOW (desktop only)
+   ════════════════════════════════════ */
+if (!pRM && window.innerWidth > 768) {
+  const glow = document.createElement('div');
+  glow.id = 'cursor-glow';
+  document.body.insertBefore(glow, document.body.firstChild);
+  let cx = -230, cy = -230, tx = -230, ty = -230;
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+  (function tick() {
+    cx += (tx - cx) * 0.065;
+    cy += (ty - cy) * 0.065;
+    glow.style.left = cx + 'px';
+    glow.style.top  = cy + 'px';
+    requestAnimationFrame(tick);
+  })();
+}
+
+/* ════════════════════════════════════
+   HERO CARD — typing sequence
+   ════════════════════════════════════ */
+/* Subtle 3D cursor-look for the hero purchase check */
+(function heroCardLook() {
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (pRM || !finePointer || window.innerWidth <= 768) return;
+
+  const wrap = document.querySelector('.hero-card-wrap');
+  const tiltLayer = document.querySelector('.hero-card-tilt');
+  if (!wrap || !tiltLayer) return;
+
+  const chips = [
+    { el: wrap.querySelector('.cf1'), depth: 1.05 },
+    { el: wrap.querySelector('.cf2'), depth: 1.25 },
+    { el: wrap.querySelector('.cf3'), depth: 0.95 },
+    { el: wrap.querySelector('.cf4'), depth: 1.15 },
+    { el: wrap.querySelector('.cf5'), depth: 0.75 },
+  ].filter(item => item.el);
+
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+  function resetTarget() {
+    targetX = 0;
+    targetY = 0;
+  }
+
+  document.addEventListener('pointermove', e => {
+    targetX = Math.max(-1, Math.min(1, (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2)));
+    targetY = Math.max(-1, Math.min(1, (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)));
+  }, { passive: true });
+
+  document.addEventListener('pointerleave', resetTarget, { passive: true });
+
+  (function tick() {
+    currentX += (targetX - currentX) * 0.09;
+    currentY += (targetY - currentY) * 0.09;
+
+    const rx = -currentY * 5;
+    const ry = currentX * 5;
+    tiltLayer.style.transform = `rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg)`;
+
+    chips.forEach(({ el, depth }) => {
+      el.style.setProperty('--chip-x', `${(currentX * depth * 12).toFixed(2)}px`);
+      el.style.setProperty('--chip-y', `${(currentY * depth * 9).toFixed(2)}px`);
+      el.style.setProperty('--chip-z', `${(depth * 7).toFixed(2)}px`);
+      el.style.setProperty('--chip-rx', `${(-currentY * depth * 2.6).toFixed(3)}deg`);
+      el.style.setProperty('--chip-ry', `${(currentX * depth * 3.2).toFixed(3)}deg`);
+    });
+
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* Subtle 3D cursor-look for the main glass frames */
+(function glassFrameLook() {
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (pRM || !finePointer || window.innerWidth <= 768) return;
+
+  const frames = [
+    { el: document.querySelector('.compare-wrap'), strength: 4.2 },
+    { el: document.querySelector('.sheet-card'), strength: 3.8 },
+    { el: document.querySelector('.cta-wrap'), strength: 3.6 },
+  ].filter(item => item.el);
+
+  if (!frames.length) return;
+
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+  document.addEventListener('pointermove', e => {
+    targetX = Math.max(-1, Math.min(1, (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2)));
+    targetY = Math.max(-1, Math.min(1, (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)));
+  }, { passive: true });
+
+  document.addEventListener('pointerleave', () => {
+    targetX = 0;
+    targetY = 0;
+  }, { passive: true });
+
+  (function tick() {
+    currentX += (targetX - currentX) * 0.075;
+    currentY += (targetY - currentY) * 0.075;
+
+    frames.forEach(({ el, strength }) => {
+      const rx = -currentY * strength * 0.62;
+      const ry = currentX * strength;
+      el.style.transform = `perspective(980px) rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg)`;
+    });
+
+    requestAnimationFrame(tick);
+  })();
+})();
+
+(function heroSeq() {
+  if (pRM) return;
+  const inputMock = document.querySelector('.hero-card .card-input-mock');
+  if (!inputMock) return;
+
+  /* Find the text span (not the search icon) */
+  const textSpan = inputMock.querySelector('span:not(.search-icon)');
+  if (!textSpan) return;
+
+  /* Inject orb rings into .orb-wrap */
+  const orbWrap = document.querySelector('.hero-card .orb-wrap');
+  if (orbWrap) {
+    const r1 = document.createElement('div'); r1.className = 'orb-ring orb-ring-1';
+    const r2 = document.createElement('div'); r2.className = 'orb-ring orb-ring-2';
+    orbWrap.appendChild(r1); orbWrap.appendChild(r2);
+  }
+
+  /* Build checking indicator and inject after input mock */
+  const checking = document.createElement('div');
+  checking.id = 'hc-checking';
+  checking.innerHTML = '<span class="hc-dot"></span><span class="hc-dot"></span><span class="hc-dot"></span><span class="hc-check-label">Checking…</span>';
+  checking.style.display = 'none';
+  inputMock.after(checking);
+
+  /* Elements to hide until result is ready */
+  const card = document.querySelector('.hero-card');
+  const toHide = [
+    card.querySelector('.signal-row'),
+    ...card.querySelectorAll('.card-divider'),
+    card.querySelector('.mini-bars'),
+    card.querySelector('.status-pills'),
+  ].filter(Boolean);
+
+  toHide.forEach(el => { el.style.opacity = '0'; el.style.transition = 'none'; });
+
+  const phrase = '$120 hoodie';
+  const original = phrase;
+  let i = 0;
+  textSpan.textContent = '';
+
+  /* Start typing after hero fades in */
+  setTimeout(() => {
+    /* Input shimmer sweep just before typing */
+    inputMock.classList.add('input-shimmer-now');
+    setTimeout(() => inputMock.classList.remove('input-shimmer-now'), 400);
+
+    const timer = setInterval(() => {
+      textSpan.textContent += original[i++];
+      if (i >= original.length) {
+        clearInterval(timer);
+        /* Show checking dots */
+        setTimeout(() => {
+          checking.style.display = 'flex';
+          setTimeout(() => {
+            checking.style.display = 'none';
+            /* Reveal result elements in two waves */
+            const wave1 = [toHide[0]]; /* signal-row */
+            const wave2 = [toHide[1], toHide[2], toHide[3], toHide[4]].filter(Boolean);
+            wave1.forEach(el => {
+              el.style.transition = 'opacity .38s ease, transform .38s ease';
+              el.style.transform = 'translateY(6px)';
+              requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'none'; });
+            });
+            setTimeout(() => {
+              wave2.forEach(el => {
+                el.style.transition = 'opacity .4s ease';
+                el.style.opacity = '1';
+              });
+            }, 220);
+          }, 680);
+        }, 260);
+      }
+    }, 57);
+  }, 1500);
+})();
+
+/* ════════════════════════════════════
+   BANK SECTION — scroll reveal
+   ════════════════════════════════════ */
+(function bankAnim() {
+  const section = document.getElementById('why');
+  if (!section) return;
+
+  let done = false;
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting || done) return;
+    done = true;
+    if (pRM) return;
+
+    const bankAmt  = section.querySelector('.c-amount.bank-a');
+    const leftRows = section.querySelectorAll('#bank-left .breakdown-row');
+    const sigAmt   = document.getElementById('sig-amount');
+    const tagline  = document.getElementById('sig-tagline');
+
+    if (bankAmt) { bankAmt.classList.add('bank-amt-hide'); requestAnimationFrame(() => bankAmt.classList.add('bank-amt-in')); }
+
+    leftRows.forEach((row, i) => {
+      row.classList.add('bank-row-hide');
+      setTimeout(() => {
+        row.classList.add('bank-row-in');
+        /* Deduct tick on the negative amount span */
+        const amtSpan = row.querySelector('span:last-child');
+        if (amtSpan && amtSpan.textContent.trim().startsWith('-')) {
+          setTimeout(() => {
+            amtSpan.classList.remove('deduct-tick');
+            void amtSpan.offsetWidth;
+            amtSpan.classList.add('deduct-tick');
+            setTimeout(() => amtSpan.classList.remove('deduct-tick'), 520);
+          }, 120);
+        }
+      }, 280 + i * 155);
+    });
+
+    const afterRows = 280 + leftRows.length * 155 + 160;
+
+    if (sigAmt) {
+      sigAmt.classList.add('bank-amt-hide');
+      setTimeout(() => {
+        sigAmt.classList.add('bank-amt-in');
+        /* Shine sweep 340ms after it reveals */
+        setTimeout(() => {
+          sigAmt.classList.remove('sig-amount-shine');
+          void sigAmt.offsetWidth;
+          sigAmt.classList.add('sig-amount-shine');
+        }, 340);
+      }, afterRows);
+    }
+    if (tagline) {
+      setTimeout(() => {
+        tagline.classList.remove('safe-confirm');
+        void tagline.offsetWidth;
+        tagline.classList.add('safe-confirm');
+      }, afterRows + 480);
+    }
+  }, { threshold: 0.28 }).observe(section);
+})();
+
+/* ════════════════════════════════════
+   CHAT BUBBLES — reveal on scroll
+   ════════════════════════════════════ */
+(function chatAnim() {
+  const section = document.getElementById('chat');
+  if (!section) return;
+  const msgs = section.querySelectorAll('.chat-messages .chat-msg');
+  if (!pRM) msgs.forEach(m => m.classList.add('chat-msg-hidden'));
+  let done = false;
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting || done) return;
+    done = true;
+    if (pRM) return;
+    msgs.forEach((msg, i) => setTimeout(() => msg.classList.add('chat-in'), i * 355));
+  }, { threshold: 0.18 }).observe(section);
+})();
+
+/* ════════════════════════════════════
+   SPREADSHEET — cell highlights + chart draw
+   ════════════════════════════════════ */
+(function sheetAnim() {
+  const section = document.getElementById('spreadsheet');
+  if (!section) return;
+  let done = false;
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting || done) return;
+    done = true;
+    if (pRM) return;
+
+    /* Table cell highlights */
+    ['cell-income-actual', 'cell-transport-actual'].forEach((id, i) => {
+      const cell = document.getElementById(id);
+      if (cell) setTimeout(() => cell.classList.add('cell-flash'), 350 + i * 520);
+    });
+
+    /* Summary card glows */
+    ['sum-safe', 'sum-status'].forEach((id, i) => {
+      const card = document.getElementById(id);
+      if (card) setTimeout(() => card.classList.add('sum-glow'), 640 + i * 480);
+    });
+
+    /* SVG line draw */
+    setTimeout(() => {
+      const path = section.querySelector('.svg-line-draw');
+      if (path) {
+        try {
+          const len = Math.ceil(path.getTotalLength());
+          path.style.strokeDasharray  = len;
+          path.style.strokeDashoffset = len;
+        } catch(e) { /* SVG not in DOM yet — fallback to CSS value */ }
+        path.classList.add('line-drawn');
+      }
+      section.querySelectorAll('.svg-dot-hide').forEach((dot, i) =>
+        setTimeout(() => dot.classList.add('dot-in'), 480 + i * 110)
+      );
+    }, 420);
+  }, { threshold: 0.22 }).observe(section);
+})();
+
+/* ════════════════════════════════════
+   DEMO — shimmer + result animation
+   ════════════════════════════════════ */
+/* Teaser preview bars + badge animation */
+function animateTeaserPreview() {
+  if (pRM) return;
+  const bars = document.querySelectorAll('#demo-teaser .teaser-bar');
+  bars.forEach((bar, i) => {
+    bar.classList.remove('t-bar-in');
+    void bar.offsetWidth;
+    setTimeout(() => bar.classList.add('t-bar-in'), i * 65);
+  });
+  const badge = document.getElementById('teaser-badge-wrap');
+  if (badge) {
+    badge.classList.remove('badge-in');
+    void badge.offsetWidth;
+    setTimeout(() => badge.classList.add('badge-in'), bars.length * 65 + 160);
+  }
+}
+
+function showResult(orbStyle, signal, labelColor, verdict, afterPurchase, glowClass) {
+  const orb = document.getElementById('demo-orb');
+  orb.style.background = orbStyle;
+  orb.className = 'demo-orb ' + glowClass;
+
+  document.getElementById('demo-signal').textContent    = signal;
+  document.getElementById('demo-signal').style.color    = labelColor;
+  document.getElementById('demo-verdict').textContent   = verdict;
+  document.getElementById('demo-after-amt').textContent = fmt(afterPurchase);
+
+  const result = document.getElementById('demo-result');
+  result.style.display = 'block';
+  result.classList.remove('result-enter');
+  void result.offsetWidth; /* force reflow */
+  result.classList.add('result-enter');
+
+  /* Demo card border glow matching signal colour */
+  if (!pRM) {
+    const demoCard = document.getElementById('demo-card');
+    if (demoCard) {
+      const cardGlowMap = { 'orb-glow-green':'demo-card-glow-green', 'orb-glow-yellow':'demo-card-glow-yellow', 'orb-glow-red':'demo-card-glow-red' };
+      ['demo-card-glow-green','demo-card-glow-yellow','demo-card-glow-red'].forEach(c => demoCard.classList.remove(c));
+      void demoCard.offsetWidth;
+      const gc = cardGlowMap[glowClass];
+      if (gc) {
+        demoCard.classList.add(gc);
+        /* Remove after animation so demoBorder breathing resumes */
+        setTimeout(() => demoCard.classList.remove(gc), 720);
+      }
+    }
+  }
+
+  /* Teaser appears 480 ms later */
+  setTimeout(() => {
+    const teaser = document.getElementById('demo-teaser');
+    teaser.style.display = 'block';
+    teaser.classList.remove('teaser-enter');
+    void teaser.offsetWidth;
+    teaser.classList.add('teaser-enter');
+    /* Animate teaser preview content */
+    setTimeout(animateTeaserPreview, 180);
+  }, 480);
+}
+
+function runDemo() {
+  const income   = parseFloat(document.getElementById('d-income').value)   || 0;
+  const expenses = parseFloat(document.getElementById('d-expenses').value) || 0;
+  const savings  = parseFloat(document.getElementById('d-savings').value)  || 0;
+  const purchase = parseFloat(document.getElementById('d-purchase').value) || 0;
+
+  const btn = document.querySelector('.demo-btn');
+
+  const calc = () => {
+    if (!pRM) {
+      btn.textContent = 'Check the signal →';
+      btn.disabled    = false;
+      btn.classList.remove('shimmer');
+    }
+    const free  = income - expenses - savings;
+    const after = free - purchase;
+
+    if (free <= 0) {
+      showResult('radial-gradient(circle at 38% 36%, #fecaca, #ef4444)',
+        "🔴 Don't buy", '#dc2626',
+        "Your fixed expenses and savings goal already use your income. Adjust your numbers before spending.",
+        after, 'orb-glow-red');
+      return;
+    }
+    if (after >= free * 0.6) {
+      showResult('radial-gradient(circle at 38% 36%, #bbf7d0, #22c55e)',
+        '🟢 Safe', '#16a34a',
+        "You're good. This purchase still leaves enough room for the month.",
+        after, 'orb-glow-green');
+    } else if (after >= free * 0.25) {
+      showResult('radial-gradient(circle at 38% 36%, #fef3c7, #f59e0b)',
+        '🟡 Careful', '#d97706',
+        "You can buy it, but your flexible budget gets tight.",
+        after, 'orb-glow-yellow');
+    } else {
+      showResult('radial-gradient(circle at 38% 36%, #fecaca, #ef4444)',
+        "🔴 Don't buy", '#dc2626',
+        "Not a good idea right now. This puts your month at risk.",
+        after, 'orb-glow-red');
+    }
+  };
+
+  if (pRM) { calc(); return; }
+
+  /* Shimmer + brief "Checking…" state */
+  btn.textContent = 'Checking…';
+  btn.disabled    = true;
+  btn.classList.add('shimmer');
+  document.getElementById('demo-result').style.display = 'none';
+  document.getElementById('demo-teaser').style.display = 'none';
+  setTimeout(calc, 620);
+}
+
+/* ════════════════════════════════════
+   BETA FORM
+   ════════════════════════════════════ */
+function joinBeta() {
+  const input = document.getElementById('beta-email');
+  const msg   = document.getElementById('beta-msg');
+  const email = input.value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.textContent = 'Enter a valid email first.';
+    msg.style.color = 'rgba(255,255,255,0.75)';
+    input.style.borderColor = 'rgba(255,100,100,0.7)';
+    return;
+  }
+  // TODO: Connect this to Supabase/Formspree/API before public launch.
+  // Current behavior is local-only and does not save emails.
+  msg.textContent = "You're on the beta list 🟢";
+  msg.style.color = 'rgba(255,255,255,0.95)';
+  input.style.borderColor = 'rgba(100,255,150,0.6)';
+  input.value = '';
+}
+document.getElementById('beta-email').addEventListener('keydown', e => { if (e.key === 'Enter') joinBeta(); });
+</script>
+</body>
+</html>

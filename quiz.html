@@ -1,0 +1,4242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SpendSignal — What's Your Money Personality?</title>
+<meta name="description" content="Answer 6 quick questions and get a personalized AI financial plan — free."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 55%, #fdf4ff 100%);
+  color: #0f172a; overflow-x: hidden;
+  min-height: 100vh; min-height: 100dvh;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 13px 22px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.85);
+}
+.nav-logo {
+  font-size: 16px; font-weight: 900; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: flex; align-items: center; gap: 7px; text-decoration: none;
+}
+.nav-logo img { width: 24px; height: 24px; border-radius: 7px; }
+.nav-back {
+  font-size: 13px; font-weight: 600; color: #94a3b8; cursor: pointer;
+  background: none; border: none; font-family: inherit;
+  display: flex; align-items: center; gap: 4px;
+  transition: color .2s; padding: 6px 0;
+}
+.nav-back:hover { color: #64748b; }
+.nav-back svg { width: 15px; height: 15px; }
+
+/* ── Screens ── */
+.screen {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 22px 80px;
+  position: relative; z-index: 1;
+}
+.screen.hidden { display: none; }
+.grad {
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ─────────────────────────────────────────────
+   INTRO
+───────────────────────────────────────────── */
+.intro-wrap { text-align: center; max-width: 400px; }
+.intro-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.92); border: 1px solid rgba(167,139,250,0.38);
+  border-radius: 50px; padding: 6px 15px;
+  font-size: 12px; font-weight: 700; color: #7c3aed;
+  margin-bottom: 24px; backdrop-filter: blur(12px);
+  animation: fadeUp .5s ease both;
+}
+.bdot { width: 6px; height: 6px; background: #7c3aed; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.6)} }
+.intro-title {
+  font-size: clamp(32px, 7vw, 58px);
+  font-weight: 900; line-height: 1.07; letter-spacing: -2px;
+  margin-bottom: 16px; animation: fadeUp .5s .07s ease both;
+}
+.intro-sub {
+  font-size: 15px; color: #64748b; line-height: 1.7;
+  margin-bottom: 32px; animation: fadeUp .5s .14s ease both;
+}
+.btn-start {
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: white; border: none; padding: 15px 40px; border-radius: 50px;
+  font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
+  box-shadow: 0 8px 30px rgba(124,58,237,.34);
+  transition: transform .2s, box-shadow .2s;
+  animation: fadeUp .5s .21s ease both; letter-spacing: -0.2px;
+}
+.btn-start:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(124,58,237,.46); }
+.btn-start:active { transform: scale(.97); }
+.intro-trust {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 22px; flex-wrap: wrap; animation: fadeUp .5s .28s ease both;
+}
+.ti { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #94a3b8; font-weight: 500; }
+.ts { width: 3px; height: 3px; border-radius: 50%; background: #d1d5db; }
+
+/* ─────────────────────────────────────────────
+   QUIZ
+───────────────────────────────────────────── */
+.quiz-screen-inner {
+  width: 100%; max-width: 480px;
+  display: flex; flex-direction: column; align-items: center;
+}
+/* Quiz screen must anchor to top — justify-content:center hides
+   the first option behind the fixed nav when content overflows */
+#screenQuiz { justify-content: flex-start; }
+
+/* ── Trust + Social screen ── */
+#screenTrust { background: radial-gradient(ellipse 100% 70% at 50% 0%, #f5f3ff 0%, #eef2ff 50%, #e0e7ff 100%); }
+.trust-wrap {
+  width:100%; max-width:440px; display:flex; flex-direction:column;
+  align-items:center; gap:0; animation:fadeUp .5s ease both;
+}
+.trust-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.92); border:1px solid rgba(167,139,250,0.4);
+  border-radius:50px; padding:6px 16px; font-size:12px; font-weight:700; color:#7c3aed;
+  margin-bottom:16px; backdrop-filter:blur(12px);
+}
+.trust-title {
+  font-size:clamp(24px,5.5vw,34px); font-weight:900; letter-spacing:-0.8px;
+  line-height:1.1; text-align:center; color:#0f172a; margin-bottom:8px;
+}
+.trust-sub {
+  font-size:13.5px; color:#64748b; line-height:1.65; text-align:center; margin-bottom:18px;
+}
+.trust-science-card {
+  width:100%; background:#fff; border-radius:18px; padding:18px 20px;
+  box-shadow:0 4px 24px rgba(124,58,237,0.10), 0 1px 4px rgba(15,23,42,0.06);
+  border:1px solid rgba(167,139,250,0.15); margin-bottom:14px;
+}
+.trust-science-diagram {
+  display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:12px;
+}
+.tsd-node {
+  padding:7px 14px; border-radius:50px; font-size:12px; font-weight:800; letter-spacing:0.3px;
+}
+.tsd-trigger  { background:#ede9fe; color:#7c3aed; }
+.tsd-behavior { background:linear-gradient(135deg,#7c3aed,#3b82f6); color:#fff; }
+.tsd-reward   { background:#dbeafe; color:#3b82f6; }
+.tsd-arrow { font-size:16px; color:#cbd5e1; font-weight:700; }
+.trust-science-caption { font-size:12.5px; color:#64748b; line-height:1.6; text-align:center; margin:0; }
+.trust-institutions { width:100%; margin-bottom:18px; }
+.trust-inst-label { font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.trust-inst-list { display:flex; flex-direction:column; gap:8px; }
+.trust-inst-item {
+  display:flex; align-items:center; gap:9px;
+  font-size:13px; font-weight:600; color:#374151;
+}
+.trust-inst-check {
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  color:#fff; font-size:10px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+}
+.trust-divider { width:100%; height:1px; background:#e2e8f0; margin:18px 0; }
+.trust-social-hero { width:100%; text-align:center; margin-bottom:14px; }
+.trust-user-count {
+  font-size:52px; font-weight:900; letter-spacing:-2px; line-height:1;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:4px;
+}
+.trust-user-count span { font-size:36px; }
+.trust-user-label { font-size:13.5px; color:#64748b; margin-bottom:14px; }
+.trust-avatars { display:flex; justify-content:center; }
+.trust-avatar {
+  width:42px; height:42px; border-radius:50%; object-fit:cover;
+  border:2.5px solid #fff; margin-left:-10px; box-shadow:0 2px 8px rgba(15,23,42,0.12);
+}
+.trust-avatar:first-child { margin-left:0; }
+.trust-ratings {
+  width:100%; display:flex; align-items:center; justify-content:center;
+  background:#fff; border-radius:18px; padding:16px 24px;
+  box-shadow:0 2px 16px rgba(15,23,42,0.07); gap:0; margin-bottom:20px;
+}
+.trust-rating-item { flex:1; text-align:center; }
+.trust-rating-score { font-size:28px; font-weight:900; color:#0f172a; letter-spacing:-1px; }
+.trust-rating-stars { font-size:13px; color:#f59e0b; letter-spacing:1px; margin:2px 0; }
+.trust-rating-label { font-size:11px; color:#94a3b8; font-weight:600; }
+.trust-rating-divider { width:1px; height:48px; background:#e2e8f0; margin:0 16px; }
+.trust-cta {
+  width:100%; padding:17px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 8px 26px rgba(124,58,237,.28);
+  transition:transform .2s, box-shadow .2s; letter-spacing:-0.3px; margin-bottom:8px;
+}
+.trust-cta:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.4); }
+.trust-cta-note { font-size:11.5px; color:#94a3b8; text-align:center; margin:0; }
+
+/* ── Age input question ── */
+.age-display-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  padding:10px 0 24px; width:100%;
+}
+.age-number-row {
+  display:flex; align-items:center; gap:20px; margin-bottom:6px;
+}
+.age-adj-btn {
+  width:48px; height:48px; border-radius:50%;
+  border:2px solid rgba(124,58,237,0.2); background:#fff;
+  font-size:24px; font-weight:300; color:#7c3aed; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .15s; font-family:inherit; line-height:1;
+  box-shadow:0 2px 10px rgba(15,23,42,0.07);
+}
+.age-adj-btn:active { transform:scale(.92); background:#ede9fe; }
+.age-big-number {
+  font-size:80px; font-weight:900; letter-spacing:-4px; line-height:1;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  min-width:120px; text-align:center; cursor:pointer;
+  border-bottom:3px solid rgba(124,58,237,0.4); padding-bottom:6px;
+}
+.age-big-number.blinking::after {
+  content:''; display:inline-block;
+  width:3px; height:48px; background:#7c3aed; border-radius:2px;
+  vertical-align:middle; margin-left:3px;
+  animation:blink .9s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.age-hidden-input {
+  position:absolute; opacity:0; width:1px; height:1px; top:0; left:0;
+  font-size:16px; /* prevents iOS zoom */
+}
+.age-unit { font-size:14px; color:#94a3b8; font-weight:600; margin-top:4px; }
+.age-confirm-btn {
+  margin-top:20px; padding:14px 40px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:#fff;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit;
+  box-shadow:0 6px 20px rgba(124,58,237,0.28);
+  transition:transform .2s, opacity .2s; opacity:0; pointer-events:none;
+}
+.age-confirm-btn.visible { opacity:1; pointer-events:auto; }
+.age-confirm-btn:hover { transform:translateY(-2px); }
+
+/* ── Scale question (1–5 rating) ── */
+.scale-statement {
+  font-size: clamp(18px,4.5vw,24px); font-weight:800; color:#0f172a;
+  line-height:1.3; letter-spacing:-0.4px; text-align:center;
+  margin-bottom:10px; padding:0 4px;
+}
+.scale-hint-text {
+  font-size:13px; color:#94a3b8; text-align:center; margin-bottom:24px;
+}
+.scale-buttons {
+  display:flex; gap:7px; width:100%;
+}
+.scale-btn {
+  flex:1; height:62px; border-radius:16px; border:none;
+  background:rgba(255,255,255,0.95);
+  box-shadow:0 4px 16px rgba(15,23,42,0.13), 0 1px 4px rgba(15,23,42,0.08);
+  color:#94a3b8; cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);
+  font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+}
+.scale-btn .sb-num {
+  font-size:18px; font-weight:900; line-height:1;
+  color:#cbd5e1; transition:color .2s;
+}
+.scale-btn.active .sb-num {
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.scale-btn .sb-face { font-size:15px; line-height:1; }
+.scale-btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 6px 18px rgba(124,58,237,.18);
+}
+.scale-btn.active {
+  background:#fff;
+  box-shadow:0 8px 28px rgba(124,58,237,.20);
+  transform:translateY(-3px) scale(1.05);
+}
+.scale-labels {
+  display:flex; justify-content:space-between;
+  font-size:11px; color:#94a3b8; font-weight:600; padding:0 2px;
+  margin-top:10px;
+}
+
+/* ── Reassurance screen ── */
+#screenReassurance {
+  background: radial-gradient(ellipse 110% 80% at 50% 20%, #ede9fe 0%, #eef2ff 55%, #e0e7ff 100%);
+}
+.reassurance-wrap {
+  width:100%; max-width:420px; display:flex; flex-direction:column;
+  align-items:center; animation:fadeUp .5s ease both;
+}
+.reassurance-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.9); border:1px solid rgba(167,139,250,0.4);
+  border-radius:50px; padding:6px 16px; font-size:12px; font-weight:700; color:#7c3aed;
+  margin-bottom:18px; backdrop-filter:blur(12px);
+}
+.reassurance-title {
+  font-size:clamp(28px,6vw,38px); font-weight:900; letter-spacing:-1px;
+  line-height:1.1; text-align:center; color:#0f172a; margin-bottom:0;
+}
+.reassurance-title em {
+  font-style:normal;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.reassurance-scout {
+  width:260px; height:260px; object-fit:contain;
+  mix-blend-mode:multiply; margin: -8px 0 -4px;
+}
+.reassurance-stat-card {
+  background:#ffffff; border-radius:18px; padding:18px 20px;
+  box-shadow:0 4px 24px rgba(124,58,237,0.10), 0 1px 4px rgba(15,23,42,0.06);
+  border:1px solid rgba(167,139,250,0.18);
+  width:100%; margin-bottom:14px;
+}
+.reassurance-stat-text {
+  font-size:14px; color:#374151; line-height:1.6; margin:0;
+}
+.reassurance-points { width:100%; display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.rp-item {
+  display:flex; align-items:center; gap:10px;
+  font-size:13.5px; font-weight:600; color:#374151;
+}
+.rp-check {
+  width:22px; height:22px; border-radius:50%;
+  background:#16a34a;
+  color:#fff; font-size:11px; font-weight:900;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.reassurance-btn {
+  width:100%; padding:17px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 8px 26px rgba(124,58,237,.28);
+  transition:transform .2s, box-shadow .2s; letter-spacing:-0.3px;
+}
+.reassurance-btn:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.4); }
+
+/* ── Circular wheel ── */
+.wheel-wrap { position: relative; width: 110px; height: 110px; margin-bottom: 26px; flex-shrink: 0; }
+.wheel-svg { width: 110px; height: 110px; transform: rotate(-90deg); }
+.wheel-track { fill: none; stroke: rgba(148,163,184,0.15); stroke-width: 7; }
+.wheel-fill {
+  fill: none; stroke: url(#wGrad); stroke-width: 7;
+  stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283;
+  transition: stroke-dashoffset .55s cubic-bezier(.4,0,.2,1);
+}
+.wheel-fill.complete { animation: wheelPulse 0.6s ease both; }
+@keyframes wheelPulse {
+  0%   { filter: drop-shadow(0 0 0px rgba(124,58,237,0)); }
+  50%  { filter: drop-shadow(0 0 10px rgba(124,58,237,0.7)); }
+  100% { filter: drop-shadow(0 0 4px rgba(124,58,237,0.3)); }
+}
+.wheel-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.wheel-num {
+  font-size: 28px; font-weight: 900; letter-spacing: -1.5px; line-height: 1;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.wheel-of { font-size: 10px; font-weight: 600; color: #94a3b8; margin-top: 1px; }
+
+/* ── Scout toast ── */
+.scout-toast {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.07), rgba(59,130,246,0.06));
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 20px; padding: 11px 16px;
+  font-size: 13px; font-weight: 600; color: #374151;
+  margin-bottom: 20px; align-self: center;
+  animation: toastIn .4s cubic-bezier(.34,1.4,.64,1) both;
+  box-shadow: 0 4px 20px rgba(124,58,237,.1);
+  max-width: 100%;
+}
+.scout-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #ede9fe, #dbeafe);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.scout-bubble { display: flex; flex-direction: column; gap: 1px; }
+.scout-label { font-size: 10px; font-weight: 700; color: #7c3aed; letter-spacing: 0.5px; text-transform: uppercase; }
+.scout-msg { font-size: 13px; font-weight: 600; color: #374151; line-height: 1.4; }
+@keyframes toastIn { from{opacity:0;transform:translateY(10px) scale(.96)} to{opacity:1;transform:none} }
+
+/* ── Question ── */
+.quiz-content { width: 100%; }
+.quiz-content.enter      { animation: slideInR .3s cubic-bezier(.4,0,.2,1) both; }
+.quiz-content.leave      { animation: slideOutL .22s cubic-bezier(.4,0,.2,1) both; }
+.quiz-content.enter-back { animation: slideInL .3s cubic-bezier(.4,0,.2,1) both; }
+.quiz-content.leave-back { animation: slideOutR .22s cubic-bezier(.4,0,.2,1) both; }
+@keyframes slideInR  { from{opacity:0;transform:translateX(36px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideOutL { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(-36px)} }
+@keyframes slideInL  { from{opacity:0;transform:translateX(-36px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideOutR { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(36px)} }
+
+.q-tag { display:block; font-size:11px; font-weight:700; color:#7c3aed; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:9px; text-align:center; }
+.q-text { font-size:clamp(19px,4.2vw,25px); font-weight:800; line-height:1.22; letter-spacing:-0.6px; margin-bottom:6px; text-align:center; }
+.q-hint { font-size:12.5px; color:#94a3b8; font-weight:500; margin-bottom:20px; text-align:center; }
+
+/* ── Options ── */
+.options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(200,210,230,0.5); border-radius: 14px;
+  padding: 13px 16px; cursor: pointer; font-family: inherit;
+  transition: border-color .16s, background .16s, transform .13s, box-shadow .16s;
+  text-align: left; width: 100%; position: relative; overflow: hidden;
+}
+.opt:hover { border-color: rgba(124,58,237,0.38); transform: translateY(-1px); box-shadow: 0 5px 18px rgba(124,58,237,.1); }
+.opt:active { transform: scale(.98); }
+.opt.selected {
+  border-color: #7c3aed; background: rgba(124,58,237,0.055);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.1), 0 5px 18px rgba(124,58,237,.13);
+}
+.opt.checked {
+  border-color: #7c3aed; background: rgba(124,58,237,0.055);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.1), 0 5px 18px rgba(124,58,237,.13);
+}
+
+/* Sparkle on select */
+.opt.selected::after, .opt.checked::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--sx,50%) var(--sy,50%), rgba(124,58,237,0.18) 0%, transparent 70%);
+  animation: sparkleIn .4s ease both;
+  pointer-events: none;
+}
+@keyframes sparkleIn { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+
+.opt-icon { font-size: 19px; flex-shrink: 0; width: 28px; text-align: center; }
+.opt-text { font-size: 14px; font-weight: 600; color: #0f172a; flex: 1; line-height: 1.3; }
+
+/* Radio */
+.opt-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(148,163,184,0.4); flex-shrink: 0;
+  transition: all .16s; display: flex; align-items: center; justify-content: center;
+}
+.opt.selected .opt-radio { background: linear-gradient(135deg,#7c3aed,#3b82f6); border-color: transparent; }
+.opt.selected .opt-radio::after { content:''; width:6px; height:6px; background:white; border-radius:50%; display:block; }
+
+/* Checkbox */
+.opt-checkbox {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 2px solid rgba(148,163,184,0.4); flex-shrink: 0;
+  transition: all .16s; display: flex; align-items: center; justify-content: center;
+}
+.opt.checked .opt-checkbox { background: linear-gradient(135deg,#7c3aed,#3b82f6); border-color: transparent; }
+.opt.checked .opt-checkbox::after {
+  content:''; width:5px; height:9px;
+  border:2.5px solid white; border-top:none; border-left:none;
+  transform:rotate(45deg) translate(-0.5px,-1px); display:block;
+}
+
+/* ── Image option cards ── */
+.opt.img-opt { padding:0; gap:0; align-items:stretch; }
+.opt.img-opt .opt-main {
+  flex:1; display:flex; align-items:center; gap:12px; padding:14px 15px;
+}
+.opt.img-opt .opt-thumb {
+  width:76px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:40px; border-radius:0 12.5px 12.5px 0;
+  transition:filter .18s;
+}
+.opt.img-opt:hover .opt-thumb { filter:brightness(1.06); }
+.opt.img-opt.selected .opt-thumb,
+.opt.img-opt.checked  .opt-thumb { filter:brightness(1.08) saturate(1.12); }
+
+/* Other: custom income input */
+.opt-other-label { font-size:14px; font-weight:600; color:#0f172a; flex-shrink:0; }
+.opt-other-input {
+  flex:1; min-width:0;
+  background: transparent; border: none; border-bottom: 1.5px solid rgba(148,163,184,0.5);
+  font-size: 14px; font-weight: 700; color: #7c3aed;
+  padding: 1px 4px; outline: none; font-family: inherit;
+  transition: border-color .16s;
+}
+.opt-other-input::placeholder { color: #94a3b8; font-weight:500; }
+.opt-other-input:focus { border-bottom-color: #7c3aed; }
+.opt.selected .opt-other-input { border-bottom-color: #7c3aed; }
+
+/* Income privacy note */
+.income-privacy-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-top: 10px; padding: 10px 14px;
+  background: rgba(124,58,237,0.05);
+  border: 1px solid rgba(124,58,237,0.14);
+  border-radius: 12px; font-size: 12px;
+  color: #64748b; line-height: 1.55;
+}
+.ipn-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+/* Continue btn */
+.continue-btn {
+  width:100%; padding:14px;
+  background: linear-gradient(135deg,#7c3aed,#3b82f6);
+  color:white; border:none; border-radius:50px;
+  font-size:14.5px; font-weight:700; cursor:pointer; font-family:inherit;
+  box-shadow:0 8px 26px rgba(124,58,237,.28);
+  transition:opacity .25s, transform .2s, box-shadow .2s;
+  opacity:0; pointer-events:none; letter-spacing:-0.2px;
+}
+.continue-btn.visible { opacity:1; pointer-events:auto; }
+.continue-btn:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.4); }
+.continue-btn:active { transform:scale(.97); }
+
+/* ─────────────────────────────────────────────
+   CONFETTI
+───────────────────────────────────────────── */
+.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
+.confetti-piece {
+  position:absolute; width:8px; height:8px; border-radius:2px;
+  animation: confettiFall 2.2s ease-in forwards;
+}
+@keyframes confettiFall {
+  0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+  100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+}
+
+/* ─────────────────────────────────────────────
+   RESULTS
+───────────────────────────────────────────── */
+#screenResults { background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 60%, #fdf4ff 100%); }
+.results-wrap { width:100%; max-width:480px; animation:fadeUp .5s ease both; }
+
+/* ── Light hero card (matches site) ── */
+.results-hero {
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(124,58,237,0.18);
+  border-radius: 28px; padding: 26px 22px 22px;
+  margin-bottom: 12px; text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 4px 28px rgba(124,58,237,0.10), 0 1px 4px rgba(15,23,42,0.05);
+}
+.results-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 45% at 50% 0%, rgba(124,58,237,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.results-eye {
+  font-size:10.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:#7c3aed; margin-bottom:12px; position:relative;
+}
+.percentile-line { font-size:13px; font-weight:600; color:#475569; margin-bottom:0; position:relative; }
+.percentile-line strong { background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+/* Score ring */
+.score-ring-wrap { position:relative; width:156px; height:156px; margin:14px auto 10px; }
+.score-ring-svg { width:156px; height:156px; transform:rotate(-90deg); }
+.sr-potential { fill:none; stroke:rgba(124,58,237,0.10); stroke-width:10; stroke-dasharray:358; }
+.sr-bg { fill:none; stroke:rgba(15,23,42,0.06); stroke-width:10; }
+.sr-fill { fill:none; stroke:url(#srGrad); stroke-width:10; stroke-linecap:round; stroke-dasharray:358; stroke-dashoffset:358; transition:stroke-dashoffset 1.9s cubic-bezier(.34,1.1,.64,1); }
+.sr-potential-badge {
+  position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+  font-size:13px; line-height:1; pointer-events:none;
+  filter: drop-shadow(0 1px 3px rgba(124,58,237,0.3));
+}
+.score-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.score-num { font-size:46px; font-weight:900; letter-spacing:-3px; line-height:1; color:#0f172a; }
+.score-denom { font-size:12px; color:#94a3b8; font-weight:600; margin-top:2px; }
+
+.profile-avatar { font-size:34px; line-height:1; margin-bottom:6px; margin-top:4px; position:relative; }
+.profile-name { font-size:clamp(20px,4.8vw,27px); font-weight:900; letter-spacing:-0.8px; background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; position:relative; }
+.profile-tagline { font-size:13px; line-height:1.5; margin-bottom:8px; position:relative; opacity:0.88; }
+.profile-traits {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:6px;
+  margin-bottom:10px; position:relative;
+}
+.profile-trait {
+  font-size:11.5px; font-weight:700; color:#4b5563;
+  background:rgba(124,58,237,0.07); border:1px solid rgba(124,58,237,0.14);
+  border-radius:30px; padding:4px 10px;
+  display:inline-flex; align-items:center; gap:4px;
+}
+.profile-desc { display:none; } /* now shown as traits inside hero */
+.profile-desc { font-size:13.5px; color:#64748b; line-height:1.65; text-align:center; max-width:340px; margin:0 auto 12px; }
+
+/* ── Age comparison card ── */
+.age-compare-card {
+  background:#ffffff; border:1.5px solid rgba(124,58,237,0.15);
+  border-radius:18px; padding:15px 18px; margin-bottom:12px;
+  display:flex; align-items:center; gap:14px;
+  box-shadow:0 4px 16px rgba(124,58,237,0.07);
+}
+.age-compare-icon { font-size:26px; flex-shrink:0; }
+.age-compare-content { flex:1; min-width:0; }
+.age-compare-label { font-size:10px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; color:#7c3aed; margin-bottom:3px; }
+.age-compare-text { font-size:13.5px; font-weight:700; color:#0f172a; line-height:1.35; }
+.age-compare-text strong { color:#7c3aed; }
+.age-compare-bar { height:5px; background:rgba(124,58,237,0.12); border-radius:4px; margin-top:7px; overflow:hidden; }
+.age-compare-bar-fill { height:100%; background:linear-gradient(90deg,#7c3aed,#3b82f6); border-radius:4px; transition:width 1s ease; }
+
+/* ── Loss framing banner ── */
+.loss-banner {
+  background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(251,146,60,0.05));
+  border: 2px solid rgba(239,68,68,0.22);
+  border-radius: 20px; padding: 20px 22px; margin-bottom: 12px; text-align: center;
+  box-shadow: 0 6px 24px rgba(239,68,68,0.09);
+}
+.loss-lbl { font-size:10.5px; font-weight:700; color:#ef4444; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:6px; }
+.loss-amt { font-size:48px; font-weight:900; letter-spacing:-2.5px; color:#ef4444; line-height:1; }
+.loss-sub { font-size:12.5px; color:#64748b; margin-top:6px; }
+.loss-reclaim { font-size:12px; font-weight:700; color:#16a34a; margin-top:8px; }
+
+/* ── Insight cards (old, kept for compat) ── */
+.insight-card {
+  background:#ffffff; border:1.5px solid rgba(200,210,230,0.45);
+  border-radius:16px; padding:14px 18px; margin-bottom:9px;
+  box-shadow:0 4px 18px rgba(15,23,42,.05);
+}
+.insight-row { display:flex; align-items:flex-start; gap:10px; }
+.insight-icon { font-size:17px; flex-shrink:0; margin-top:1px; }
+.insight-text { font-size:13px; line-height:1.58; color:#374151; }
+.insight-text strong { color:#0f172a; font-weight:700; }
+
+/* ── Insight carousel ── */
+.ic-carousel { margin-bottom: 12px; }
+.ic-progress-bar {
+  height: 3px; background: rgba(124,58,237,0.12);
+  border-radius: 99px; overflow: hidden; margin-bottom: 12px;
+}
+.ic-progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #7c3aed, #3b82f6);
+  border-radius: 99px;
+}
+.ic-stage { position: relative; }
+.ic-card {
+  display: none;
+  background: #ffffff; border: 1.5px solid rgba(200,210,230,0.45);
+  border-radius: 18px; padding: 26px 22px 20px;
+  text-align: center; cursor: pointer;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.05);
+}
+.ic-card.active {
+  display: block;
+  animation: icFadeUp .38s cubic-bezier(.34,1.1,.64,1) both;
+}
+@keyframes icFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ic-card-icon { font-size: 44px; line-height: 1; margin-bottom: 16px; }
+.ic-card-text { font-size: 13.5px; line-height: 1.68; color: #374151; }
+.ic-card-text strong { color: #0f172a; font-weight: 700; }
+.ic-tap-hint {
+  font-size: 11px; color: rgba(124,58,237,0.45); font-weight: 600;
+  margin-top: 14px; letter-spacing: 0.3px;
+}
+.ic-dots {
+  display: flex; justify-content: center; gap: 6px; margin-top: 12px;
+}
+.ic-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(124,58,237,0.18); border: none; padding: 0;
+  cursor: pointer; transition: all .25s ease;
+}
+.ic-dot.active {
+  width: 22px; border-radius: 4px;
+  background: linear-gradient(90deg, #7c3aed, #3b82f6);
+}
+
+/* ── Solidarity card (levels 3-5) ── */
+.solidarity-card {
+  border-radius:18px; padding:18px 20px; margin-bottom:12px;
+  border:1.5px solid; text-align:left;
+}
+.solidarity-head { font-size:14px; font-weight:800; color:#1e1b4b; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.solidarity-stat { font-size:26px; font-weight:900; letter-spacing:-0.8px; margin-bottom:2px; }
+.solidarity-context { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; opacity:0.7; }
+.solidarity-follow { font-size:12.5px; color:#475569; line-height:1.65; }
+
+/* ── Locked dashboard card ── */
+.locked-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(124,58,237,0.18); border-radius:20px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 0 1px rgba(124,58,237,0.06), 0 8px 40px rgba(124,58,237,0.13);
+  position: relative; overflow: hidden;
+}
+.locked-header {
+  display:flex; align-items:center; gap:8px;
+  font-size:13.5px; font-weight:800; color:#0f172a;
+  padding: 14px 18px 12px;
+}
+.locked-header span:first-child { font-size:18px; }
+
+/* The chart image — blurred via inline SVG filter so toggling one CSS class won't un-blur */
+.locked-chart-wrap {
+  position: relative;
+  width: 100%; height: 240px;
+  overflow: hidden;
+}
+.locked-chart-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  /* SVG filter blur applied inline — CSS class removal won't un-blur this */
+  filter: url(#scoutBlur) blur(7px);
+  -webkit-filter: blur(7px);
+  transform: scale(1.08) translateY(8px); /* push chart down, hide top edge artifacts */
+  display: block;
+  user-select: none; pointer-events: none;
+  -webkit-user-select: none;
+}
+/* Frosted lock overlay — gradient + glass lock UI */
+.locked-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.15) 30%,
+    rgba(255,255,255,0.88) 62%,
+    rgba(255,255,255,0.97) 100%
+  );
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding: 20px 20px 20px;
+  backdrop-filter: saturate(1.4);
+}
+.locked-lock-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg,#7c3aed,#3b82f6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 8px;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35);
+}
+.locked-gate-text {
+  font-size: 13px; font-weight: 700; color: #0f172a;
+  text-align: center; margin-bottom: 14px; line-height: 1.5;
+}
+.locked-gate-text span { color: #7c3aed; }
+.locked-cta-btn {
+  background: linear-gradient(135deg,#7c3aed,#3b82f6);
+  color: white; border: none; border-radius: 50px;
+  padding: 13px 28px; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; width: 100%;
+  box-shadow: 0 8px 24px rgba(124,58,237,.35);
+  transition: transform .18s, box-shadow .18s;
+}
+.locked-cta-btn:hover { transform:translateY(-2px); box-shadow:0 12px 30px rgba(124,58,237,.45); }
+
+.unlock-btn {
+  width:100%; padding:15px; margin-top:6px;
+  background: linear-gradient(135deg,#7c3aed,#3b82f6);
+  color:white; border:none; border-radius:50px;
+  font-size:15px; font-weight:800; cursor:pointer; font-family:inherit;
+  box-shadow:0 8px 26px rgba(124,58,237,.32);
+  transition:transform .2s, box-shadow .2s;
+  letter-spacing:-0.3px; margin-bottom:9px;
+}
+.unlock-btn:hover { transform:translateY(-2px); box-shadow:0 13px 34px rgba(124,58,237,.44); }
+.unlock-btn:active { transform:scale(.97); }
+.results-note { font-size:11.5px; color:#94a3b8; text-align:center; margin-bottom:28px; }
+
+/* ─────────────────────────────────────────────
+   PAYWALL
+───────────────────────────────────────────── */
+.paywall-wrap { width:100%; max-width:480px; animation:fadeUp .5s ease both; }
+.pw-eye { font-size:11.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#7c3aed; text-align:center; margin-bottom:12px; }
+.pw-title { font-size:clamp(24px,5vw,34px); font-weight:900; letter-spacing:-1px; line-height:1.1; text-align:center; margin-bottom:9px; }
+.pw-sub { font-size:13.5px; color:#64748b; line-height:1.65; text-align:center; margin-bottom:20px; }
+
+/* ── Paywall projection graph ── */
+.pw-graph-card {
+  width:100%; border-radius:20px;
+  background:#ffffff;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.07), 0 8px 32px rgba(15,23,42,0.10), 0 0 0 1px rgba(124,58,237,0.06);
+  overflow:hidden; margin-bottom:16px;
+}
+.pw-graph-header {
+  padding:16px 18px 10px;
+}
+.pw-graph-headline {
+  font-size:18px; font-weight:900; color:#0f172a; letter-spacing:-0.4px; line-height:1.2; margin-bottom:4px;
+}
+.pw-graph-headline em {
+  font-style:normal;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.pw-graph-sub { font-size:12px; color:#94a3b8; }
+.pw-graph-img { width:100%; display:block; }
+.pw-graph-legend {
+  display:flex; gap:16px; padding:10px 18px 14px; justify-content:center;
+}
+.pw-legend-item { display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#64748b; }
+.pw-legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.pw-legend-dot.good { background:linear-gradient(135deg,#7c3aed,#3b82f6); }
+.pw-legend-dot.bad  { background:#ef4444; }
+
+/* Social counter */
+.social-counter {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  background: rgba(22,163,74,0.08); border:1px solid rgba(22,163,74,0.2);
+  border-radius:50px; padding:8px 16px; margin-bottom:18px;
+  font-size:12.5px; font-weight:600; color:#15803d;
+}
+.counter-dot { width:7px; height:7px; border-radius:50%; background:#16a34a; animation:pulse 2s infinite; }
+
+.social-strip { display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:18px; }
+.avatars { display:flex; }
+.avatars span { width:28px; height:28px; border-radius:50%; border:2px solid white; margin-left:-7px; display:flex; align-items:center; justify-content:center; font-size:13px; background:linear-gradient(135deg,#ede9fe,#dbeafe); }
+.avatars span:first-child { margin-left:0; }
+.social-txt { font-size:12.5px; color:#64748b; font-weight:500; }
+.social-txt strong { color:#0f172a; }
+
+/* ── Social proof bar ── */
+.social-proof-bar {
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  margin-bottom:16px;
+}
+.live-counter-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(220,252,231,0.9); border:1.5px solid rgba(34,197,94,0.3);
+  border-radius:50px; padding:7px 16px;
+  font-size:12.5px; font-weight:700; color:#15803d;
+  backdrop-filter:blur(8px);
+  box-shadow:0 2px 12px rgba(34,197,94,0.15);
+}
+.live-dot {
+  width:7px; height:7px; border-radius:50%; background:#22c55e;
+  animation:pulse 2s infinite; flex-shrink:0;
+}
+.social-count-line {
+  font-size:12px; font-weight:600; color:#64748b;
+}
+.social-count-line strong { color:#7c3aed; }
+
+/* ── Testimonials ── */
+/* ── Testimonial carousel ── */
+.test-carousel-wrap { width:100%; margin-bottom:16px; }
+.test-carousel-stage {
+  position:relative; width:100%;
+  min-height:160px; transition:height .5s ease;
+}
+.tc-card {
+  position:absolute; top:0; left:0; width:100%;
+  opacity:0; transition:opacity .55s ease;
+  pointer-events:none;
+}
+.tc-card.tc-active { opacity:1; pointer-events:auto; }
+.test-carousel-dots { display:flex; justify-content:center; align-items:center; gap:6px; margin-top:14px; margin-bottom:4px; }
+.tc-dot { width:6px; height:6px; border-radius:50%; background:#cbd5e1; transition:all .3s; cursor:pointer; border:none; padding:0; }
+.tc-dot.active { width:18px; border-radius:3px; background:#7c3aed; }
+.testimonials { display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+.testimonial {
+  background:#ffffff;
+  border:1px solid rgba(200,210,230,0.28); border-radius:20px;
+  padding:18px 18px 15px;
+  box-shadow:
+    0 2px 8px rgba(15,23,42,0.07),
+    0 8px 28px rgba(15,23,42,0.10),
+    0 0 0 1px rgba(124,58,237,0.04);
+  position:relative; overflow:hidden;
+}
+.test-quote-mark {
+  font-size:52px; line-height:1; color:rgba(124,58,237,0.55);
+  font-family:Georgia,serif; font-weight:900;
+  position:absolute; top:6px; left:12px;
+  pointer-events:none; user-select:none;
+}
+.test-text {
+  font-size:13.5px; color:#374151; line-height:1.62;
+  margin-bottom:13px; padding-top:20px;
+}
+.test-text strong { color:#0f172a; font-weight:800; }
+.test-author { display:flex; align-items:center; gap:10px; }
+.test-avatar {
+  width:38px; height:38px; border-radius:50%; flex-shrink:0;
+  object-fit:cover; border:2px solid rgba(167,139,250,0.35);
+  background:linear-gradient(135deg,#ede9fe,#dbeafe);
+}
+.test-info { flex:1; }
+.test-name { font-size:13px; font-weight:800; color:#0f172a; }
+.test-profile { font-size:11px; color:#7c3aed; font-weight:600; margin-top:1px; }
+.test-stars { font-size:13px; color:#f59e0b; letter-spacing:2px; margin-left:auto; flex-shrink:0; }
+
+/* Plan cards */
+.plan-cards { display:flex; flex-direction:column; gap:9px; margin-bottom:14px; }
+.plan-card {
+  position:relative; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px);
+  border:1.5px solid rgba(200,210,230,0.5); border-radius:18px; padding:16px 20px;
+  cursor:pointer; transition:border-color .16s, transform .13s, box-shadow .16s;
+}
+.plan-card:hover { border-color:rgba(124,58,237,.4); transform:translateY(-1px); }
+.plan-card.featured { border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.11), 0 10px 32px rgba(124,58,237,.15); }
+.plan-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white; font-size:10.5px; font-weight:800; padding:3px 13px; border-radius:20px; white-space:nowrap; }
+.plan-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; }
+.plan-name { font-size:14.5px; font-weight:800; color:#0f172a; }
+.plan-price-wrap { display:flex; align-items:baseline; gap:5px; }
+.plan-original { font-size:12px; font-weight:600; color:#94a3b8; text-decoration:line-through; }
+.plan-price { font-size:20px; font-weight:900; letter-spacing:-0.7px; color:#0f172a; }
+.plan-price span { font-size:12px; font-weight:500; color:#64748b; }
+.plan-desc { font-size:12px; color:#64748b; }
+.plan-save { display:inline-block; font-size:10.5px; font-weight:700; color:#16a34a; background:rgba(22,163,74,.1); padding:2px 8px; border-radius:20px; margin-top:4px; }
+.plan-context { font-size:11px; color:#7c3aed; font-weight:600; margin-top:3px; }
+
+.pw-cta {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  color:white; border:none; border-radius:50px;
+  font-size:15px; font-weight:800; cursor:pointer; font-family:inherit;
+  box-shadow:0 8px 26px rgba(124,58,237,.32);
+  transition:transform .2s, box-shadow .2s;
+  margin-bottom:8px; letter-spacing:-0.3px;
+}
+.pw-cta:hover { transform:translateY(-2px); box-shadow:0 13px 34px rgba(124,58,237,.44); }
+.pw-cta:active { transform:scale(.97); }
+.pw-cta-note { text-align:center; font-size:11.5px; color:#94a3b8; margin-bottom:12px; }
+
+.trust-row { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.trust-item-sm {
+  display:flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:700; color:#374151;
+  background:rgba(255,255,255,0.94); border:1px solid rgba(124,58,237,0.13);
+  border-radius:14px; padding:9px 14px;
+  box-shadow:0 4px 18px rgba(15,23,42,0.10), 0 1px 3px rgba(15,23,42,0.05), 0 0 0 1px rgba(255,255,255,0.8) inset;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+}
+.pw-legal { font-size:10.5px; color:#94a3b8; text-align:center; line-height:1.7; }
+.pw-legal a { color:#7c3aed; text-decoration:none; }
+
+/* ── iPhone Mockup Showcase ── */
+.app-showcase {
+  margin:6px 0 20px;
+  text-align:center;
+}
+.app-showcase-label {
+  font-size:11px; font-weight:700; color:#94a3b8;
+  text-transform:uppercase; letter-spacing:1.5px; margin-bottom:20px;
+}
+.app-showcase-phones {
+  display:flex; align-items:flex-end; justify-content:center;
+  gap:-8px; position:relative; height:310px;
+}
+.iphone-wrap {
+  position:relative; flex-shrink:0;
+  display:flex; flex-direction:column; align-items:center;
+}
+.iphone-wrap.side-left  { transform:rotate(-9deg) translateY(18px) scale(0.83); z-index:1; margin-right:-18px; }
+.iphone-wrap.side-right { transform:rotate(9deg)  translateY(18px) scale(0.83); z-index:1; margin-left:-18px; }
+.iphone-wrap.center     { transform:scale(1); z-index:3; }
+.iphone-frame {
+  width:148px; height:296px;
+  background:#0f0f0f;
+  border-radius:34px;
+  border:2px solid #2a2a2a;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 24px 64px rgba(0,0,0,0.45),
+    0 8px 24px rgba(0,0,0,0.25);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center;
+}
+.iphone-notch {
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:56px; height:18px;
+  background:#0f0f0f; border-radius:0 0 14px 14px;
+  z-index:10;
+}
+.iphone-screen {
+  width:100%; height:100%;
+  object-fit:cover; object-position:top center;
+  border-radius:32px;
+  display:block;
+}
+.iphone-home-bar {
+  position:absolute; bottom:5px; left:50%; transform:translateX(-50%);
+  width:44px; height:3.5px;
+  background:rgba(255,255,255,0.25); border-radius:2px;
+}
+.iphone-side-glow-left  { position:absolute; left:-1px; top:30%; width:2px; height:40%; background:linear-gradient(180deg,transparent,rgba(124,58,237,0.5),transparent); border-radius:1px; }
+.iphone-side-glow-right { position:absolute; right:-1px; top:30%; width:2px; height:40%; background:linear-gradient(180deg,transparent,rgba(124,58,237,0.5),transparent); border-radius:1px; }
+.iphone-caption {
+  margin-top:10px; font-size:10.5px; font-weight:700;
+  color:#64748b; text-transform:uppercase; letter-spacing:1px;
+  opacity:0.8;
+}
+.iphone-wrap.center .iphone-caption { color:#7c3aed; opacity:1; }
+
+.pw-anchor-bar {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  background:rgba(220,38,38,0.07); border:1px solid rgba(220,38,38,0.15);
+  border-radius:12px; padding:12px 18px; margin-bottom:16px;
+  font-size:13px; color:#64748b;
+}
+.pw-anchor-bar strong { color:#0f172a; font-weight:800; }
+.pw-anchor-leak strong { color:#dc2626; }
+.pw-anchor-divider { font-size:16px; color:#94a3b8; }
+.pw-milestones {
+  background:#f8fafc; border-radius:14px; padding:18px 20px;
+  margin-bottom:16px; border:1px solid #e2e8f0;
+}
+.pw-milestone-title {
+  font-size:11px; font-weight:700; color:#94a3b8;
+  text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;
+}
+.pw-milestone-row {
+  display:flex; align-items:flex-start; gap:12px;
+  font-size:13px; color:#475569; line-height:1.5; margin-bottom:10px;
+}
+.pw-milestone-row:last-child { margin-bottom:0; }
+.pw-milestone-dot {
+  width:8px; height:8px; border-radius:50%; background:#7c3aed;
+  flex-shrink:0; margin-top:5px;
+}
+.pw-milestone-row strong { color:#0f172a; }
+.pw-guarantee {
+  display:flex; align-items:flex-start; gap:14px;
+  background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px;
+  padding:16px 18px; margin:16px 0;
+}
+.pw-guarantee-icon { font-size:24px; flex-shrink:0; }
+.pw-guarantee strong { display:block; font-size:14px; color:#0f172a; margin-bottom:3px; }
+.pw-guarantee span { font-size:12px; color:#64748b; line-height:1.5; }
+
+/* ── Milestone steps (numbered) ── */
+.pw-ms-step {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 0;
+}
+.pw-ms-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: #fff; font-size: 14px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(124,58,237,.35);
+  position: relative; z-index: 1;
+}
+.pw-ms-body { padding-top: 4px; }
+.pw-ms-time { font-size: 10.5px; font-weight: 700; color: #7c3aed; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
+.pw-ms-text { font-size: 13px; color: #334155; line-height: 1.5; }
+.pw-ms-text strong { color: #0f172a; }
+.pw-ms-connector {
+  width: 2px; height: 18px;
+  background: linear-gradient(to bottom, #7c3aed55, #3b82f655);
+  margin-left: 15px; /* aligns with centre of .pw-ms-num */
+  border-radius: 2px;
+}
+
+/* ── Plan row (Monthly + Lifetime side-by-side) ── */
+.plan-row { display: flex; gap: 9px; }
+.plan-mini {
+  flex: 1; padding: 13px 12px; cursor: pointer; text-align: center;
+}
+.plan-mini-name { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.plan-mini-price { font-size: 18px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
+.plan-mini-price span { font-size: 11px; font-weight: 500; color: #94a3b8; }
+.plan-mini-desc { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+/* ── Leak compare row inside Annual card ── */
+.plan-leak-compare {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, rgba(220,38,38,.07), rgba(220,38,38,.03));
+  border: 1px solid rgba(220,38,38,.18);
+  border-radius: 10px; padding: 7px 12px; margin: 9px 0 6px;
+  font-size: 12px; font-weight: 600;
+}
+.plc-leak { color: #dc2626; }
+.plc-arrow { color: #94a3b8; font-size: 10px; }
+.plc-cost { color: #16a34a; }
+.plan-leak-compare strong { font-weight: 900; }
+
+/* ── Plan perks ── */
+.plan-perks { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 6px; }
+.plan-perk { font-size: 11px; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 3px; }
+.plan-perk-save { color: #16a34a; font-weight: 700; }
+
+/* ── Discount badge row (near plan cards) ── */
+.discount-badge-row {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(22,163,74,.1); border: 1px solid rgba(22,163,74,.3);
+  border-radius: 30px; padding: 7px 16px; font-size: 12.5px; font-weight: 700;
+  color: #15803d; margin-bottom: 10px; width: 100%; justify-content: center;
+}
+.dbr-check { font-size: 14px; }
+.dbr-off { background: #16a34a; color: #fff; border-radius: 20px; padding: 1px 8px; font-size: 11px; font-weight: 800; }
+
+/* ── Waves ── */
+.wave-bg { position:fixed; bottom:0; left:0; right:0; height:38vh; pointer-events:none; z-index:0; }
+.wsv { position:absolute; bottom:0; left:0; width:200%; }
+.ww1 { animation:wv 22s linear infinite; opacity:.1; bottom:0; }
+.ww2 { animation:wv 30s linear infinite reverse; opacity:.07; bottom:28px; }
+@keyframes wv { from{transform:translate3d(0,0,0)} to{transform:translate3d(-50%,0,0)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Level indicator ── */
+.level-indicator {
+  display:flex; flex-direction:column; align-items:center; gap:9px;
+  margin:14px auto 6px;
+}
+.level-lbl {
+  font-size:10.5px; font-weight:700; color:#94a3b8;
+  letter-spacing:1.2px; text-transform:uppercase;
+}
+.level-dots { display:flex; gap:7px; align-items:center; }
+.level-dot {
+  width:11px; height:11px; border-radius:50%;
+  transition:all .55s cubic-bezier(.34,1.4,.64,1);
+}
+.level-dot.active { width:18px; height:18px; }
+
+/* ── Hero Scout illustration ── */
+.hero-scout-wrap {
+  display:flex; justify-content:center;
+  margin:0 auto 16px;
+}
+.hero-scout-img {
+  width:116px; height:116px; object-fit:contain;
+  animation:scoutHeroPop .65s cubic-bezier(.34,1.5,.64,1) both;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.13));
+}
+@keyframes scoutHeroPop {
+  from{opacity:0;transform:scale(0.42) translateY(14px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+/* ── Profile tagline ── */
+.profile-tagline {
+  font-size:13.5px; font-weight:700; line-height:1.45;
+  text-align:center; margin:0 auto 14px; padding:0 14px;
+  max-width:340px; color:#374151;
+}
+
+/* ─────────────────────────────────────────────
+   CHECKPOINT
+───────────────────────────────────────────── */
+/* ── Checkpoint screen ── */
+#screenCheckpoint {
+  background: radial-gradient(ellipse 110% 80% at 60% 20%, #ede9fe 0%, #eef2ff 50%, #e0e7ff 100%);
+}
+.checkpoint-wrap {
+  width:100%; max-width:440px; animation:fadeUp .5s ease both;
+  position: relative;
+}
+.checkpoint-hero {
+  position: relative; width:100%; min-height:200px; margin-bottom:0;
+}
+.checkpoint-scout {
+  position: absolute; top: 10px; right: -24px;
+  width: 255px; height: 255px; object-fit: contain;
+  mix-blend-mode: multiply;
+  z-index: 2;
+}
+.checkpoint-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.92); border:1px solid rgba(167,139,250,0.38);
+  border-radius:50px; padding:6px 15px; font-size:12px; font-weight:700; color:#7c3aed;
+  margin-bottom:16px; backdrop-filter:blur(12px);
+  position: relative; z-index: 3;
+}
+.checkpoint-title {
+  font-size: clamp(26px,6.5vw,38px); font-weight:900; letter-spacing:-1px;
+  line-height:1.1; margin-bottom:10px; color:#0f172a;
+  position: relative; z-index: 3;
+  max-width: 62%;
+}
+.checkpoint-title em {
+  font-style:normal;
+  background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.checkpoint-sub {
+  font-size:14px; color:#64748b; margin-bottom:22px; line-height:1.6;
+  position: relative; z-index: 3; max-width: 65%;
+}
+.checkpoint-observations { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+.checkpoint-obs {
+  display:flex; align-items:center; gap:14px;
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(10px);
+  border:1.5px solid rgba(200,210,230,0.4); border-radius:18px;
+  padding:15px 18px; animation:fadeUp .4s ease both;
+  box-shadow: 0 4px 20px rgba(15,23,42,0.06);
+  position: relative;
+}
+.checkpoint-obs:nth-child(2){animation-delay:.1s}
+.checkpoint-obs:nth-child(3){animation-delay:.2s}
+.checkpoint-obs-icon { font-size:32px; flex-shrink:0; }
+.checkpoint-obs-text { font-size:14px; font-weight:700; color:#1e293b; line-height:1.4; flex:1; }
+.checkpoint-obs-text em { font-style:normal; color:#7c3aed; font-weight:700; }
+.checkpoint-obs-sparkle {
+  font-size:16px; flex-shrink:0; opacity:0.7;
+}
+.checkpoint-btn {
+  width:100%; padding:17px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 8px 26px rgba(124,58,237,.30);
+  transition:transform .2s, box-shadow .2s; letter-spacing:-0.3px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.checkpoint-btn:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.44); }
+.checkpoint-btn:active { transform:scale(.97); }
+.checkpoint-btn-spark { font-size:18px; }
+
+/* ─────────────────────────────────────────────
+   LOADING
+───────────────────────────────────────────── */
+#screenLoading { padding: 50px 20px 30px; justify-content: flex-start; }
+.loading-wrap { width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; }
+.loading-ring-wrap { position:relative; width:96px; height:96px; margin-bottom:14px; }
+.loading-ring-svg { width:96px; height:96px; transform:rotate(-90deg); }
+.lr-bg { fill:none; stroke:rgba(148,163,184,0.15); stroke-width:8; }
+.lr-fill { fill:none; stroke:url(#lrGrad); stroke-width:8; stroke-linecap:round; stroke-dasharray:358; stroke-dashoffset:358; transition:stroke-dashoffset .35s ease; }
+.loading-pct { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900; letter-spacing:-1px; color:#0f172a; }
+.loading-title { font-size:16px; font-weight:800; letter-spacing:-0.3px; margin-bottom:14px; text-align:center; }
+.loading-steps { width:100%; display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
+.loading-step {
+  display:flex; align-items:center; gap:10px; padding:9px 14px;
+  background:rgba(255,255,255,0.8); border-radius:12px;
+  border:1.5px solid rgba(200,210,230,0.38); transition:border-color .4s, background .4s;
+}
+.loading-step.done { border-color:rgba(22,163,74,0.3); background:rgba(22,163,74,0.06); }
+.loading-step-check {
+  width:22px; height:22px; border-radius:50%;
+  border:2px solid rgba(148,163,184,0.35); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; transition:all .35s;
+}
+.loading-step.done .loading-step-check { background:#16a34a; border-color:#16a34a; }
+.loading-step.done .loading-step-check::after {
+  content:''; width:5px; height:9px;
+  border:2.5px solid white; border-top:none; border-left:none;
+  transform:rotate(45deg) translate(-0.5px,-1px); display:block;
+}
+.loading-step-text { font-size:12.5px; font-weight:600; color:#64748b; }
+.loading-step.done .loading-step-text { color:#15803d; }
+#loadingTest { width:100%; }
+#loadingTest .testimonial { padding:12px 14px; border-radius:14px; }
+#loadingTest .test-quote-mark { font-size:24px; margin-bottom:4px; }
+#loadingTest .test-text { font-size:12px; line-height:1.55; }
+#loadingTest .test-avatar { width:28px; height:28px; }
+#loadingTest .test-name { font-size:12px; }
+#loadingTest .test-profile { font-size:10.5px; }
+#loadingTest .test-stars { font-size:11px; }
+.loading-graph-card {
+  width:100%; background:rgba(255,255,255,0.9);
+  border-radius:14px; padding:12px 14px 10px;
+  border:1.5px solid rgba(200,210,230,0.4);
+  box-shadow:0 4px 24px rgba(124,58,237,0.08);
+  margin-bottom:10px;
+  animation:fadeUp .5s .6s ease both; opacity:0;
+  animation-fill-mode:both;
+}
+.loading-graph-label {
+  font-weight:700; color:#7c3aed;
+  text-transform:uppercase; font-size:9.5px; letter-spacing:1px;
+  margin-bottom:8px;
+}
+.loading-graph-caption {
+  font-size:10.5px; color:#94a3b8; text-align:center;
+  margin-top:6px; font-style:italic;
+}
+
+/* ─────────────────────────────────────────────
+   EMAIL GATE
+───────────────────────────────────────────── */
+.email-wrap { width:100%; max-width:420px; animation:fadeUp .5s ease both; text-align:center; }
+.email-scout-wrap { position:relative; height:130px; display:flex; justify-content:center; pointer-events:none; }
+.email-scout {
+  width:200px; height:200px; object-fit:contain;
+  mix-blend-mode:multiply;
+  position:absolute; bottom:-30px; /* hip overlaps title */
+  z-index:2;
+  animation:scoutEmailPop .6s cubic-bezier(.34,1.4,.64,1) both;
+}
+@keyframes scoutEmailPop {
+  from { opacity:0; transform:scale(0.6) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.email-title {
+  font-size:clamp(22px,5vw,28px); font-weight:900; letter-spacing:-0.7px; line-height:1.2;
+  margin-bottom:8px; padding-top:38px; /* leave room for scout hip overlap */
+  position:relative; z-index:1;
+}
+.email-sub { font-size:13.5px; color:#64748b; line-height:1.65; margin-bottom:24px; }
+.email-input {
+  width:100%; padding:15px 18px; font-size:15px; font-weight:500;
+  background:rgba(255,255,255,0.95); border:2px solid rgba(200,210,230,0.6);
+  border-radius:16px; font-family:inherit; color:#0f172a;
+  transition:border-color .2s, box-shadow .2s; outline:none; margin-bottom:12px;
+}
+.email-input:focus { border-color:#7c3aed; box-shadow:0 0 0 4px rgba(124,58,237,0.1); }
+.email-input::placeholder { color:#94a3b8; }
+.email-btn {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 8px 26px rgba(124,58,237,.28);
+  transition:transform .2s, box-shadow .2s; letter-spacing:-0.3px; margin-bottom:12px;
+}
+.email-btn:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.4); }
+.email-btn:active { transform:scale(.97); }
+.email-privacy { font-size:11.5px; color:#94a3b8; display:flex; align-items:center; justify-content:center; gap:5px; }
+
+/* ─────────────────────────────────────────────
+   OPT-IN
+───────────────────────────────────────────── */
+.optin-wrap { width:100%; max-width:380px; animation:fadeUp .5s ease both; text-align:center; }
+.optin-icon { font-size:56px; margin-bottom:22px; display:block; }
+.optin-title { font-size:clamp(20px,4.5vw,26px); font-weight:900; letter-spacing:-0.6px; line-height:1.22; margin-bottom:10px; }
+.optin-sub { font-size:13.5px; color:#64748b; line-height:1.65; margin-bottom:28px; }
+.optin-yes {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:15px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 8px 26px rgba(124,58,237,.28);
+  transition:transform .2s; margin-bottom:12px; letter-spacing:-0.3px;
+}
+.optin-yes:hover { transform:translateY(-2px); }
+.optin-no { background:none; border:none; font-size:13px; color:#94a3b8; cursor:pointer; font-family:inherit; font-weight:600; padding:8px; }
+.optin-no:hover { color:#64748b; }
+
+/* ─────────────────────────────────────────────
+   SUMMARY
+───────────────────────────────────────────── */
+#screenSummary {
+  background: radial-gradient(ellipse 110% 80% at 50% 10%, #f5f3ff 0%, #eef2ff 50%, #e0e7ff 100%);
+  justify-content: flex-start; padding-top: 96px; padding-bottom: 60px;
+}
+.summary-wrap {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; gap: 16px;
+  animation: fadeUp .5s ease both;
+}
+.summary-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.92); border: 1px solid rgba(167,139,250,0.38);
+  border-radius: 50px; padding: 6px 16px;
+  font-size: 12px; font-weight: 700; color: #7c3aed;
+  width: fit-content; backdrop-filter: blur(12px);
+}
+.summary-title {
+  font-size: clamp(26px, 6vw, 36px); font-weight: 900;
+  letter-spacing: -1.2px; line-height: 1.12; color: #0f172a;
+}
+/* ── Gauge card ── */
+.summary-gauge-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 2px 24px rgba(124,58,237,0.10), 0 1px 0 rgba(0,0,0,0.04);
+}
+.summary-gauge-label {
+  font-size: 11px; font-weight: 700; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 16px;
+}
+.summary-gauge-track {
+  position: relative;
+  width: 100%; height: 12px;
+  background: #e2e8f0; border-radius: 99px; overflow: visible;
+  margin-bottom: 10px;
+}
+.summary-gauge-fill {
+  height: 100%; width: 0%; border-radius: 99px;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.summary-gauge-thumb {
+  position: absolute; top: 50%; left: 0%;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; border: 3px solid #7c3aed;
+  box-shadow: 0 2px 10px rgba(124,58,237,.30);
+  transform: translate(-50%, -50%);
+  transition: left 1.2s cubic-bezier(.4,0,.2,1);
+}
+.summary-gauge-ticks {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: #94a3b8; font-weight: 600;
+  letter-spacing: 0.2px; margin-top: 6px;
+}
+.summary-score-badge {
+  display: inline-block; margin-top: 14px;
+  padding: 7px 18px; border-radius: 50px;
+  font-size: 13px; font-weight: 800;
+  background: rgba(124,58,237,0.07);
+  color: #7c3aed; letter-spacing: -0.2px;
+  transition: color .5s, background .5s;
+}
+.summary-score-name {
+  font-size: 14px; font-weight: 700; color: #0f172a;
+  margin-top: 6px;
+}
+/* ── Warning card ── */
+.summary-warning-card {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #fff7ed; border-radius: 16px; padding: 16px 18px;
+  border-left: 3px solid #f59e0b;
+  box-shadow: 0 2px 16px rgba(245,158,11,0.10);
+}
+.summary-warning-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+.summary-warning-text { font-size: 13px; color: #92400e; line-height: 1.6; font-weight: 500; }
+/* ── Stat pills ── */
+.summary-stats {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.summary-stat-pill {
+  display: flex; align-items: center; gap: 14px;
+  background: #fff; border-radius: 16px; padding: 14px 18px;
+  box-shadow: 0 2px 16px rgba(124,58,237,0.07), 0 1px 0 rgba(0,0,0,0.03);
+}
+.summary-stat-icon { font-size: 22px; flex-shrink: 0; }
+.summary-stat-info { display: flex; flex-direction: column; gap: 2px; }
+.summary-stat-label { font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+.summary-stat-value { font-size: 14px; color: #0f172a; font-weight: 700; letter-spacing: -0.2px; }
+/* ── CTA ── */
+.summary-cta {
+  width: 100%; padding: 16px; margin-top: 4px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: #fff; border: none; border-radius: 50px;
+  font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
+  box-shadow: 0 8px 28px rgba(124,58,237,.30);
+  transition: transform .2s, box-shadow .2s; letter-spacing: -0.2px;
+}
+.summary-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(124,58,237,.40); }
+.summary-cta:active { transform: scale(.97); }
+
+/* ─────────────────────────────────────────────
+   CINEMATIC
+───────────────────────────────────────────── */
+#screenCinematic { background:#ffffff; }
+.cinematic-slide { display:none; text-align:center; padding:0 36px; max-width:500px; }
+.cinematic-slide.cactive { display:block; animation:cinematicIn .75s cubic-bezier(.4,0,.2,1) both; }
+@keyframes cinematicIn { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+.cinematic-text { font-size:clamp(28px,6.5vw,44px); font-weight:900; letter-spacing:-1.5px; line-height:1.1; color:#0f172a; }
+.cinematic-text em {
+  font-style:normal;
+  background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#06b6d4 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.cinematic-dots { display:flex; gap:8px; justify-content:center; margin-top:42px; }
+.cdot { width:7px; height:7px; border-radius:50%; background:rgba(148,163,184,0.3); transition:background .35s, width .35s; }
+.cdot.cactive { background:#7c3aed; width:22px; border-radius:4px; }
+
+/* ─────────────────────────────────────────────
+   BALLOON POP
+───────────────────────────────────────────── */
+#screenBalloon {
+  background: radial-gradient(ellipse 90% 70% at 50% 38%, #faf5ff 0%, #eef2ff 45%, #e0e7ff 100%);
+  overflow: hidden;
+}
+/* Floating sparkle particles */
+#screenBalloon::before, #screenBalloon::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(circle, #a78bfa55 1.5px, transparent 1.5px),
+    radial-gradient(circle, #818cf855 1px, transparent 1px),
+    radial-gradient(circle, #c4b5fd44 2px, transparent 2px);
+  background-size: 160px 160px, 120px 120px, 200px 200px;
+  background-position: 10px 20px, 80px 90px, 40px 140px;
+  animation: sparkleFloat 8s ease-in-out infinite alternate;
+}
+#screenBalloon::after {
+  background-size: 180px 180px, 140px 140px, 220px 220px;
+  background-position: 60px 60px, 30px 130px, 100px 30px;
+  animation-duration: 11s; animation-direction: alternate-reverse;
+  opacity: .6;
+}
+@keyframes sparkleFloat { from{transform:translateY(0) translateX(0)} to{transform:translateY(-18px) translateX(8px)} }
+
+.balloon-wrap { display:flex; flex-direction:column; align-items:center; max-width:400px; width:100%; position:relative; z-index:1; }
+#balloonPrePop { display:flex; flex-direction:column; align-items:center; width:100%; }
+.balloon-eyebrow-simple {
+  font-size:13px; font-weight:600; color:#7c3aed;
+  margin-bottom:14px; letter-spacing:0.2px;
+}
+.balloon-title { font-size:clamp(28px,6.5vw,40px); font-weight:900; letter-spacing:-1.5px; color:#0f172a; text-align:center; margin-bottom:8px; line-height:1.08; }
+.balloon-title em { font-style:normal; background:linear-gradient(135deg,#7c3aed,#3b82f6,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.balloon-sub { font-size:13.5px; color:#94a3b8; text-align:center; margin-bottom:0; line-height:1.55; }
+
+/* Tap progress dots — centered below balloon */
+.balloon-taps { display:flex; gap:10px; margin-top:20px; justify-content:center; }
+.balloon-tap-dot {
+  width:11px; height:11px; border-radius:50%;
+  background:#e2e8f0; border:2px solid #e2e8f0;
+  transition:background .25s, box-shadow .25s, transform .25s;
+}
+.balloon-tap-dot.filled {
+  background:#7c3aed; border-color:#7c3aed;
+  box-shadow:0 0 10px #7c3aed88;
+  transform:scale(1.25);
+}
+
+/* ── CSS Balloon ── */
+.balloon-container { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer; user-select:none; -webkit-user-select:none; margin-bottom:20px; }
+
+.balloon-body {
+  width:160px; height:200px;
+  border-radius: 80% 80% 75% 75% / 90% 90% 65% 65%;
+  position:relative; cursor:pointer;
+  transition:transform .35s cubic-bezier(.34,1.7,.64,1);
+  animation: bFloat 3.2s ease-in-out infinite;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 30px 80px rgba(124,58,237,0.25), 0 10px 30px rgba(0,0,0,0.1);
+}
+/* CSS knot — small oval at the base of the balloon */
+.balloon-knot {
+  position:absolute; bottom:-14px; left:50%; transform:translateX(-50%);
+  width:16px; height:18px;
+  border-radius:50% 50% 40% 40% / 60% 60% 40% 40%;
+  clip-path: polygon(20% 0%, 80% 0%, 100% 60%, 50% 100%, 0% 60%);
+}
+/* CSS string — SVG inline for natural curve */
+.balloon-string-svg { display:block; margin-top:-2px; overflow:visible; }
+/* Shine highlight */
+.balloon-shine {
+  position:absolute; top:18px; left:22px;
+  width:26px; height:52px; border-radius:50%;
+  background:rgba(255,255,255,0.32); transform:rotate(-35deg);
+  pointer-events:none;
+}
+.balloon-shine2 {
+  position:absolute; top:26px; left:52px;
+  width:10px; height:20px; border-radius:50%;
+  background:rgba(255,255,255,0.18); transform:rotate(-35deg);
+  pointer-events:none;
+}
+/* Floating animation */
+@keyframes bFloat { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-14px) rotate(1deg)} }
+/* Wobble + grow on taps */
+@keyframes bWobble1 { 0%,100%{transform:rotate(0) scale(1.15)} 30%{transform:rotate(-6deg) scale(1.15)} 70%{transform:rotate(6deg) scale(1.15)} }
+@keyframes bWobble2 { 0%,100%{transform:rotate(0) scale(1.38)} 20%{transform:rotate(-9deg) scale(1.38)} 60%{transform:rotate(9deg) scale(1.38)} }
+@keyframes bPop {
+  0%  { transform:scale(1.38); opacity:1; filter:blur(0); }
+  40% { transform:scale(1.8);  opacity:1; filter:blur(0); }
+  70% { transform:scale(0.3);  opacity:0; filter:blur(4px); }
+  100%{ transform:scale(0);    opacity:0; }
+}
+.balloon-almost {
+  font-size:13px; font-weight:600; letter-spacing:0;
+  color:#7c3aed; margin-top:10px; opacity:0; transition:opacity .3s;
+  background:rgba(124,58,237,0.08); padding:6px 18px; border-radius:50px;
+}
+.balloon-almost.show { opacity:1; }
+.balloon-hint { font-size:12px; color:#cbd5e1; font-weight:500; margin-top:8px; }
+
+/* ── Discount reveal card ── */
+.discount-card {
+  display:none; flex-direction:column; align-items:center;
+  background:white; border-radius:28px; padding:32px 26px 26px;
+  width:100%;
+  box-shadow: 0 0 0 1px rgba(124,58,237,0.08), 0 20px 60px rgba(124,58,237,0.18), 0 40px 80px rgba(59,130,246,0.10);
+  animation:cardReveal .7s cubic-bezier(.34,1.5,.64,1) both; text-align:center;
+}
+@keyframes cardReveal { from{opacity:0;transform:translateY(60px) scale(.88)} to{opacity:1;transform:none} }
+.dc-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+  color:#7c3aed; background:rgba(124,58,237,0.08); border-radius:50px;
+  padding:5px 14px; margin-bottom:14px;
+}
+.dc-pct {
+  font-size:80px; font-weight:900; letter-spacing:-4px; line-height:1;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.dc-pct sub { font-size:36px; letter-spacing:-1px; vertical-align:baseline; }
+.dc-off { font-size:16px; font-weight:700; color:#64748b; margin-bottom:18px; }
+.dc-code-wrap {
+  background:linear-gradient(135deg,#faf5ff,#eff6ff); border:1.5px solid rgba(167,139,250,0.4);
+  border-radius:16px; padding:14px 20px; margin-bottom:12px; width:100%;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  box-shadow:0 4px 20px rgba(124,58,237,0.10);
+}
+.dc-code { font-size:18px; font-weight:900; letter-spacing:3px; color:#0f172a; font-family:monospace; }
+.dc-copy { font-size:11px; font-weight:800; color:#7c3aed; cursor:pointer; white-space:nowrap; background:none; border:none; font-family:inherit; padding:4px 10px; background:rgba(124,58,237,0.08); border-radius:8px; }
+.dc-note { font-size:12px; color:#94a3b8; margin-bottom:20px; line-height:1.5; }
+.dc-timer-row { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#ef4444; margin-bottom:20px; }
+.dc-cta {
+  width:100%; padding:17px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6); color:white;
+  border:none; border-radius:50px; font-size:16px; font-weight:800;
+  cursor:pointer; font-family:inherit; box-shadow:0 10px 30px rgba(124,58,237,.35);
+  transition:transform .2s, box-shadow .2s; letter-spacing:-0.3px;
+}
+.dc-cta:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(124,58,237,.45); }
+.dc-cta:active { transform:scale(.98); }
+
+/* ─────────────────────────────────────────────
+   TIMER BAR + PROMO ROW (paywall)
+───────────────────────────────────────────── */
+.timer-bar {
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  padding:12px 20px; margin:-80px -22px 22px;
+  font-size:13px; font-weight:700; color:white;
+  border-radius:0 0 20px 20px; position:sticky; top:0; z-index:50;
+}
+.timer-count { font-size:17px; font-weight:900; letter-spacing:-0.5px; font-variant-numeric:tabular-nums; }
+.timer-promo-row {
+  display:flex; align-items:center; gap:8px;
+  background:rgba(22,163,74,0.09); border:1.5px solid rgba(22,163,74,0.22);
+  border-radius:14px; padding:11px 16px; margin-bottom:18px;
+}
+.tpr-check { font-size:15px; color:#16a34a; flex-shrink:0; }
+.tpr-text { font-size:13px; font-weight:700; color:#15803d; flex:1; }
+.tpr-code { font-size:12px; font-weight:900; color:#0f172a; background:#f1f5f9; padding:4px 10px; border-radius:8px; font-family:monospace; letter-spacing:1.5px; }
+
+@media (max-width:440px) {
+  .screen { padding:74px 16px 74px; }
+  .intro-trust { gap:8px; }
+  .ts { display:none; }
+  .timer-bar { margin:-74px -16px 18px; }
+}
+
+/* ── Enhanced balloon pop ── */
+.confetti-burst-piece {
+  position:fixed; pointer-events:none; z-index:999; border-radius:2px;
+  animation:confettiBurst var(--dur,.8s) cubic-bezier(.15,.8,.4,1) var(--delay,0s) both;
+}
+@keyframes confettiBurst {
+  0%  { transform:translate(0,0) scale(1) rotate(0deg); opacity:1; }
+  70% { opacity:.85; }
+  100%{ transform:translate(var(--tx,100px),var(--ty,-120px)) scale(.06) rotate(var(--rot,540deg)); opacity:0; }
+}
+.balloon-debris {
+  position:fixed; pointer-events:none; z-index:996;
+  border-radius:40% 60% 55% 45% / 50% 45% 55% 50%;
+  transition:opacity 1.2s ease;
+  animation:debrisScatter var(--dur,.65s) cubic-bezier(.15,.6,.35,1) var(--delay,0s) both;
+}
+@keyframes debrisScatter {
+  0%  { transform:translate(0,0) scale(1) rotate(0deg); opacity:.9; }
+  100%{ transform:translate(var(--tx,80px),var(--ty,60px)) scale(.2) rotate(var(--rot,240deg)); opacity:.55; }
+}
+.balloon-pop-blurred {
+  filter:blur(9px) !important;
+  transform:scale(.9) !important;
+  opacity:.18 !important;
+  transition:all .52s ease !important;
+  pointer-events:none !important;
+}
+/* Subtle frost when coupon appears — no dark overlay */
+#screenBalloon.balloon-popped {
+  background: rgba(238,242,255,0.88) !important;
+  backdrop-filter: blur(6px) !important;
+  transition: background .5s ease !important;
+}
+/* Centered floating coupon card */
+#screenBalloon.balloon-popped .discount-card {
+  position: fixed !important;
+  top: 50% !important; left: 50% !important;
+  bottom: auto !important; right: auto !important;
+  border-radius: 22px !important;
+  max-width: 340px !important; width: calc(100% - 44px) !important;
+  padding: 28px 26px 26px !important;
+  z-index: 201 !important;
+  box-shadow: 0 24px 64px rgba(124,58,237,.22), 0 6px 20px rgba(0,0,0,.10) !important;
+  animation: couponReveal .6s cubic-bezier(.34,1.45,.64,1) both !important;
+}
+@keyframes couponReveal {
+  0%   { transform:translateX(-50%) translateY(-50%) scale(.72) rotate(-3deg); opacity:0; }
+  60%  { transform:translateX(-50%) translateY(-50%) scale(1.04) rotate(.5deg); opacity:1; }
+  100% { transform:translateX(-50%) translateY(-50%) scale(1) rotate(0deg); opacity:1; }
+}
+/* Tear-line divider */
+.dc-tear-line {
+  position: relative; height: 0;
+  align-self: stretch;
+  margin: 18px -26px;
+  border-top: 2px dashed rgba(203,213,225,.9);
+}
+.dc-tear-line::before, .dc-tear-line::after {
+  content: ''; position: absolute;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #eaedfa; /* matches frost bg */
+  top: -11px;
+  box-shadow: inset 0 0 0 1px rgba(203,213,225,.6);
+}
+.dc-tear-line::before { left: -11px; }
+.dc-tear-line::after  { right: -11px; }
+
+/* ── Loading milestone step escalation ── */
+.ls-content { display:flex; flex-direction:column; gap:1px; flex:1; }
+.ls-time {
+  font-size:10px; font-weight:800; letter-spacing:.8px;
+  text-transform:uppercase; color:#94a3b8; transition:color .35s;
+}
+.loading-step.ls-day1 { padding:8px 12px; background:rgba(255,255,255,.55); border-color:rgba(200,210,230,.22); border-radius:10px; }
+.loading-step.ls-day1 .loading-step-text { font-size:12px; font-weight:500; color:#94a3b8; }
+.loading-step.ls-day1 .loading-step-check { width:20px; height:20px; }
+.loading-step.ls-week1 { padding:11px 14px; background:rgba(255,255,255,.9); border-color:rgba(124,58,237,.22); border-radius:13px; }
+.loading-step.ls-week1 .ls-time { color:#7c3aed; }
+.loading-step.ls-week1 .loading-step-text { font-size:13px; font-weight:600; color:#374151; }
+.loading-step.ls-month1 {
+  padding:14px 16px;
+  background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(59,130,246,.08));
+  border-color:rgba(124,58,237,.34); border-radius:16px;
+  box-shadow:0 4px 22px rgba(124,58,237,.13);
+}
+.loading-step.ls-month1 .ls-time { color:#7c3aed; font-size:11px; }
+.loading-step.ls-month1 .loading-step-text { font-size:15px; font-weight:800; color:#0f172a; }
+.loading-step.ls-month1 .loading-step-check { width:26px; height:26px; }
+.loading-step.ls-month1.done { box-shadow:0 6px 28px rgba(22,163,74,.18); border-color:rgba(22,163,74,.32) !important; }
+.loading-step.done .ls-time { color:#15803d !important; }
+</style>
+</head>
+<body>
+
+<!-- Waves -->
+<div class="wave-bg" aria-hidden="true">
+  <svg class="wsv ww1" viewBox="0 0 1440 100" preserveAspectRatio="none">
+    <path d="M0,50 C240,90 480,10 720,50 C960,90 1200,10 1440,50 L1440,100 L0,100 Z" fill="url(#wg1)"/>
+    <defs><linearGradient id="wg1" x1="0%" y1="0%" x2="100%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
+  </svg>
+  <svg class="wsv ww2" viewBox="0 0 1440 100" preserveAspectRatio="none">
+    <path d="M0,70 C360,30 720,90 1080,50 C1260,30 1380,70 1440,70 L1440,100 L0,100 Z" fill="url(#wg2)"/>
+    <defs><linearGradient id="wg2" x1="0%" y1="0%" x2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+  </svg>
+</div>
+
+<!-- Confetti container -->
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/public/LogoSS.png" alt="" onerror="this.style.display='none'"/>
+    SpendSignal
+  </a>
+  <button class="nav-back" id="navBack" style="display:none" onclick="goBack()">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+</nav>
+
+<!-- ══════════════════════ INTRO ══════════════════════ -->
+<div class="screen" id="screenIntro">
+  <div class="intro-wrap">
+    <div class="intro-badge"><span class="bdot"></span> Free · Takes 60 seconds</div>
+    <h1 class="intro-title">What's your<br/><span class="grad">money personality?</span></h1>
+    <p class="intro-sub">Answer 6 questions. Scout will analyze your answers and build a personalized plan — completely free.</p>
+    <button class="btn-start" onclick="startQuiz()">Find out now →</button>
+    <div class="intro-trust">
+      <div class="ti">✓ No account needed</div><div class="ts"></div>
+      <div class="ti">✓ No credit card</div><div class="ts"></div>
+      <div class="ti">✓ 100% free</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ QUIZ ══════════════════════ -->
+<div class="screen hidden" id="screenQuiz">
+  <div class="quiz-screen-inner">
+    <div class="wheel-wrap">
+      <svg class="wheel-svg" viewBox="0 0 110 110">
+        <defs>
+          <linearGradient id="wGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#3b82f6"/>
+          </linearGradient>
+        </defs>
+        <circle class="wheel-track" cx="55" cy="55" r="45"/>
+        <circle class="wheel-fill" id="wheelFill" cx="55" cy="55" r="45"/>
+      </svg>
+      <div class="wheel-center">
+        <div class="wheel-num" id="wheelNum">1</div>
+        <div class="wheel-of" id="wheelOf">of 6</div>
+      </div>
+    </div>
+
+    <!-- Scout toast -->
+    <div class="scout-toast" id="scoutToast" style="display:none">
+      <div class="scout-avatar">🦝</div>
+      <div class="scout-bubble">
+        <div class="scout-label">Scout says</div>
+        <div class="scout-msg" id="scoutMsg"></div>
+      </div>
+    </div>
+
+    <!-- Question -->
+    <div class="quiz-content enter" id="quizContent">
+      <div class="q-tag" id="qTag"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-hint" id="qHint"></div>
+      <div class="options" id="qOptions"></div>
+      <button class="continue-btn" id="continueBtn" onclick="nextQuestion()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ RESULTS ══════════════════════ -->
+<div class="screen hidden" id="screenResults">
+  <div class="results-wrap">
+
+    <!-- Light hero card: ring + profile name + traits -->
+    <div class="results-hero">
+      <div class="results-eye">Your Financial Health Score</div>
+      <div class="score-ring-wrap">
+        <svg class="score-ring-svg" viewBox="0 0 140 140">
+          <defs>
+            <linearGradient id="srGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop id="srStop1" offset="0%" stop-color="#7c3aed"/>
+              <stop id="srStop2" offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+          <!-- Potential ghost arc (full ring, very faint) -->
+          <circle class="sr-potential" cx="70" cy="70" r="57"/>
+          <!-- Track -->
+          <circle class="sr-bg" cx="70" cy="70" r="57"/>
+          <!-- Score fill -->
+          <circle class="sr-fill" id="scoreRing" cx="70" cy="70" r="57"/>
+        </svg>
+        <div class="score-center">
+          <div class="score-num" id="scoreNum">0</div>
+          <div class="score-denom">/100</div>
+        </div>
+        <!-- sr-potential-badge removed: overlapped title text -->
+      </div>
+      <div class="level-indicator" id="levelIndicator">
+        <div class="level-dots" id="levelDots"></div>
+        <div class="level-lbl" id="levelLbl"></div>
+      </div>
+      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-name" id="profileName"></div>
+      <div class="profile-tagline" id="profileTagline"></div>
+      <div class="profile-traits" id="profileTraits"></div>
+      <div class="percentile-line" id="percentileLine" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Age group comparison (shown only when age was entered) -->
+    <div class="age-compare-card" id="ageCompareCard" style="display:none">
+      <div class="age-compare-icon">👥</div>
+      <div class="age-compare-content">
+        <div class="age-compare-label">Your age group</div>
+        <div class="age-compare-text" id="ageCompareText"></div>
+        <div class="age-compare-bar"><div class="age-compare-bar-fill" id="ageCompareBarFill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- 2. RIGHT NOW YOU'RE LEAKING -->
+    <div class="loss-banner">
+      <div class="loss-lbl">⚠️ Right now you're leaking</div>
+      <div class="loss-amt" id="lossAmt"></div>
+      <div class="loss-sub">every month without a system</div>
+      <div class="loss-reclaim" id="lossReclaim"></div>
+    </div>
+
+    <!-- 3. Rotating insight carousel -->
+    <div id="insightCards"></div>
+
+    <!-- 4. More people than you think (solidarity card, levels 3-5) -->
+    <div class="solidarity-card" id="solidarityCard" style="display:none"></div>
+
+    <!-- SVG blur filter -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <filter id="scoutBlur" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="7"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- 5. Scout's analysis (locked) -->
+    <div class="locked-card" id="lockedCard">
+      <div class="locked-header">
+        <span>📊</span>
+        <span>Scout's analysis of <strong>your answers</strong></span>
+      </div>
+
+      <!-- Canvas chart rendered to pixel image — no HTML text to inspect -->
+      <div class="locked-chart-wrap">
+        <img class="locked-chart-img" id="lockedChartImg" src="" alt=""/>
+        <div class="locked-overlay">
+          <div class="locked-lock-icon">🔒</div>
+          <div class="locked-gate-text">
+            Your full breakdown is ready.<br/>
+            <span>Reveal your reward first</span> to unlock it.
+          </div>
+          <button class="locked-cta-btn" onclick="showBalloon()">Reveal my reward →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-note">Free 7-day trial · No credit card required to start</div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAYWALL ══════════════════════ -->
+<div class="screen hidden" id="screenPaywall">
+  <div class="paywall-wrap">
+    <div class="pw-eye" id="pwEye">📋 Your plan is ready</div>
+    <h2 class="pw-title" id="pwTitle">Built for <span class="grad" id="pwProfileSpan">you.</span></h2>
+    <p class="pw-sub" id="pwSub">Most people who start today notice a real difference within their first week.</p>
+
+    <!-- Price anchor callout -->
+    <div class="pw-anchor-bar" id="pwAnchorBar">
+      <span class="pw-anchor-leak">Your leak: <strong id="pwAnchorLeak">$340/mo</strong></span>
+      <span class="pw-anchor-divider">→</span>
+      <span class="pw-anchor-plan">This plan: <strong>$5.83/mo</strong></span>
+    </div>
+
+    <!-- Projection graph card -->
+    <div class="pw-graph-card">
+      <div class="pw-graph-header">
+        <div class="pw-graph-headline" id="pwGraphHeadline">Reclaim <em id="pwGraphAmt">$340</em> by <em id="pwGraphDate">August</em></div>
+        <div class="pw-graph-sub">Based on your quiz answers — projected 90-day savings recovery</div>
+      </div>
+      <img class="pw-graph-img" id="pwGraphImg" src="" alt=""/>
+      <div class="pw-graph-legend">
+        <div class="pw-legend-item"><div class="pw-legend-dot good"></div>With SpendSignal</div>
+        <div class="pw-legend-item"><div class="pw-legend-dot bad"></div>Without SpendSignal</div>
+      </div>
+    </div>
+
+    <!-- What happens milestones -->
+    <div class="pw-milestones">
+      <div class="pw-milestone-title">What happens when you start</div>
+      <div class="pw-ms-step">
+        <div class="pw-ms-num">1</div>
+        <div class="pw-ms-body">
+          <div class="pw-ms-time">🌅 Day 1</div>
+          <div class="pw-ms-text">Scout scans your profile and flags your <strong>single biggest leak category</strong></div>
+        </div>
+      </div>
+      <div class="pw-ms-connector"></div>
+      <div class="pw-ms-step">
+        <div class="pw-ms-num">2</div>
+        <div class="pw-ms-body">
+          <div class="pw-ms-time">📊 Week 1</div>
+          <div class="pw-ms-text">Your first Leak Report arrives — <strong>real dollar amounts, not estimates</strong></div>
+        </div>
+      </div>
+      <div class="pw-ms-connector"></div>
+      <div class="pw-ms-step">
+        <div class="pw-ms-num">3</div>
+        <div class="pw-ms-body">
+          <div class="pw-ms-time">💰 Month 1</div>
+          <div class="pw-ms-text">Most users recover <strong>$80–$400</strong> they didn't know they were losing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social proof bar -->
+    <div id="socialProofBar"></div>
+
+    <!-- Testimonial carousel -->
+    <div class="test-carousel-wrap">
+      <div class="test-carousel-stage" id="testCarouselStage"></div>
+      <div class="test-carousel-dots" id="testCarouselDots"></div>
+    </div>
+
+    <!-- Discount applied badge (injected here by JS) -->
+    <div id="discountBadgeWrap"></div>
+
+    <!-- Plan cards -->
+    <div class="plan-cards">
+
+      <!-- Annual hero -->
+      <div class="plan-card featured" id="planAnnual" onclick="selectPlan('annual')">
+        <div class="plan-badge">⭐ Most Popular — Save 55%</div>
+        <div class="plan-top">
+          <div class="plan-name">Annual</div>
+          <div class="plan-price-wrap">
+            <span class="plan-original">$5.83</span>
+            <span class="plan-price" id="annualPriceEl">$3.79<span>/mo</span></span>
+          </div>
+        </div>
+        <div class="plan-desc" id="annualDescEl">Billed as $45.49/year · 7-day free trial</div>
+        <div class="plan-leak-compare" id="planLeakCompare">
+          <span class="plc-leak">You leak <strong id="plcLeakAmt">$340</strong>/mo</span>
+          <span class="plc-arrow">vs</span>
+          <span class="plc-cost">This costs <strong>$3.79</strong>/mo</span>
+        </div>
+        <div class="plan-perks">
+          <span class="plan-perk">✓ 7-day free trial</span>
+          <span class="plan-perk">☕ Less than one coffee/week</span>
+          <span class="plan-perk plan-perk-save" id="annualSaveEl">Save $86 vs monthly</span>
+        </div>
+      </div>
+
+      <!-- Monthly + Lifetime side-by-side -->
+      <div class="plan-row">
+        <div class="plan-card plan-mini" id="planMonthly" onclick="selectPlan('monthly')">
+          <div class="plan-mini-name">Monthly</div>
+          <div class="plan-mini-price" id="monthlyPriceEl">$12.99<span>/mo</span></div>
+          <div class="plan-mini-desc">Cancel anytime</div>
+        </div>
+        <div class="plan-card plan-mini" id="planLifetime" onclick="selectPlan('lifetime')">
+          <div class="plan-mini-name">Lifetime</div>
+          <div class="plan-mini-price" id="lifetimePriceEl">$197<span> once</span></div>
+          <div class="plan-mini-desc">Pay once, forever</div>
+          <div class="plan-save" style="margin-top:4px">For serious savers</div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="pw-cta" id="pwCta" onclick="handlePurchase()">Start my free 7-day trial →</button>
+    <div class="pw-cta-note">No credit card required · Cancel in one tap</div>
+
+    <!-- Guarantee -->
+    <div class="pw-guarantee">
+      <span class="pw-guarantee-icon">🛡️</span>
+      <div>
+        <strong>30-day money-back guarantee</strong>
+        <span>If SpendSignal doesn't surface at least one real saving within 30 days of your first charge, contact us and we'll refund every cent. No questions asked.</span>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item-sm">🔒 Bank-level security</div>
+      <div class="trust-item-sm">✓ 7-day free trial</div>
+      <div class="trust-item-sm">🛡️ 30-day guarantee</div>
+    </div>
+    <div class="pw-legal">
+      By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.<br/>
+      Subscription renews automatically. Cancel before trial ends to avoid charges.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CHECKPOINT ══════════════ -->
+<div class="screen hidden" id="screenCheckpoint">
+  <div class="checkpoint-wrap">
+    <div class="checkpoint-hero">
+      <img class="checkpoint-scout" src="/public/ScoutNoticed.png" alt="Scout" onerror="this.style.display='none'"/>
+      <div class="checkpoint-badge">🐾 Scout noticed something</div>
+      <h2 class="checkpoint-title">Here's what your answers are <em>already</em> telling us.</h2>
+      <p class="checkpoint-sub">You're halfway through. This is what Scout has picked up so far.</p>
+    </div>
+    <div class="checkpoint-observations" id="checkpointObs"></div>
+    <button class="checkpoint-btn" onclick="continueFromCheckpoint()">
+      <span class="checkpoint-btn-spark">✦</span>
+      Keep going — almost done →
+      <span class="checkpoint-btn-spark">✦</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════ LOADING ══════════════ -->
+<div class="screen hidden" id="screenLoading">
+  <div class="loading-wrap">
+    <div class="loading-ring-wrap">
+      <svg class="loading-ring-svg" viewBox="0 0 124 124">
+        <defs>
+          <linearGradient id="lrGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#3b82f6"/>
+          </linearGradient>
+        </defs>
+        <circle class="lr-bg" cx="62" cy="62" r="57"/>
+        <circle class="lr-fill" id="lrFill" cx="62" cy="62" r="57"/>
+      </svg>
+      <div class="loading-pct" id="loadingPct">0%</div>
+    </div>
+    <div class="loading-title">Scout is building your plan…</div>
+    <div class="loading-steps">
+      <div class="loading-step ls-day1" id="ls0">
+        <div class="loading-step-check"></div>
+        <div class="ls-content">
+          <span class="ls-time">Day 1</span>
+          <span class="loading-step-text">Know exactly where every dollar goes</span>
+        </div>
+      </div>
+      <div class="loading-step ls-week1" id="ls1">
+        <div class="loading-step-check"></div>
+        <div class="ls-content">
+          <span class="ls-time">Week 1</span>
+          <span class="loading-step-text">First leaks found — avg <strong>$47 spotted</strong></span>
+        </div>
+      </div>
+      <div class="loading-step ls-month1" id="ls2">
+        <div class="loading-step-check"></div>
+        <div class="ls-content">
+          <span class="ls-time">🔥 Month 1</span>
+          <span class="loading-step-text">Avg <strong>$380 saved</strong> · Score +28 pts</span>
+        </div>
+      </div>
+    </div>
+    <!-- Trajectory graph card -->
+    <div class="loading-graph-card" id="loadingGraphCard">
+      <div class="loading-graph-label">📉 Your financial trajectory</div>
+      <canvas id="loadingGraph" width="320" height="100" style="width:100%;height:auto;display:block;"></canvas>
+      <div class="loading-graph-caption">Modeled from users with your spending profile</div>
+    </div>
+
+    <div id="loadingTest" style="width:100%;"></div>
+  </div>
+</div>
+
+<!-- ══════════════ EMAIL GATE ══════════════ -->
+<div class="screen hidden" id="screenEmail">
+  <div class="email-wrap">
+    <div class="email-scout-wrap">
+      <img class="email-scout" id="emailScout" src="/public/ScoutNoticed.png" alt="Scout" onerror="this.style.display='none'"/>
+    </div>
+    <h2 class="email-title">Almost there —<br/>who should I address this to?</h2>
+    <p class="email-sub">Your personalized plan is ready. Scout will send it to you — along with a special reward.</p>
+    <input class="email-input" id="nameInput" type="text" placeholder="Your first name" autocomplete="given-name" style="margin-bottom:10px"/>
+    <input class="email-input" id="emailInput" type="email" placeholder="your@email.com" autocomplete="email"/>
+    <button class="email-btn" onclick="submitEmail()">Send me my plan →</button>
+    <div class="email-privacy">🔒 No spam, ever. Unsubscribe in one tap.</div>
+  </div>
+</div>
+
+<!-- ══════════════ OPT-IN ══════════════ -->
+<div class="screen hidden" id="screenOptIn">
+  <div class="optin-wrap">
+    <span class="optin-icon">💌</span>
+    <h2 class="optin-title">Want Scout's weekly money tips?</h2>
+    <p class="optin-sub">Short, practical. One email a week. Things like "the $12/month trap most people miss" — that kind of thing.</p>
+    <button class="optin-yes" onclick="submitOptIn(true)">Yes, send them →</button>
+    <button class="optin-no" onclick="submitOptIn(false)">No thanks</button>
+  </div>
+</div>
+
+<!-- ══════════════ TRUST + SOCIAL ══════════════ -->
+<div class="screen hidden" id="screenTrust">
+  <div class="trust-wrap">
+
+    <!-- Science section -->
+    <div class="trust-badge">🔬 Built on real science</div>
+    <h2 class="trust-title"><span class="grad">SpendSignal</span> isn't<br/>another budget app.</h2>
+    <p class="trust-sub">It's built on behavioral economics — the same science that explains why willpower alone never works with money.</p>
+
+    <div class="trust-science-card">
+      <div class="trust-science-diagram">
+        <div class="tsd-node tsd-trigger">Trigger</div>
+        <div class="tsd-arrow">→</div>
+        <div class="tsd-node tsd-behavior">Behavior</div>
+        <div class="tsd-arrow">→</div>
+        <div class="tsd-node tsd-reward">Reward</div>
+      </div>
+      <p class="trust-science-caption">SpendSignal interrupts bad financial loops and replaces them with better ones — automatically.</p>
+    </div>
+
+    <div class="trust-institutions">
+      <div class="trust-inst-label">Research foundations</div>
+      <div class="trust-inst-list">
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Behavioral Economics (Thaler, Kahneman)</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Consumer Financial Protection Bureau</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>National Financial Educators Council</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>MIT AgeLab — Financial Wellbeing Research</div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="trust-divider"></div>
+
+    <!-- Social proof section -->
+    <div class="trust-social-hero">
+      <div class="trust-user-count">14,200<span>+</span></div>
+      <div class="trust-user-label">people improved their finances with SpendSignal</div>
+      <div class="trust-avatars">
+        <img src="/public/Comment1.png" class="trust-avatar" alt=""/>
+        <img src="/public/Comment3.png" class="trust-avatar" alt=""/>
+        <img src="/public/Comment5.png" class="trust-avatar" alt=""/>
+        <img src="/public/Comment2.png" class="trust-avatar" alt=""/>
+        <img src="/public/Comment4.png" class="trust-avatar" alt=""/>
+      </div>
+    </div>
+
+    <div class="trust-ratings">
+      <div class="trust-rating-item">
+        <div class="trust-rating-score">4.8</div>
+        <div class="trust-rating-stars">★★★★★</div>
+        <div class="trust-rating-label">App Store</div>
+      </div>
+      <div class="trust-rating-divider"></div>
+      <div class="trust-rating-item">
+        <div class="trust-rating-score">4.7</div>
+        <div class="trust-rating-stars">★★★★★</div>
+        <div class="trust-rating-label">Google Play</div>
+      </div>
+    </div>
+
+    <button class="trust-cta" onclick="showPaywall()">Get my personalized plan →</button>
+    <p class="trust-cta-note">Free 7-day trial · No credit card required</p>
+  </div>
+</div>
+
+<!-- ══════════════ REASSURANCE ══════════════ -->
+<div class="screen hidden" id="screenReassurance">
+  <div class="reassurance-wrap">
+    <div class="reassurance-badge">💙 You're not alone</div>
+    <h2 class="reassurance-title">We're all human.<br/><em>That's okay.</em></h2>
+    <img class="reassurance-scout" src="/public/mainscreen3.png" alt="Scout"/>
+    <div class="reassurance-stat-card">
+      <p class="reassurance-stat-text">According to behavioral finance research, <strong>72% of adults</strong> feel financial anxiety — even high earners. It's not a discipline problem.</p>
+      <p class="reassurance-stat-text" style="margin-top:8px;color:#7c3aed;font-weight:700;">It's a system problem. And Scout fixes systems.</p>
+    </div>
+    <div class="reassurance-points">
+      <div class="rp-item"><span class="rp-check">✓</span>No judgment. No shame. Just clarity.</div>
+      <div class="rp-item"><span class="rp-check">✓</span>SpendSignal replaces anxiety with a plan.</div>
+    </div>
+    <button class="reassurance-btn" onclick="continueFromReassurance()">Keep going →</button>
+  </div>
+</div>
+
+<!-- ══════════════ SUMMARY ══════════════ -->
+<div class="screen hidden" id="screenSummary">
+  <div class="summary-wrap">
+    <div class="summary-badge">📋 Scout's initial analysis</div>
+    <h2 class="summary-title">Your spending<br/>profile is ready.</h2>
+
+    <!-- Score gauge -->
+    <div class="summary-gauge-card">
+      <div class="summary-gauge-label">Spending Health Score</div>
+      <div class="summary-gauge-track">
+        <div class="summary-gauge-fill" id="summaryGaugeFill"></div>
+        <div class="summary-gauge-thumb" id="summaryGaugeThumb"></div>
+      </div>
+      <div class="summary-gauge-ticks">
+        <span>Critical</span><span>Low</span><span>Fair</span><span>Good</span><span>Strong</span>
+      </div>
+      <div class="summary-score-badge" id="summaryScoreBadge">Score: —</div>
+    </div>
+
+    <!-- Warning card (shown for low scores) -->
+    <div class="summary-warning-card" id="summaryWarningCard">
+      <div class="summary-warning-icon">⚠️</div>
+      <div class="summary-warning-text" id="summaryWarningText">This range is linked to higher financial stress and missed savings opportunities.</div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="summary-stats" id="summaryStats"></div>
+
+    <button class="summary-cta" onclick="showCinematic()">See my full results →</button>
+  </div>
+</div>
+
+<!-- ══════════════ CINEMATIC ══════════════ -->
+<div class="screen hidden" id="screenCinematic">
+  <div class="cinematic-slide cactive" id="cs0">
+    <p class="cinematic-text">Most people avoid<br/>looking at this.<br/><em>You didn't.</em></p>
+  </div>
+  <div class="cinematic-slide" id="cs1">
+    <p class="cinematic-text"><em>Scout</em> built your<br/><em>personalized plan.</em></p>
+  </div>
+  <div class="cinematic-slide" id="cs2">
+    <p class="cinematic-text" id="cs2Text">Starting with<br/>your biggest leak.</p>
+  </div>
+  <div class="cinematic-dots">
+    <div class="cdot cactive" id="cd0"></div>
+    <div class="cdot" id="cd1"></div>
+    <div class="cdot" id="cd2"></div>
+  </div>
+</div>
+
+<!-- ══════════════ BALLOON POP ══════════════ -->
+<div class="screen hidden" id="screenBalloon">
+  <div class="balloon-wrap">
+
+    <!-- Pre-pop state -->
+    <div id="balloonPrePop">
+      <div class="balloon-eyebrow-simple">👀 scout found something for you</div>
+      <h2 class="balloon-title">There's a deal<br/><em>in there.</em></h2>
+      <p class="balloon-sub">Pop it to claim it — expires when you leave.</p>
+
+      <div class="balloon-container" onclick="tapBalloon()" id="balloonContainer">
+        <div class="balloon-body" id="balloonBody">
+          <div class="balloon-shine"></div>
+          <div class="balloon-shine2"></div>
+          <div class="balloon-knot" id="balloonKnot"></div>
+        </div>
+        <!-- CSS string via SVG for natural curve -->
+        <svg class="balloon-string-svg" width="30" height="50" viewBox="0 0 30 50">
+          <path d="M15,0 Q8,18 15,35 Q20,45 14,50"
+            stroke="rgba(100,116,139,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Tap progress dots — below balloon -->
+      <div class="balloon-taps">
+        <div class="balloon-tap-dot" id="bt0"></div>
+        <div class="balloon-tap-dot" id="bt1"></div>
+        <div class="balloon-tap-dot" id="bt2"></div>
+      </div>
+
+      <div class="balloon-almost" id="balloonAlmost">it's in there… keep going</div>
+      <div class="balloon-hint" id="balloonHint">tap it</div>
+    </div>
+
+    <!-- Post-pop: discount card -->
+    <div class="discount-card" id="discountCard">
+      <div class="dc-badge">🎉 Your exclusive reward</div>
+      <div class="dc-pct" id="dcPct">40<sub>%</sub></div>
+      <div class="dc-off">off your first plan — locked in for you</div>
+      <div class="dc-tear-line"></div>
+      <div class="dc-code-wrap">
+        <span class="dc-code" id="dcCode">NICO_MAY40</span>
+        <button class="dc-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <div class="dc-timer-row">⏰ Expires in <span id="dcTimer" style="font-variant-numeric:tabular-nums;">12:00</span> — don't close this tab</div>
+      <div class="dc-note">Code is auto-applied when you continue below</div>
+      <button class="dc-cta" onclick="showTrustScreen()">See my personalized plan →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const QUESTIONS = [
+  {
+    tag: "Let's start easy",
+    text: "What gets in the way of your finances?",
+    hint: "Select all that apply",
+    multi: true,
+    options: [
+      { icon: '👀', text: 'I spend without realizing it' },
+      { icon: '💸', text: 'Never enough saved at month end' },
+      { icon: '📉', text: "Debt I can't seem to shake" },
+      { icon: '🧩', text: "No idea where my money goes" },
+      { icon: '⚡', text: 'Unexpected expenses keep hitting me' },
+    ],
+    scout: "That's 3 or more — which actually tells Scout a lot. Most of those aren't random. There's usually one root cause underneath them all. 🎯"
+  },
+  {
+    tag: "Quick one",
+    text: "How old are you?",
+    hint: "This personalizes your financial plan",
+    age: true,
+    scout: null
+  },
+  {
+    tag: "Be honest with me",
+    text: "How do you feel after checking your bank account?",
+    hint: "Pick the one that fits best",
+    multi: false,
+    imgOpt: true,
+    options: [
+      { icon: '😰', text: 'I hold my breath a little every time', imgBg: 'linear-gradient(150deg,#fecaca,#f87171)' },
+      { icon: '😶', text: 'I check it… then wish I hadn\'t',    imgBg: 'linear-gradient(150deg,#c7d2fe,#818cf8)' },
+      { icon: '😐', text: 'It\'s fine — not great, but fine',   imgBg: 'linear-gradient(150deg,#e5e7eb,#d1d5db)' },
+      { icon: '😊', text: 'No surprises — I know my numbers',  imgBg: 'linear-gradient(150deg,#bbf7d0,#4ade80)' },
+    ],
+    scout: "More people feel this way than you'd think. The feeling you just described is actually data — and it's more useful than you know. 💙"
+  },
+  {
+    tag: "Your goals",
+    text: "What do you actually want to achieve?",
+    hint: "Pick everything that matters to you",
+    multi: true,
+    options: [
+      { icon: '🔄', text: 'Stop living paycheck to paycheck' },
+      { icon: '🛡️', text: 'Build an emergency fund' },
+      { icon: '💳', text: 'Pay off debt for good' },
+      { icon: '🏖️', text: 'Save for something I actually want' },
+      { icon: '🎯', text: 'Feel genuinely in control of my money' },
+    ],
+    scout: "Every single one of those is achievable from where you are. Scout has seen people in tougher spots hit all of them. 🙌"
+  },
+  {
+    tag: "Check in",
+    text: '"I feel anxious or stressed when I think about my finances."',
+    hint: "Does this describe you right now?",
+    scale: true,
+    scaleLabels: ['Not at all', 'Yes, totally'],
+    scout: null
+  },
+  {
+    tag: "Quick one",
+    text: "How would you describe your day-to-day spending?",
+    hint: "No judgment here, I promise",
+    multi: false,
+    imgOpt: true,
+    options: [
+      { icon: '🔥', text: 'Impulsive — I buy things in the moment',      imgBg: 'linear-gradient(150deg,#fed7aa,#fb923c)' },
+      { icon: '🧮', text: 'Careful — I think before every purchase',      imgBg: 'linear-gradient(150deg,#bae6fd,#38bdf8)' },
+      { icon: '😐', text: 'Somewhere in between',                          imgBg: 'linear-gradient(150deg,#e9d5ff,#a78bfa)' },
+      { icon: '😶', text: "I genuinely don't know my own patterns",        imgBg: 'linear-gradient(150deg,#fef9c3,#fde047)' },
+    ],
+    scout: "That self-awareness matters more than you realize. Most people don't know their own patterns — you just identified yours. That's already step one. 💡"
+  },
+  {
+    tag: "Almost there",
+    text: "Have you tried budgeting before?",
+    hint: "Pick the closest match",
+    multi: false,
+    options: [
+      { icon: '👋', text: "Never tried — don't know where to start" },
+      { icon: '😞', text: "Tried it but couldn't stick to it" },
+      { icon: '😤', text: 'Currently trying but struggling' },
+      { icon: '🔧', text: 'Yes, but I need tools that actually work' },
+    ],
+    scout: "That pattern isn't a character flaw — it's a system problem. The tools most people use aren't built for how people actually behave. That's what Scout fixes. 🚀"
+  },
+  {
+    tag: "Almost done",
+    text: "What's your approximate monthly take-home pay?",
+    hint: "Helps us calculate your real numbers — not guesses",
+    multi: false,
+    options: [
+      { icon: '💵', text: 'Under $2,000/mo' },
+      { icon: '💰', text: '$2,000 – $4,000/mo' },
+      { icon: '💎', text: '$4,000 – $7,000/mo' },
+      { icon: '🚀', text: '$7,000+/mo' },
+    ],
+    other: true,
+    scout: "Perfect. This is what turns your results from estimates into actual numbers. Scout runs the real math from here. 🎯"
+  },
+  {
+    tag: "Last one, I promise",
+    text: "What would help you the most right now?",
+    hint: "This shapes your personal plan",
+    multi: false,
+    options: [
+      { icon: '🧠', text: 'Something that tells me if I can afford a purchase' },
+      { icon: '📊', text: 'A clear picture of where my money actually goes' },
+      { icon: '💬', text: 'Someone (or something) I can ask money questions to' },
+      { icon: '🗺️', text: "A real plan — not just another budget template" },
+    ],
+    scout: null
+  },
+];
+
+const PROFILES = [
+  // Ordered worst → best (Level 5 → Level 1) for dot bar rendering
+  {
+    level: 5,
+    range: [0, 20],
+    color: '#7F1D1D',
+    colorEnd: '#991B1B',
+    scoutEmoji: '😰',
+    name: 'The Crisis Spender',
+    percentile: 'higher than 5%',
+    tagline: "You took this quiz. That's the first move most people never make.",
+    traits: ['💸 Spending on autopilot', '😶 Avoiding the numbers', '⏰ Delaying decisions'],
+    desc: "You're carrying a real weight right now — and you've probably been carrying it alone. The good news nobody tells you: Crisis Spenders actually see the fastest turnaround of any profile we track. Not because it's easy, but because every dollar recovered from this point counts double. Scout knows exactly where to start.",
+    loss: '$520/mo',
+    reclaim: '→ Crisis Spenders reclaim an average of $520/month within their first 60 days',
+    insights: [
+      { icon: '💙', html: '<strong>84% of Crisis Spenders</strong> who stay with SpendSignal for 30 days reach Level 3 or higher. The gap between where you are and where you want to be is smaller than it feels.' },
+      { icon: '🔍', html: 'Most people at this level have <strong>3–6 invisible spending categories</strong> running on autopilot — charges they\'ve completely forgotten about. Scout finds them in your first session.' },
+      { icon: '🚀', html: '<strong>The fastest results in any profile happen here.</strong> More to fix = more to gain. Scout has a specific starting playbook built for exactly your situation.' },
+    ],
+    testimonials: [
+      { img:'public/Comment3.png', text:'"hadn\'t opened my bank app in 4 months bc I was terrified of what I\'d see. Scout made it feel manageable — then <strong>found $430 I was bleeding every month</strong>. still can\'t believe it 😭"', name:'Daniel R.', profile:'Was a Crisis Spender', stars:'★★★★★' },
+      { img:'public/Comment5.png', text:'"genuinely thought I was too deep in it to fix. <strong>60 days later, $800 saved</strong>. first time I\'d had savings in 2 years. cried at my phone. embarrassed but worth sharing 🥺"', name:'Layla K.', profile:'Was a Crisis Spender', stars:'★★★★★' },
+      { img:'public/Comment2.png', text:'"18 months of overdrafts. Scout spotted the pattern I kept repeating and <strong>broke it in week 1</strong>. nothing I\'d tried even came close 👀"', name:'Marcus T.', profile:'Was a Crisis Spender', stars:'★★★★★' },
+    ]
+  },
+  {
+    level: 4,
+    range: [21, 40],
+    color: '#DC2626',
+    colorEnd: '#EF4444',
+    scoutEmoji: '😟',
+    name: 'The Reactive Spender',
+    percentile: 'higher than 28%',
+    tagline: "You're not bad with money. You just don't have a system yet.",
+    traits: ['⚡ Reactive to the moment', '🌀 Patterns feel invisible', '📊 No feedback loop yet'],
+    desc: "Reactive Spenders know something is off — they just can't put their finger on exactly what. The spending feels fine in the moment, and then the month ends and the number is wrong again. That's not a character flaw. That's what happens when there's no real-time feedback loop. SpendSignal is that feedback loop.",
+    loss: '$340/mo',
+    reclaim: '→ SpendSignal users like you reclaim an average of $340/month',
+    insights: [
+      { icon: '🔍', html: '<strong>On average, Reactive Spenders have 4 spending categories</strong> they\'re actively losing money in — without being fully aware of it. The worst one is almost never what they expect.' },
+      { icon: '💙', html: 'The fact that you finished this quiz puts you ahead of <strong>79% of people</strong> who start it. Most people bail when they sense the answer will be uncomfortable. You didn\'t.' },
+      { icon: '📈', html: 'Reactive Spenders who use SpendSignal see an average <strong>Financial Health Score increase of 28 points</strong> within 60 days — without changing their income.' },
+    ],
+    testimonials: [
+      { img:'public/Comment1.png', text:'"Scout showed me I was spending <strong>$210/month on food delivery</strong> and barely enjoying half of it 💀 that money is now my emergency fund. took like a week to flip"', name:'Maria R.', profile:'Was a Reactive Spender', stars:'★★★★★' },
+      { img:'public/Comment4.png', text:'"avoided my bank app for almost a year. now I open SpendSignal every morning like it\'s my fyp. <strong>that mental switch happened in week 1</strong> and I genuinely don\'t know how"', name:'James K.', profile:'Was a Reactive Spender', stars:'★★★★★' },
+      { img:'public/Comment3.png', text:'"<strong>$390 saved in month 1</strong> and it didn\'t feel like budgeting at all. Scout just runs quietly in the background and you wake up with more money. that\'s it 💸"', name:'Aisha M.', profile:'Was a Reactive Spender', stars:'★★★★★' },
+    ]
+  },
+  {
+    level: 3,
+    range: [41, 60],
+    color: '#EA580C',
+    colorEnd: '#F97316',
+    scoutEmoji: '😐',
+    name: 'The Overthinker',
+    percentile: 'higher than 51%',
+    tagline: "You know what you should do. You just need the right structure to actually do it.",
+    traits: ['🧠 High awareness', '🔄 Needs consistency', '🔧 Missing the right tools'],
+    desc: "Overthinkers understand money better than most — that's actually part of the problem. You have enough awareness to feel guilty and not enough structure to act consistently. You're not undisciplined. You're carrying the mental load of managing money without the tools to automate it. That changes today.",
+    loss: '$210/mo',
+    reclaim: '→ SpendSignal users like you reclaim an average of $210/month',
+    insights: [
+      { icon: '🎯', html: '<strong>Overthinkers don\'t fail because of willpower.</strong> They fail because they\'re managing too many variables in their head at once. SpendSignal collapses that into a single weekly check-in.' },
+      { icon: '💡', html: 'People with your profile average <strong>4–6 forgotten or underused subscriptions</strong> that have been quietly billing for over 6 months. Scout surfaces all of them in your first session.' },
+      { icon: '📊', html: 'Overthinkers who use SpendSignal <strong>hit their first real savings milestone within the first week</strong> — faster than any other profile. The structure does what willpower couldn\'t.' },
+    ],
+    testimonials: [
+      { img:'public/Comment2.png', text:'"tried 6 apps before this. the problem was never the app — I just mentally checked out by week 2. <strong>SpendSignal kept running even when I forgot to check it 😅</strong> that\'s the whole difference"', name:'Sofia M.', profile:'Was an Overthinker', stars:'★★★★★' },
+      { img:'public/Comment4.png', text:'"the weekly leak reports are what got me. <strong>hit my emergency fund 11 weeks early</strong>. didn\'t feel like I was trying harder than before — it just kind of happened"', name:'Carlos T.', profile:'Was an Overthinker', stars:'★★★★★' },
+      { img:'public/Comment5.png', text:'"always suspected I was overdoing eating out. Scout confirmed it was <strong>$340/month — double what I thought 💀</strong> seeing the real number finally made me actually do something about it"', name:'Rachel L.', profile:'Was an Overthinker', stars:'★★★★★' },
+    ]
+  },
+  {
+    level: 2,
+    range: [61, 75],
+    color: '#CA8A04',
+    colorEnd: '#EAB308',
+    scoutEmoji: '🙂',
+    name: 'The Emerging Planner',
+    percentile: 'higher than 70%',
+    tagline: "Your instincts are right. The gaps are smaller than you think.",
+    traits: ['📈 Building strong habits', '🎯 Clear direction', '🔍 A few blind spots left'],
+    desc: "You're already doing better than most people who sit where you're sitting. You think about your money, you have goals, and you've made real progress. What you're missing isn't motivation — it's precision. There are still patterns running in your spending that you can't see without data. SpendSignal makes them visible.",
+    loss: '$150/mo',
+    reclaim: '→ SpendSignal users like you reclaim an average of $150/month',
+    insights: [
+      { icon: '🚀', html: 'You\'re in the <strong>top 30% of everyone who takes this quiz.</strong> Most people never build the baseline habits you already have — but habits without data still leave money on the table.' },
+      { icon: '🤖', html: '<strong>AI-powered pattern recognition</strong> catches what spreadsheets can\'t: timing windows, impulse triggers, seasonal drift, subscription creep. These are your blind spots right now.' },
+      { icon: '🏆', html: 'Emerging Planners who use SpendSignal for 30 days save an <strong>average of $150/month more</strong> than before — and most say the biggest surprise was how small the changes required were.' },
+    ],
+    testimonials: [
+      { img:'public/Comment5.png', text:'"thought I was already decent with money. Scout found <strong>$220/month I was losing</strong> across categories I\'d never thought to look at. humbling as hell but honestly so useful 👀"', name:'Priya S.', profile:'Was an Emerging Planner', stars:'★★★★★' },
+      { img:'public/Comment1.png', text:'"the AI is uncomfortably accurate. it spotted my <strong>Sunday night online shopping spiral</strong> before I\'d consciously noticed it myself. that one insight alone was worth years of the app"', name:'Alex D.', profile:'Was an Emerging Planner', stars:'★★★★★' },
+      { img:'public/Comment4.png', text:'"hit my house down payment goal <strong>4 months early</strong> after almost 2 years of trying. wasn\'t dramatic changes — just consistently plugging the small leaks. genuinely surreal 🏠"', name:'Jordan T.', profile:'Was an Emerging Planner', stars:'★★★★★' },
+    ]
+  },
+  {
+    level: 1,
+    range: [76, 100],
+    color: '#16A34A',
+    colorEnd: '#22C55E',
+    scoutEmoji: '😄',
+    name: 'The Strategic Builder',
+    percentile: 'higher than 88%',
+    tagline: "You're already in the top 12%. Now let's make every dollar intentional.",
+    traits: ['💎 Disciplined by default', '📊 Data-driven choices', '🚀 Optimizing the edge'],
+    desc: "You've built real financial discipline — the kind most people never develop. At this level, the gains don't come from fixing obvious mistakes. They come from precision: catching the slow drift in spending patterns, optimizing savings timing, and making sure your habits are running on autopilot instead of willpower. SpendSignal is an AI layer on top of what you've already built.",
+    loss: '$90/mo',
+    reclaim: '→ SpendSignal users like you optimize an average of $90/month more',
+    insights: [
+      { icon: '💎', html: 'You scored in the <strong>top 12% of all quiz takers.</strong> SpendSignal at this level isn\'t about fixing problems — it\'s about adding a precision layer most people don\'t have access to.' },
+      { icon: '⚡', html: 'Strategic Builders who use SpendSignal reach their financial goals <strong>2.3× faster</strong> than equally disciplined people without it — because data closes the gap that intuition can\'t.' },
+      { icon: '📱', html: '<strong>Real-time spending signals</strong> catch pattern drift before it compounds — the kind of slow erosion that\'s invisible month-to-month but costs thousands annually.' },
+    ],
+    testimonials: [
+      { img:'public/Comment1.png', text:'"use SpendSignal like athletes use film review — catching inefficiencies I can\'t see in real time. <strong>savings rate went from 18% to 31% in 5 months 📈</strong>"', name:'Michael B.', profile:'Strategic Builder', stars:'★★★★★' },
+      { img:'public/Comment2.png', text:'"I\'ve tried every premium finance tool out there. <strong>the AI insight engine is genuinely in a different category 👀</strong> it thinks about my money the way I wish I could. constantly."', name:'Nina P.', profile:'Strategic Builder', stars:'★★★★★' },
+      { img:'public/Comment3.png', text:'"<strong>$1,400 in optimization in month 1</strong> — not by cutting things I valued, just fixing the timing and structure of how money moved. precision is everything when you\'re at this level 🔬"', name:'Jordan K.', profile:'Strategic Builder', stars:'★★★★★' },
+    ]
+  },
+];
+
+const LOADING_TESTS = [
+  { img:'public/Comment1.png', text:'"Scout flagged 4 subscriptions I hadn\'t used in over a year. That was $94 a month just sitting there."', name:'Maria R.', profile:'Reactive Spender → Level 2', stars:'★★★★★' },
+  { img:'public/Comment2.png', text:'"I hit my first $1,000 emergency fund in 6 weeks. I\'d been trying to do that for two years."', name:'Carlos T.', profile:'Former Overthinker', stars:'★★★★★' },
+  { img:'public/Comment3.png', text:'"My savings rate went from 4% to 19% without changing my salary. Just plugging the leaks Scout found."', name:'Priya S.', profile:'Former Reactive Spender', stars:'★★★★★' },
+  { img:'public/Comment4.png', text:'"The AI coach helped me understand my emotional spending for the first time. That alone was worth it."', name:'Michael B.', profile:'Former Crisis Spender', stars:'★★★★★' },
+];
+
+const PW_SUBS = {
+  'The Crisis Spender':     "Based on your answers, Scout has already identified where to start. Most Crisis Spenders see their first real win within 72 hours — not weeks.",
+  'The Reactive Spender':   "The pattern Scout flagged in your answers is fixable — and faster than you think. Most Reactive Spenders feel a visible difference within their first week.",
+  'The Overthinker':        "You have the awareness. SpendSignal gives you the structure that removes the mental load — and finally makes the awareness stick.",
+  'The Emerging Planner':   "You're 70% of the way there on habits alone. SpendSignal closes the gap and shows you exactly what's still leaking — usually it surprises people.",
+  'The Strategic Builder':  "Your habits are your edge. SpendSignal is the data layer that makes them airtight — and finds what even disciplined savers miss.",
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentQ = 0, answers = [], pendingAns = null;
+let selectedPlan = 'annual', showingScout = false;
+let currentProfile = null, currentScore = 0, userAge = null, currentLoss = null;
+let userEmail = '', userName = '', promoCode = '', promoDiscount = 0, balloonTaps = 0;
+let _scoreRafId = null; // track animation frame so we can cancel on retake
+
+// Reset timer if coming from email retargeting link
+const _qs = new URLSearchParams(window.location.search);
+if (_qs.get('reset') === '1') {
+  localStorage.removeItem('ss_promo_expiry');
+}
+// Restore promo code from email link (?promo=NICO_MAY45)
+// Parsed but only applied once profile is known (see showPaywall)
+const _urlPromo = _qs.get('promo') || '';
+
+// ══════════════════════════════════════════
+// SCORE
+// ══════════════════════════════════════════
+function calcScore() {
+  let s = 50;
+  const q1 = answers[1]; if (typeof q1 === 'number') s += [-14,-18,0,18][q1] ?? 0;
+  const q3 = answers[3]; if (typeof q3 === 'number') s += [-16,20,0,-12][q3] ?? 0;
+  const q4 = answers[4]; if (typeof q4 === 'number') s += [4,-8,-2,10][q4] ?? 0;
+  return Math.max(5, Math.min(98, Math.round(s)));
+}
+function getProfile(s) { return PROFILES.find(p => s >= p.range[0] && s <= p.range[1]) || PROFILES[0]; }
+
+// income bracket midpoints (answers[7]) and level leak percentages
+function calcLoss(profile, incomeVal) {
+  const midpoints  = [1500, 3000, 5500, 9000];
+  const leakPct    = { 5: 0.22, 4: 0.16, 3: 0.11, 2: 0.06, 1: 0.03 };
+  // If incomeVal > 10 it's an actual dollar amount entered by the user; otherwise it's a bracket index
+  let income;
+  if (typeof incomeVal === 'number' && incomeVal > 10) {
+    income = incomeVal;
+  } else {
+    const idx = (typeof incomeVal === 'number' && incomeVal >= 0 && incomeVal <= 3) ? incomeVal : 1;
+    income = midpoints[idx];
+  }
+  const pct = leakPct[profile?.level] ?? 0.11;
+  const raw = Math.round(income * pct / 10) * 10;
+  return `$${raw}/mo`;
+}
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function showScreen(id) {
+  ['screenIntro','screenQuiz','screenCheckpoint','screenReassurance','screenTrust','screenLoading','screenEmail','screenOptIn','screenSummary','screenCinematic','screenResults','screenBalloon','screenPaywall'].forEach(s => {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+  window.scrollTo({ top:0, behavior:'instant' });
+}
+function startQuiz() {
+  showScreen('screenQuiz');
+  document.getElementById('navBack').style.display = 'flex';
+  currentQ = 0; answers = []; pendingAns = null; showingScout = false;
+  renderQuestion(false);
+}
+function goBack() {
+  // From checkpoint — go back to Q3
+  if (!document.getElementById('screenCheckpoint').classList.contains('hidden')) {
+    currentQ = 2; showScreen('screenQuiz'); renderQuestion(true); return;
+  }
+  // Once past checkpoint, back is disabled
+  const postCheckpoint = ['screenReassurance','screenTrust','screenLoading','screenEmail','screenOptIn','screenSummary','screenCinematic','screenResults','screenBalloon','screenPaywall'];
+  if (postCheckpoint.some(id => !document.getElementById(id).classList.contains('hidden'))) return;
+  if (showingScout) { hideScout(); return; }
+  if (currentQ > 0) {
+    currentQ--; answers.pop(); pendingAns = null; renderQuestion(true);
+  } else {
+    showScreen('screenIntro');
+    document.getElementById('navBack').style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════
+// WHEEL
+// ══════════════════════════════════════════
+function updateWheel(q) {
+  const circ = 283, pct = (q + 1) / QUESTIONS.length;
+  const fill = document.getElementById('wheelFill');
+  fill.style.strokeDashoffset = circ - circ * pct;
+  if (q + 1 === QUESTIONS.length) fill.classList.add('complete');
+  else fill.classList.remove('complete');
+  document.getElementById('wheelNum').textContent = q + 1;
+  document.getElementById('wheelOf').textContent = 'of ' + QUESTIONS.length;
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function renderQuestion(back = false) {
+  const q = QUESTIONS[currentQ];
+  const content = document.getElementById('quizContent');
+  content.className = 'quiz-content'; void content.offsetWidth;
+  content.classList.add(back ? 'enter-back' : 'enter');
+  hideScout();
+
+  document.getElementById('qTag').textContent  = q.tag;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qHint').textContent = q.hint;
+
+  const optEl = document.getElementById('qOptions');
+  if (q.age) {
+    const prev = typeof answers[currentQ] === 'number' ? answers[currentQ] : null;
+    let ageVal = prev || 0;
+    optEl.innerHTML = `
+      <div class="age-display-wrap">
+        <div class="age-number-row">
+          <button class="age-adj-btn" onclick="adjustAge(-1)" type="button">−</button>
+          <div class="age-big-number${ageVal ? '' : ' blinking'}" id="ageBigNum" onclick="focusAgeInput()">${ageVal || ''}</div>
+          <button class="age-adj-btn" onclick="adjustAge(1)" type="button">+</button>
+        </div>
+        <div class="age-unit">years old</div>
+        <input class="age-hidden-input" id="ageHiddenInput" type="number" min="13" max="99"
+          inputmode="numeric" pattern="[0-9]*" value="${ageVal || ''}"
+          oninput="onAgeInput(this.value)"/>
+        <button class="age-confirm-btn${ageVal >= 13 ? ' visible' : ''}" id="ageConfirmBtn" onclick="confirmAge()" type="button">
+          Confirm →
+        </button>
+      </div>`;
+    pendingAns = prev;
+    document.getElementById('qText').textContent = q.text;
+    document.getElementById('qHint').textContent = q.hint;
+    setTimeout(() => focusAgeInput(), 120);
+  } else if (q.scale) {
+    const prev = typeof answers[currentQ] === 'number' ? answers[currentQ] : null;
+    optEl.innerHTML = `
+      <div class="scale-statement">${q.text}</div>
+      <div class="scale-hint-text">${q.hint}</div>
+      <div class="scale-buttons">
+        ${[['1','😌'],['2','🙂'],['3','😐'],['4','😟'],['5','😰']].map(([n,face],i) => `<button class="scale-btn${prev !== null && i <= prev ? ' active' : ''}" onclick="selectScale(${i})" type="button"><span class="sb-num">${n}</span><span class="sb-face">${face}</span></button>`).join('')}
+      </div>
+      <div class="scale-labels"><span>${q.scaleLabels[0]}</span><span>${q.scaleLabels[1]}</span></div>`;
+    pendingAns = prev;
+    document.getElementById('qText').textContent = '';
+    document.getElementById('qHint').textContent = '';
+  } else if (q.multi) {
+    const prev = answers[currentQ] instanceof Set ? answers[currentQ] : new Set();
+    if (q.imgOpt) {
+      optEl.innerHTML = q.options.map((o,i) => `
+        <button class="opt img-opt${prev.has(i)?' checked':''}" id="opt${i}" onclick="toggleMulti(${i})" type="button">
+          <span class="opt-main">
+            <span class="opt-text">${o.text}</span>
+            <span class="opt-checkbox" aria-hidden="true"></span>
+          </span>
+          <span class="opt-thumb" style="background:${o.imgBg||'#e2e8f0'}">${o.icon}</span>
+        </button>`).join('');
+    } else {
+      optEl.innerHTML = q.options.map((o,i) => `
+        <button class="opt${prev.has(i)?' checked':''}" id="opt${i}" onclick="toggleMulti(${i})" type="button">
+          <span class="opt-icon">${o.icon}</span>
+          <span class="opt-text">${o.text}</span>
+          <span class="opt-checkbox" aria-hidden="true"></span>
+        </button>`).join('');
+    }
+    pendingAns = prev.size > 0 ? prev : null;
+  } else {
+    const prev = typeof answers[currentQ] === 'number' ? answers[currentQ] : null;
+    if (q.imgOpt) {
+      optEl.innerHTML = q.options.map((o,i) => `
+        <button class="opt img-opt${prev===i?' selected':''}" id="opt${i}" onclick="selectSingle(${i})" type="button">
+          <span class="opt-main">
+            <span class="opt-text">${o.text}</span>
+            <span class="opt-radio" aria-hidden="true"></span>
+          </span>
+          <span class="opt-thumb" style="background:${o.imgBg||'#e2e8f0'}">${o.icon}</span>
+        </button>`).join('');
+    } else {
+      const isCustom = typeof prev === 'number' && prev > 10;
+      optEl.innerHTML = q.options.map((o,i) => `
+        <button class="opt${!isCustom && prev===i?' selected':''}" id="opt${i}" onclick="selectSingle(${i})" type="button">
+          <span class="opt-icon">${o.icon}</span>
+          <span class="opt-text">${o.text}</span>
+          <span class="opt-radio" aria-hidden="true"></span>
+        </button>`).join('');
+      if (q.other) {
+        optEl.innerHTML += `
+          <div class="opt${isCustom?' selected':''}" id="optOther" onclick="selectOther()" role="button" tabindex="0">
+            <span class="opt-icon">✏️</span>
+            <span class="opt-other-label">Other:</span>
+            <input class="opt-other-input" id="otherIncomeInput" type="text" inputmode="numeric"
+              placeholder="type your monthly income"
+              value="${isCustom ? prev : ''}"
+              onclick="event.stopPropagation()"
+              onfocus="selectOther()"
+              oninput="onOtherInput(this.value)" />
+            <span class="opt-radio" aria-hidden="true"></span>
+          </div>
+          <div class="income-privacy-note">
+            <span class="ipn-icon">🔒</span>
+            <span>This is completely confidential. Your income is never shared, stored publicly, or visible to anyone but you. We use it only to calculate your personal leak estimate.</span>
+          </div>`;
+      }
+    }
+    pendingAns = prev !== null ? prev : null;
+  }
+
+  const btn = document.getElementById('continueBtn');
+  btn.style.display = q.age ? 'none' : '';
+  btn.textContent = currentQ === QUESTIONS.length - 1 ? 'See my results →' : 'Continue →';
+  btn.classList.toggle('visible', !q.age && pendingAns !== null && (pendingAns instanceof Set ? pendingAns.size > 0 : true));
+  updateWheel(currentQ);
+}
+
+// ══════════════════════════════════════════
+// SELECTION
+// ══════════════════════════════════════════
+function selectSingle(idx) {
+  document.querySelectorAll('.opt').forEach((el,i) => el.classList.toggle('selected', i===idx));
+  const otherEl = document.getElementById('optOther');
+  if (otherEl) otherEl.classList.remove('selected');
+  pendingAns = idx;
+  document.getElementById('continueBtn').classList.add('visible');
+}
+function selectOther() {
+  document.querySelectorAll('.opt').forEach(el => el.classList.remove('selected'));
+  const otherEl = document.getElementById('optOther');
+  if (otherEl) otherEl.classList.add('selected');
+  const inp = document.getElementById('otherIncomeInput');
+  if (inp && document.activeElement !== inp) inp.focus();
+  const val = parseFloat((inp?.value || '').replace(/[^0-9.]/g, ''));
+  if (val > 0) {
+    pendingAns = val;
+    document.getElementById('continueBtn').classList.add('visible');
+  } else {
+    pendingAns = null;
+    document.getElementById('continueBtn').classList.remove('visible');
+  }
+}
+function onOtherInput(raw) {
+  const val = parseFloat(raw.replace(/[^0-9.]/g, ''));
+  if (val > 0) {
+    pendingAns = val;
+    document.getElementById('continueBtn').classList.add('visible');
+  } else {
+    pendingAns = null;
+    document.getElementById('continueBtn').classList.remove('visible');
+  }
+}
+function toggleMulti(idx) {
+  if (!(pendingAns instanceof Set)) pendingAns = new Set();
+  const el = document.getElementById('opt'+idx);
+  if (pendingAns.has(idx)) { pendingAns.delete(idx); el.classList.remove('checked'); }
+  else { pendingAns.add(idx); el.classList.add('checked'); }
+  document.getElementById('continueBtn').classList.toggle('visible', pendingAns.size > 0);
+}
+function selectScale(val) {
+  pendingAns = val;
+  document.querySelectorAll('.scale-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i <= val);
+  });
+  document.getElementById('continueBtn').classList.add('visible');
+}
+
+let _ageVal = 0;
+function focusAgeInput() {
+  const inp = document.getElementById('ageHiddenInput');
+  if (inp) { inp.focus(); inp.select(); }
+  const num = document.getElementById('ageBigNum');
+  if (num) num.classList.add('blinking');
+}
+function onAgeInput(val) {
+  _ageVal = parseInt(val) || 0;
+  const num = document.getElementById('ageBigNum');
+  const btn = document.getElementById('ageConfirmBtn');
+  if (num) {
+    num.textContent = _ageVal || '';
+    num.classList.toggle('blinking', !_ageVal);
+  }
+  if (btn) btn.classList.toggle('visible', _ageVal >= 13 && _ageVal <= 99);
+  pendingAns = (_ageVal >= 13 && _ageVal <= 99) ? _ageVal : null;
+}
+function adjustAge(delta) {
+  const inp = document.getElementById('ageHiddenInput');
+  _ageVal = Math.min(99, Math.max(13, (_ageVal || 25) + delta));
+  if (inp) inp.value = _ageVal;
+  onAgeInput(_ageVal);
+}
+function confirmAge() {
+  if (pendingAns === null) return;
+  userAge = pendingAns;
+  nextQuestion();
+}
+
+// ══════════════════════════════════════════
+// NEXT
+// ══════════════════════════════════════════
+function nextQuestion() {
+  if (pendingAns === null || pendingAns === undefined) return;
+  if (pendingAns instanceof Set && pendingAns.size === 0) return;
+  answers[currentQ] = pendingAns instanceof Set ? new Set(pendingAns) : pendingAns;
+
+  const q = QUESTIONS[currentQ];
+  if (q.scout) {
+    showScout(q.scout, () => advanceQuestion());
+  } else {
+    advanceQuestion();
+  }
+}
+function advanceQuestion() {
+  const content = document.getElementById('quizContent');
+  content.classList.add('leave');
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ >= QUESTIONS.length) showLoading();
+    else if (currentQ === 3) showCheckpoint();   // after Q3 (index 2 = bank feeling)
+    else if (currentQ === 5) showReassurance();  // after scale Q (index 4)
+    else renderQuestion(false);
+  }, 220);
+}
+
+// ══════════════════════════════════════════
+// SCOUT TOAST
+// ══════════════════════════════════════════
+function showScout(msg, cb) {
+  showingScout = true;
+  document.getElementById('scoutMsg').textContent = msg;
+  document.getElementById('scoutToast').style.display = 'flex';
+  setTimeout(() => { showingScout = false; hideScout(); cb(); }, 2000);
+}
+function hideScout() {
+  document.getElementById('scoutToast').style.display = 'none';
+  showingScout = false;
+}
+
+// ══════════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════════
+function launchConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  const colors = ['#7c3aed','#3b82f6','#06b6d4','#f59e0b','#10b981','#ec4899'];
+  wrap.innerHTML = '';
+  for (let i = 0; i < 48; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${-10 - Math.random()*20}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*6}px;
+      height:${6+Math.random()*6}px;
+      border-radius:${Math.random()>0.5?'50%':'3px'};
+      animation-delay:${Math.random()*0.8}s;
+      animation-duration:${1.8+Math.random()*1}s;
+      opacity:${0.7+Math.random()*0.3};
+    `;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+// ══════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// LOCKED CHART — drawn on canvas, exported as pixel image
+// Blur is applied via inline SVG filter + CSS. Removing either
+// still leaves a pixelated image with no extractable HTML data.
+// ══════════════════════════════════════════
+function drawLockedChart(profile) {
+  const W = 440, H = 260;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * 2; canvas.height = H * 2; // retina
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  const lvl = profile ? profile.level : 3;
+  // Category data varies by level
+  const catSets = {
+    5: [
+      { label:'Subscriptions forgotten', amt:214, color:'#7c3aed' },
+      { label:'Impulse & late-night buys', amt:178, color:'#ef4444' },
+      { label:'Food delivery & dining out', amt:312, color:'#f59e0b' },
+      { label:'Bank & overdraft fees', amt:62,  color:'#ec4899' },
+      { label:'Unused memberships', amt:88,  color:'#3b82f6' },
+    ],
+    4: [
+      { label:'Recurring subscriptions', amt:163, color:'#7c3aed' },
+      { label:'Impulse purchases', amt:134, color:'#ef4444' },
+      { label:'Food delivery', amt:210, color:'#f59e0b' },
+      { label:'Hidden platform fees', amt:47,  color:'#ec4899' },
+      { label:'Unused gym / apps', amt:52,  color:'#3b82f6' },
+    ],
+    3: [
+      { label:'Subscriptions overlap', amt:118, color:'#7c3aed' },
+      { label:'Impulse spending', amt:97,  color:'#ef4444' },
+      { label:'Dining & delivery', amt:144, color:'#f59e0b' },
+      { label:'Service fees', amt:29,  color:'#ec4899' },
+      { label:'Underused memberships', amt:41,  color:'#3b82f6' },
+    ],
+    2: [
+      { label:'Subscription creep', amt:78,  color:'#7c3aed' },
+      { label:'Impulse buys', amt:52,  color:'#ef4444' },
+      { label:'Dining out', amt:94,  color:'#f59e0b' },
+      { label:'Convenience fees', amt:18,  color:'#ec4899' },
+      { label:'Unused services', amt:22,  color:'#3b82f6' },
+    ],
+    1: [
+      { label:'Micro-subscription drift', amt:44,  color:'#7c3aed' },
+      { label:'Convenience spending', amt:31,  color:'#f59e0b' },
+      { label:'Opportunity cost', amt:67,  color:'#3b82f6' },
+      { label:'Small recurring fees', amt:12,  color:'#ec4899' },
+      { label:'Optimization gap', amt:28,  color:'#16a34a' },
+    ],
+  };
+  const cats = catSets[lvl] || catSets[3];
+  const accentColor = profile ? profile.color : '#7c3aed';
+
+  // ── Background ──
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Mini header inside chart ──
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText('💸  Spending leak breakdown', 16, 24);
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px Arial';
+  const total = cats.reduce((s,c)=>s+c.amt,0);
+  ctx.fillText(`Total identified: $${total}/mo`, 16, 38);
+
+  // ── Donut chart (right side) ──
+  const cx = W - 68, cy = 138, r = 52, innerR = 30;
+  let angle = -Math.PI / 2;
+  cats.forEach(cat => {
+    const slice = (cat.amt / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = cat.color;
+    ctx.fill();
+    angle += slice;
+  });
+  // Inner circle (donut hole)
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  // Center label
+  ctx.fillStyle = accentColor;
+  ctx.font = 'bold 13px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('$' + total, cx, cy + 5);
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '8px Arial';
+  ctx.fillText('/mo', cx, cy + 16);
+  ctx.textAlign = 'left';
+
+  // ── Bar chart (left side) ──
+  const barAreaW = W - 160;
+  const maxAmt = Math.max(...cats.map(c=>c.amt));
+  cats.forEach((cat, i) => {
+    const y = 58 + i * 36;
+
+    // Label
+    ctx.fillStyle = '#475569';
+    ctx.font = '10px Arial';
+    ctx.fillText(cat.label, 16, y + 9);
+
+    // Bar track
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath();
+    ctx.roundRect(16, y + 14, barAreaW - 8, 9, 4);
+    ctx.fill();
+
+    // Bar fill with gradient
+    const grad = ctx.createLinearGradient(16, 0, 16 + barAreaW, 0);
+    grad.addColorStop(0, cat.color);
+    grad.addColorStop(1, cat.color + '99');
+    ctx.fillStyle = grad;
+    const fw = Math.max(12, (cat.amt / maxAmt) * (barAreaW - 8));
+    ctx.beginPath();
+    ctx.roundRect(16, y + 14, fw, 9, 4);
+    ctx.fill();
+
+    // Amount
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 10px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText('$' + cat.amt, barAreaW + 10, y + 22);
+    ctx.textAlign = 'left';
+
+    // Trend arrow (random: mostly up for bad levels, mixed for good)
+    const trending = lvl >= 3 ? '↑' : (i % 3 === 0 ? '↓' : '↑');
+    ctx.fillStyle = trending === '↑' ? '#ef4444' : '#16a34a';
+    ctx.font = 'bold 10px Arial';
+    ctx.fillText(trending, barAreaW + 14, y + 22);
+  });
+
+  // ── Bottom sparkline "weekly trend" ──
+  const slY = H - 44, slH = 28, slX = 16, slW = barAreaW;
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath();
+  ctx.roundRect(slX, slY, slW + 40, slH, 6);
+  ctx.fill();
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '9px Arial';
+  ctx.fillText('Weekly spend trend', slX + 6, slY + 11);
+
+  // Sparkline points
+  const weeks = lvl >= 4
+    ? [0.4,0.55,0.48,0.7,0.65,0.82,0.9]
+    : lvl >= 3
+    ? [0.5,0.6,0.45,0.65,0.58,0.7,0.68]
+    : [0.6,0.5,0.65,0.55,0.48,0.52,0.45];
+
+  const spX = slX + 70, spW = slW - 30, spYbase = slY + slH - 4;
+  const stepX = spW / (weeks.length - 1);
+
+  // Gradient fill under sparkline
+  const spGrad = ctx.createLinearGradient(0, slY, 0, spYbase);
+  spGrad.addColorStop(0, accentColor + '44');
+  spGrad.addColorStop(1, accentColor + '00');
+  ctx.beginPath();
+  ctx.moveTo(spX, spYbase);
+  weeks.forEach((w, i) => {
+    const px = spX + i * stepX;
+    const py = spYbase - w * (slH - 10);
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  });
+  ctx.lineTo(spX + (weeks.length-1)*stepX, spYbase);
+  ctx.closePath();
+  ctx.fillStyle = spGrad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  weeks.forEach((w,i) => {
+    const px = spX + i*stepX, py = spYbase - w*(slH-10);
+    i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+  });
+  ctx.stroke();
+
+  // Export to pixel image and destroy canvas — no live canvas in DOM
+  const img = document.getElementById('lockedChartImg');
+  if (img) {
+    img.src = canvas.toDataURL('image/png');
+  }
+}
+
+function drawPaywallGraph(profile) {
+  const W = 480, H = 240;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * 2; canvas.height = H * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  // Background — off-white so it looks like a card
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  const months = ['Today', 'Month 1', 'Month 2', 'Month 3'];
+  const n = months.length;
+  const padL = 54, padR = 24, padT = 22, padB = 44;
+  const gW = W - padL - padR, gH = H - padT - padB;
+
+  // Loss amount from profile
+  const lossNum = parseInt((currentLoss || profile.loss || '$200/mo').replace(/[^0-9]/g, '')) || 200;
+
+  // Diverging paths: "without" drifts slowly down, "with" climbs strongly
+  const withoutNorm = [0.5, 0.6, 0.68, 0.78];   // 0=top of chart, 1=bottom
+  const withNorm    = [0.5, 0.32, 0.18, 0.06];
+
+  const xOf = i => padL + (i / (n - 1)) * gW;
+  const yOf = v => padT + v * gH;
+
+  // ── Subtle grid ──
+  ctx.strokeStyle = '#f1f5f9';
+  ctx.lineWidth = 1;
+  for (let r = 0; r <= 4; r++) {
+    const y = padT + (r / 4) * gH;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+  }
+
+  // ── Y-axis labels ──
+  const yLabels = [`+$${lossNum}`, `+$${Math.round(lossNum*0.67)}`, `+$${Math.round(lossNum*0.33)}`, '$0', `−$${Math.round(lossNum*0.2)}`];
+  ctx.fillStyle = '#94a3b8'; ctx.font = '11px Arial'; ctx.textAlign = 'right';
+  yLabels.forEach((lbl, r) => {
+    const y = padT + (r / 4) * gH;
+    ctx.fillStyle = r === 3 ? '#cbd5e1' : (r < 3 ? '#7c3aed' : '#ef4444');
+    ctx.fillText(lbl, padL - 7, y + 4);
+  });
+
+  // ── X-axis labels ──
+  ctx.fillStyle = '#94a3b8'; ctx.font = '11px Arial'; ctx.textAlign = 'center';
+  months.forEach((m, i) => ctx.fillText(m, xOf(i), H - padB + 16));
+
+  // ── "Without" line (red dashed) ──
+  ctx.save();
+  ctx.setLineDash([6, 5]);
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  withoutNorm.forEach((v, i) => i === 0 ? ctx.moveTo(xOf(i), yOf(v)) : ctx.lineTo(xOf(i), yOf(v)));
+  ctx.stroke();
+  ctx.restore();
+
+  // ── "With SpendSignal" gradient fill ──
+  const gradFill = ctx.createLinearGradient(0, padT, 0, padT + gH);
+  gradFill.addColorStop(0, 'rgba(124,58,237,0.16)');
+  gradFill.addColorStop(1, 'rgba(59,130,246,0.03)');
+  ctx.beginPath();
+  withNorm.forEach((v, i) => i === 0 ? ctx.moveTo(xOf(i), yOf(v)) : ctx.lineTo(xOf(i), yOf(v)));
+  // Baseline = y at 0.5 (the starting point / "$0 saved" line)
+  ctx.lineTo(xOf(n - 1), yOf(0.5));
+  ctx.lineTo(xOf(0),     yOf(0.5));
+  ctx.closePath();
+  ctx.fillStyle = gradFill;
+  ctx.fill();
+
+  // ── "With SpendSignal" line ──
+  const gradLine = ctx.createLinearGradient(padL, 0, W - padR, 0);
+  gradLine.addColorStop(0, '#7c3aed');
+  gradLine.addColorStop(1, '#3b82f6');
+  ctx.strokeStyle = gradLine;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  withNorm.forEach((v, i) => i === 0 ? ctx.moveTo(xOf(i), yOf(v)) : ctx.lineTo(xOf(i), yOf(v)));
+  ctx.stroke();
+
+  // Dots on "With" line
+  withNorm.forEach((v, i) => {
+    const r = i === n - 1 ? 6 : 4;
+    ctx.beginPath();
+    ctx.arc(xOf(i), yOf(v), r, 0, Math.PI * 2);
+    ctx.fillStyle = i === n - 1 ? '#7c3aed' : '#ffffff';
+    ctx.fill();
+    ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 2.5;
+    ctx.stroke();
+  });
+
+  // ── End label pill for "With" line ──
+  const endX = xOf(n - 1), endY = yOf(withNorm[n - 1]);
+  const lbl = `+$${lossNum} saved`;
+  ctx.font = 'bold 11px Arial';
+  const lblW = ctx.measureText(lbl).width + 16;
+  const lblX = Math.min(endX - lblW / 2, W - padR - lblW + 6);
+  const lblY = endY - 22;
+  ctx.fillStyle = '#7c3aed';
+  ctx.beginPath();
+  ctx.roundRect(lblX, lblY, lblW, 18, 9);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left';
+  ctx.fillText(lbl, lblX + 8, lblY + 13);
+
+  // ── End label for "Without" line ──
+  const woX = xOf(n - 1), woY = yOf(withoutNorm[n - 1]);
+  ctx.fillStyle = '#ef4444'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'right';
+  const woLbl = `−$${Math.round(lossNum * 0.2)}/mo lost`;
+  ctx.fillText(woLbl, woX + 2, woY + 14);
+
+  document.getElementById('pwGraphImg').src = canvas.toDataURL('image/png');
+}
+
+// ── Age group comparison helper ──
+function getAgeComparison(score, age) {
+  if (!age || age < 13) return null;
+  // Average financial health score per age group (younger = lower average due to less experience)
+  const avgByDecade = { 10:30, 20:36, 30:46, 40:52, 50:55, 60:57, 70:56, 80:53 };
+  const decade = Math.min(80, Math.max(10, Math.floor(age / 10) * 10));
+  const avg = avgByDecade[decade] || 46;
+  // % of people this age who score BELOW this score (linear spread ±30 around avg)
+  const pctBelow = Math.min(95, Math.max(5, Math.round((score - avg) / 30 * 45 + 50)));
+  const label = decade === 10 ? 'teenagers' : decade === 20 ? 'people in their 20s'
+    : decade === 30 ? 'people in their 30s' : decade === 40 ? 'people in their 40s'
+    : decade === 50 ? 'people in their 50s' : decade >= 60 ? 'people 60+' : 'your age group';
+  return { pctBelow, label };
+}
+
+// ── Solidarity data for levels 3-5 (replaces confetti) ──
+const SOLIDARITY_DATA = {
+  3: {
+    icon: '💪',
+    head: "You're one system away from level up.",
+    stat: '47%',
+    context: 'of quiz takers score in this range',
+    follow: "Of those, 81% improved by at least one full level within 30 days using SpendSignal — not by earning more, but by plugging what was quietly leaking.",
+    bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.18)', statColor: '#7c3aed'
+  },
+  4: {
+    icon: '🤝',
+    head: "More people than you think are right here.",
+    stat: '38%',
+    context: 'of people who take this quiz score in this range',
+    follow: "71% of them reach Level 3 or higher within 30 days with a system. Not willpower — just the right feedback loop, running quietly.",
+    bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.18)', statColor: '#3b82f6'
+  },
+  5: {
+    icon: '🫂',
+    head: "This is not a verdict. It's a starting point.",
+    stat: '1 in 4',
+    context: 'quiz takers score in this range — you are far from alone',
+    follow: "Crisis Spenders show the fastest score improvement of any profile we track. Because there's more to recover, every action counts double. Scout knows exactly where to start.",
+    bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.18)', statColor: '#7c3aed'
+  }
+};
+
+// ── Confetti only for levels 1-2 ──
+function maybeConfetti() {
+  if (currentProfile && currentProfile.level <= 2) launchConfetti();
+}
+
+function showResults() {
+  if (!currentScore) { currentScore = calcScore(); currentProfile = getProfile(currentScore); currentLoss = calcLoss(currentProfile, answers[7]); }
+  const score = currentScore, profile = currentProfile;
+
+  document.getElementById('wheelFill').classList.add('complete');
+  showScreen('screenResults');
+  document.getElementById('navBack').style.display = 'none';
+
+  // ── Ring color → level color ──
+  document.getElementById('srStop1').setAttribute('stop-color', profile.color);
+  document.getElementById('srStop2').setAttribute('stop-color', profile.colorEnd);
+
+  // ── Level dot bar ──
+  document.getElementById('levelLbl').textContent = `Level ${profile.level} of 5`;
+  document.getElementById('levelDots').innerHTML = PROFILES.map(p => {
+    const isActive = p.level === profile.level;
+    const opacity  = isActive ? '1' : p.level > profile.level ? '0.15' : '0.35';
+    const shadow   = isActive ? `0 0 14px ${p.color}` : 'none';
+    return `<div class="level-dot${isActive ? ' active' : ''}" style="background:${p.color};opacity:${opacity};box-shadow:${shadow}"></div>`;
+  }).join('');
+
+  // ── Profile text ──
+  document.getElementById('profileAvatar').textContent = profile.scoutEmoji;
+  document.getElementById('profileName').textContent = profile.name;
+  document.getElementById('profileTagline').textContent = profile.tagline;
+  document.getElementById('profileTagline').style.color = profile.colorEnd;
+  const descEl = document.getElementById('profileDesc'); if (descEl) descEl.textContent = profile.desc;
+  // ── Trait chips ──
+  document.getElementById('profileTraits').innerHTML = (profile.traits || [])
+    .map(t => `<span class="profile-trait">${t}</span>`).join('');
+  document.getElementById('percentileLine').innerHTML = `You scored <strong>${profile.percentile} of people</strong> who took this quiz`;
+
+  // ── Loss ──
+  const displayLoss = currentLoss || profile.loss;
+  document.getElementById('lossAmt').textContent = displayLoss;
+  const reclaimAmt = displayLoss.replace('/mo','').trim();
+  document.getElementById('lossReclaim').textContent = `→ SpendSignal users like you reclaim an average of ${reclaimAmt}/month`;
+
+  // ── Insight carousel ──
+  (function() {
+    const insights = profile.insights;
+    let icIdx = 0;
+    let icRafId = null;
+    let icStart = null;
+    const DUR = 3800;
+
+    function render() {
+      document.getElementById('insightCards').innerHTML = `
+        <div class="ic-carousel">
+          <div class="ic-progress-bar"><div class="ic-progress-fill" id="icFill"></div></div>
+          <div class="ic-stage">
+            ${insights.map((ins, i) => `
+              <div class="ic-card${i === icIdx ? ' active' : ''}" onclick="icNext()">
+                <div class="ic-card-icon">${ins.icon}</div>
+                <div class="ic-card-text">${ins.html}</div>
+                <div class="ic-tap-hint">Tap to continue →</div>
+              </div>`).join('')}
+          </div>
+          <div class="ic-dots">
+            ${insights.map((_, i) => `
+              <button class="ic-dot${i === icIdx ? ' active' : ''}" onclick="icGoTo(${i})"></button>`).join('')}
+          </div>
+        </div>`;
+      startProgress();
+    }
+
+    function startProgress() {
+      if (icRafId) cancelAnimationFrame(icRafId);
+      const fill = document.getElementById('icFill');
+      if (!fill) return;
+      fill.style.width = '0%';
+      icStart = performance.now();
+      function tick(ts) {
+        const pct = Math.min((ts - icStart) / DUR * 100, 100);
+        if (fill.isConnected) fill.style.width = pct + '%';
+        if (pct < 100) { icRafId = requestAnimationFrame(tick); }
+        else { icGoTo((icIdx + 1) % insights.length); }
+      }
+      icRafId = requestAnimationFrame(tick);
+    }
+
+    window.icGoTo = function(i) {
+      if (icRafId) { cancelAnimationFrame(icRafId); icRafId = null; }
+      icIdx = ((i % insights.length) + insights.length) % insights.length;
+      render();
+    };
+    window.icNext = function() { icGoTo((icIdx + 1) % insights.length); };
+
+    render();
+  })();
+
+  // ── Age comparison card ──
+  const ageCard = document.getElementById('ageCompareCard');
+  const ageCmp  = getAgeComparison(score, userAge);
+  if (ageCmp) {
+    const pct = ageCmp.pctBelow;
+    const dir = pct >= 50 ? `higher than <strong>${pct}%</strong>` : `higher than <strong>${pct}%</strong>`;
+    document.getElementById('ageCompareText').innerHTML =
+      `Among ${ageCmp.label}, you score ${dir} of them`;
+    setTimeout(() => {
+      document.getElementById('ageCompareBarFill').style.width = pct + '%';
+    }, 600);
+    ageCard.style.display = 'flex';
+  } else {
+    ageCard.style.display = 'none';
+  }
+
+  // ── Solidarity card for levels 3-5 ──
+  const solCard = document.getElementById('solidarityCard');
+  const sol = SOLIDARITY_DATA[profile.level];
+  if (sol) {
+    solCard.style.cssText = `display:block;background:${sol.bg};border-color:${sol.border};border-radius:18px;padding:18px 20px;margin-bottom:12px;border:1.5px solid;`;
+    solCard.innerHTML = `
+      <div class="solidarity-head">${sol.icon} ${sol.head}</div>
+      <div class="solidarity-stat" style="color:${sol.statColor}">${sol.stat}</div>
+      <div class="solidarity-context" style="color:${sol.statColor};font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;opacity:0.75">${sol.context}</div>
+      <div class="solidarity-follow">${sol.follow}</div>`;
+  } else {
+    solCard.style.display = 'none';
+  }
+
+  // ── Locked chart ──
+  drawLockedChart(profile);
+
+  // ── Animate ring + counter, then confetti only for top profiles ──
+  // Cancel any in-flight animation from a previous quiz run
+  if (_scoreRafId) { cancelAnimationFrame(_scoreRafId); _scoreRafId = null; }
+  const circ = 2 * Math.PI * 57;
+  const numEl = document.getElementById('scoreNum');
+  const ringEl = document.getElementById('scoreRing');
+  numEl.textContent = '0';
+  ringEl.style.strokeDashoffset = circ;
+  const dur = 1900, start = performance.now();
+  function tick(ts) {
+    const p = Math.min((ts - start) / dur, 1), e = 1 - Math.pow(1 - p, 3), c = Math.round(e * score);
+    numEl.textContent = c;
+    ringEl.style.strokeDashoffset = circ - circ * c / 100;
+    if (p < 1) { _scoreRafId = requestAnimationFrame(tick); }
+    else { _scoreRafId = null; setTimeout(maybeConfetti, 200); }
+  }
+  _scoreRafId = requestAnimationFrame(tick);
+}
+
+// ══════════════════════════════════════════
+// PAYWALL
+// ══════════════════════════════════════════
+function showPaywall() {
+  showScreen('screenPaywall');
+  document.getElementById('navBack').style.display = 'none';
+
+  // ── Restore promo code from email ?promo= param (cross-device retargeting) ──
+  if (_urlPromo && !promoCode) {
+    promoCode = _urlPromo;
+    // Parse discount % from end of code (e.g. NICO_MAY45 → 45)
+    const match = _urlPromo.match(/(\d+)$/);
+    if (match) promoDiscount = parseInt(match[1], 10);
+  }
+
+  // ── Inject timer bar (sticky top) once — only when there's a real discount ──
+  if (!document.getElementById('timerBar') && promoDiscount > 0) {
+    const pw = document.querySelector('.paywall-wrap');
+    pw.insertAdjacentHTML('afterbegin', `
+      <div class="timer-bar" id="timerBar" style="background:linear-gradient(135deg,#7c3aed,#3b82f6)">
+        <span>⏰</span>
+        <span>${promoDiscount}% discount expires in</span>
+        <span class="timer-count" id="timerCount">12:00</span>
+      </div>
+    `);
+    startStickyTimer(document.getElementById('timerCount'));
+  }
+
+  // ── Inject discount badge near plan cards (once) ──
+  const discountWrap = document.getElementById('discountBadgeWrap');
+  if (discountWrap && promoDiscount > 0) {
+    discountWrap.innerHTML = `
+      <div class="discount-badge-row">
+        <span class="dbr-check">✓</span>
+        <span class="dbr-text">Discount applied — <strong>${promoCode || 'SCOUT' + promoDiscount}</strong></span>
+        <span class="dbr-off">${promoDiscount}% off</span>
+      </div>`;
+  }
+
+  // ── Apply discounted prices ──
+  if (promoDiscount > 0) {
+    const m = 1 - promoDiscount / 100;
+    const annYr = (45.49 * m).toFixed(2);
+    const annMo = (annYr / 12).toFixed(2);
+    const mon   = (12.99 * m).toFixed(2);
+    const life  = Math.round(197 * m);
+    document.getElementById('annualPriceEl').innerHTML = `$${annMo}<span>/mo</span>`;
+    document.querySelector('#planAnnual .plan-original').textContent = `$3.79`;
+    document.getElementById('annualDescEl').textContent = `Billed as $${annYr}/year · ${promoDiscount}% off applied`;
+    document.getElementById('annualSaveEl').textContent = `Save $${Math.round((12.99*m - annYr/12)*12)} vs monthly`;
+    document.getElementById('monthlyPriceEl').innerHTML = `$${mon}<span>/mo</span>`;
+    document.getElementById('lifetimePriceEl').innerHTML = `$${life}<span> once</span>`;
+  }
+
+  // ── Update leak compare in Annual card ──
+  const lossNum = (currentLoss || (currentProfile && currentProfile.loss) || '$340/mo').replace(/[^0-9]/g,'');
+  const plcEl = document.getElementById('plcLeakAmt');
+  if (plcEl) plcEl.textContent = '$' + lossNum;
+
+  if (currentProfile) {
+    document.getElementById('pwTitle').innerHTML = userName
+      ? `<span class="grad">${userName.endsWith('s') ? userName + "'" : userName + "'s"}</span> personalized plan.`
+      : `Built for <span class="grad" id="pwProfileSpan">${currentProfile.name}.</span>`;
+    const ageSuffix = userAge ? ` Built specifically for people in their ${Math.floor(userAge/10)*10}s.` : '';
+    document.getElementById('pwSub').textContent = (PW_SUBS[currentProfile.name] || "Most people who start today notice a real difference within the first week.") + ageSuffix;
+    // ── Projection graph ──
+    const lossAmt = (currentLoss || currentProfile.loss || '$200/mo').replace('/mo','').trim();
+    const targetDate = new Date(); targetDate.setMonth(targetDate.getMonth() + 3);
+    const monthName = targetDate.toLocaleString('en-US', { month: 'long' });
+    document.getElementById('pwGraphAmt').textContent = lossAmt;
+    document.getElementById('pwGraphDate').textContent = monthName;
+    const anchorEl = document.getElementById('pwAnchorLeak');
+    if (anchorEl) anchorEl.textContent = lossAmt + '/mo';
+    drawPaywallGraph(currentProfile);
+
+    // ── Social proof bar ──
+    const liveCount = Math.floor(Math.random() * 60) + 180;
+    document.getElementById('socialProofBar').innerHTML = `
+      <div class="social-proof-bar">
+        <div class="live-counter-badge">
+          <span class="live-dot"></span>
+          ${liveCount} people taking this right now
+        </div>
+        <div class="social-count-line"><strong>2,400+</strong> financial profiles analyzed this month</div>
+      </div>`;
+
+    // ── Testimonial carousel ──
+    const tests = currentProfile.testimonials;
+    let tcIdx = 0;
+    let tcAuto;
+
+    function tcCardHTML(t, i) {
+      return `<div class="tc-card testimonial" id="tcCard${i}" style="opacity:0;transition:opacity .38s ease;position:absolute;top:0;left:0;width:100%;pointer-events:none;">
+        <div class="test-quote-mark">"</div>
+        <div class="test-text">${t.text}</div>
+        <div class="test-author">
+          <img class="test-avatar" src="${t.img}" alt="${t.name}" onerror="this.style.display='none'"/>
+          <div class="test-info">
+            <div class="test-name">${t.name}</div>
+            <div class="test-profile">${t.profile}</div>
+          </div>
+          <div class="test-stars">${t.stars}</div>
+        </div>
+      </div>`;
+    }
+
+    let tcBusy = false;
+
+    function tcShowCard(stage, idx) {
+      const card = stage.children[idx];
+      if (!card) return;
+      card.style.opacity = '1';
+      card.style.pointerEvents = 'auto';
+      // update stage height to match this card
+      requestAnimationFrame(() => {
+        if (card.scrollHeight > 0) stage.style.height = (card.scrollHeight + 4) + 'px';
+      });
+    }
+
+    function renderTC() {
+      const stage = document.getElementById('testCarouselStage');
+      const dotsEl = document.getElementById('testCarouselDots');
+      if (!stage) return;
+      if (!stage.children.length) {
+        stage.innerHTML = tests.map((t, i) => tcCardHTML(t, i)).join('');
+        // show first card immediately
+        tcShowCard(stage, 0);
+      }
+      if (dotsEl) {
+        dotsEl.innerHTML = tests.map((_, i) =>
+          `<button class="tc-dot${i === tcIdx ? ' active' : ''}" onclick="tcGoTo(${i})"></button>`
+        ).join('');
+      }
+    }
+
+    window.tcGoTo = function(i) {
+      if (tcBusy) return;
+      const newIdx = ((i % tests.length) + tests.length) % tests.length;
+      if (newIdx === tcIdx) return;
+      tcBusy = true;
+
+      const stage = document.getElementById('testCarouselStage');
+      const dotsEl = document.getElementById('testCarouselDots');
+      // Fade out current
+      const prev = stage && stage.children[tcIdx];
+      if (prev) { prev.style.opacity = '0'; prev.style.pointerEvents = 'none'; }
+
+      setTimeout(() => {
+        tcIdx = newIdx;
+        if (stage) tcShowCard(stage, tcIdx);
+        if (dotsEl) {
+          dotsEl.innerHTML = tests.map((_, j) =>
+            `<button class="tc-dot${j === tcIdx ? ' active' : ''}" onclick="tcGoTo(${j})"></button>`
+          ).join('');
+        }
+        tcBusy = false;
+      }, 240);
+
+      clearInterval(tcAuto);
+      tcAuto = setInterval(() => tcGoTo((tcIdx + 1) % tests.length), 5200);
+    };
+
+    clearInterval(tcAuto);
+    tcAuto = setInterval(() => tcGoTo((tcIdx + 1) % tests.length), 5200);
+    renderTC();
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECKPOINT
+// ══════════════════════════════════════════
+function showCheckpoint() {
+  showScreen('screenCheckpoint');
+  document.getElementById('navBack').style.display = 'flex';
+
+  const q1 = answers[0]; // multi-select (obstacles)
+  const q2 = answers[2]; // single (bank feeling — index shifted since age is now answers[1])
+
+  const bankObs = [
+    { icon:'😰', text:'Checking your bank account feels <em>stressful</em> right now.' },
+    { icon:'👀', text:'You\'ve been <em>avoiding</em> your bank app — that changes today.' },
+    { icon:'😐', text:'Money feels like a <em>background worry</em>. Scout can quiet that.' },
+    { icon:'✅', text:'You already track your money — now let\'s make it <em>work harder</em>.' },
+  ];
+  const q1Map = [
+    { icon:'💸', text:'Spending happens <em>before you even notice</em> it.' },
+    { icon:'📅', text:'Money tends to run out <em>before the month ends</em>.' },
+    { icon:'💳', text:'Debt is quietly <em>holding you back</em>.' },
+    { icon:'🔍', text:'Your money disappears and <em>you\'re not sure where</em>.' },
+    { icon:'⚡', text:'Unexpected expenses keep <em>knocking you off track</em>.' },
+  ];
+
+  const obs = [];
+  if (typeof q2 === 'number') obs.push(bankObs[q2]);
+  if (q1 instanceof Set && q1.size > 0) {
+    const first = [...q1].sort((a,b)=>a-b)[0];
+    if (q1Map[first]) obs.push(q1Map[first]);
+  }
+  obs.push({ icon:'🎯', text:'Scout has <em>enough to start</em>. Two more questions and your plan is ready.' });
+
+  const sparkles = ['✦','✧','✦'];
+  document.getElementById('checkpointObs').innerHTML = obs.slice(0,3).map((o, i) =>
+    `<div class="checkpoint-obs">
+      <span class="checkpoint-obs-icon">${o.icon}</span>
+      <span class="checkpoint-obs-text">${o.text}</span>
+      <span class="checkpoint-obs-sparkle">${sparkles[i]}</span>
+    </div>`
+  ).join('');
+}
+
+function continueFromCheckpoint() {
+  showScreen('screenQuiz');
+  renderQuestion(false);
+}
+
+function showTrustScreen() {
+  showScreen('screenTrust');
+  document.getElementById('navBack').style.display = 'none';
+}
+function showReassurance() {
+  showScreen('screenReassurance');
+  document.getElementById('navBack').style.display = 'none';
+}
+function continueFromReassurance() {
+  showScreen('screenQuiz');
+  renderQuestion(false);
+}
+
+// ══════════════════════════════════════════
+// TRAJECTORY GRAPH
+// ══════════════════════════════════════════
+function drawTrajectoryGraph() {
+  const canvas = document.getElementById('loadingGraph');
+  if (!canvas) return;
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const dpr = window.devicePixelRatio || 1;
+
+  // Hi-DPI
+  canvas.width  = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Control points: starts high (spending), curves down to target
+  const pad   = { l: 28, r: 22, t: 14, b: 22 };
+  const gW    = W - pad.l - pad.r;
+  const gH    = H - pad.t - pad.b;
+
+  // X-axis labels (weeks)
+  const labels = ['Now', 'Wk 2', 'Wk 4', 'Wk 8'];
+  ctx.font = '700 10px Inter, Arial';
+  ctx.fillStyle = '#94a3b8';
+  ctx.textAlign = 'center';
+  labels.forEach((lbl, i) => {
+    ctx.fillText(lbl, pad.l + (i / (labels.length - 1)) * gW, H - 4);
+  });
+
+  // Y reference lines (faint)
+  ctx.strokeStyle = 'rgba(148,163,184,0.18)';
+  ctx.lineWidth   = 1;
+  [0.25, 0.5, 0.75].forEach(frac => {
+    const y = pad.t + frac * gH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + gW, y); ctx.stroke();
+  });
+
+  // Curve points: cubic bezier from top-left to bottom-right
+  const x0 = pad.l,          y0 = pad.t + gH * 0.08;   // start high
+  const x3 = pad.l + gW,     y3 = pad.t + gH * 0.82;   // end low (target)
+  const x1 = pad.l + gW * 0.35, y1 = pad.t + gH * 0.12;
+  const x2 = pad.l + gW * 0.65, y2 = pad.t + gH * 0.70;
+
+  // Animated draw: rAF loop over ~1.2s
+  const drawDur = 1200, drawStart = performance.now();
+
+  function frame(now) {
+    const t = Math.min((now - drawStart) / drawDur, 1);
+    const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Re-draw static labels & grid
+    ctx.font = '700 10px Inter, Arial';
+    ctx.fillStyle = '#94a3b8'; ctx.textAlign = 'center';
+    labels.forEach((lbl, i) => {
+      ctx.fillText(lbl, pad.l + (i / (labels.length - 1)) * gW, H - 4);
+    });
+    ctx.strokeStyle = 'rgba(148,163,184,0.18)'; ctx.lineWidth = 1;
+    [0.25, 0.5, 0.75].forEach(frac => {
+      const y = pad.t + frac * gH;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + gW, y); ctx.stroke();
+    });
+
+    // Partial bezier via de Casteljau subdivision up to t=ease
+    function bezierPt(t) {
+      const mt = 1 - t;
+      return {
+        x: mt*mt*mt*x0 + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*x3,
+        y: mt*mt*mt*y0 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y3,
+      };
+    }
+
+    // Fill area under partial curve
+    ctx.save();
+    ctx.beginPath();
+    const steps = 60;
+    ctx.moveTo(x0, y0);
+    for (let s = 1; s <= steps; s++) {
+      const p = bezierPt((s / steps) * ease);
+      ctx.lineTo(p.x, p.y);
+    }
+    const endPt = bezierPt(ease);
+    ctx.lineTo(endPt.x, H - pad.b);
+    ctx.lineTo(x0, H - pad.b);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+    grad.addColorStop(0, 'rgba(124,58,237,0.18)');
+    grad.addColorStop(1, 'rgba(124,58,237,0.01)');
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.restore();
+
+    // Stroke the line
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    for (let s = 1; s <= steps; s++) {
+      const p = bezierPt((s / steps) * ease);
+      ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.restore();
+
+    // Glowing endpoint dot
+    if (ease > 0.95) {
+      const ep = bezierPt(ease);
+      // Glow ring
+      ctx.save();
+      ctx.beginPath(); ctx.arc(ep.x, ep.y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(124,58,237,0.15)'; ctx.fill();
+      ctx.restore();
+      // Dot + label
+      ctx.save();
+      ctx.beginPath(); ctx.arc(ep.x, ep.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#7c3aed'; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+      // Label
+      ctx.font = '700 9px Inter, Arial'; ctx.fillStyle = '#7c3aed';
+      ctx.textAlign = 'center';
+      ctx.fillText('Target', ep.x, ep.y - 13);
+      ctx.restore();
+    }
+
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// ══════════════════════════════════════════
+// LOADING
+// ══════════════════════════════════════════
+function showLoading() {
+  // Pre-calculate score + profile now so cinematic can use loss amount
+  currentScore = calcScore();
+  currentProfile = getProfile(currentScore);
+  currentLoss = calcLoss(currentProfile, answers[7]);
+
+  showScreen('screenLoading');
+  document.getElementById('navBack').style.display = 'none';
+
+  // Email screen always uses ScoutNoticed (level images 1-5 may vary in quality)
+  document.getElementById('emailScout').src = `/public/ScoutNoticed.png`;
+
+  const ring = document.getElementById('lrFill');
+  const pctEl = document.getElementById('loadingPct');
+  const circ = 358, dur = 3600, start = performance.now();
+
+  // Ring animation
+  function tickRing(ts) {
+    const p = Math.min((ts - start) / dur, 1);
+    const pct = Math.round(p * 100);
+    pctEl.textContent = pct + '%';
+    ring.style.strokeDashoffset = circ - circ * p;
+    if (p < 1) requestAnimationFrame(tickRing);
+  }
+  requestAnimationFrame(tickRing);
+
+  // Trajectory graph
+  setTimeout(() => drawTrajectoryGraph(), 650);
+
+  // Milestone ticks (3 escalating steps)
+  [820, 1900, 3050].forEach((t, i) => setTimeout(() => document.getElementById('ls'+i).classList.add('done'), t));
+
+  // Testimonial carousel
+  let ti = 0;
+  function showTest(idx) {
+    const t = LOADING_TESTS[idx];
+    const el = document.getElementById('loadingTest');
+
+    // Fade out first, then swap content, then fade in
+    el.style.transition = 'opacity .3s ease, transform .3s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(10px)';
+
+    setTimeout(() => {
+      el.innerHTML = `
+        <div class="testimonial">
+          <div class="test-quote-mark">"</div>
+          <div class="test-text">${t.text}</div>
+          <div class="test-author">
+            <img class="test-avatar" src="${t.img}" alt="${t.name}" onerror="this.style.display='none'"/>
+            <div class="test-info">
+              <div class="test-name">${t.name}</div>
+              <div class="test-profile">${t.profile}</div>
+            </div>
+            <div class="test-stars">${t.stars}</div>
+          </div>
+        </div>`;
+      // Force reflow so browser sees opacity:0 before we transition to 1
+      void el.offsetHeight;
+      el.style.transition = 'opacity .45s ease, transform .45s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, idx === 0 ? 50 : 320);
+  }
+  showTest(0);
+  const iv = setInterval(() => { ti = (ti + 1) % LOADING_TESTS.length; showTest(ti); }, 2600);
+
+  setTimeout(() => { clearInterval(iv); showEmailCapture(); }, 4400);
+}
+
+// ══════════════════════════════════════════
+// EMAIL GATE
+// ══════════════════════════════════════════
+function showEmailCapture() {
+  showScreen('screenEmail');
+}
+
+function submitEmail() {
+  const nameEl  = document.getElementById('nameInput');
+  const emailEl = document.getElementById('emailInput');
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+
+  // Validate name
+  if (!name) {
+    nameEl.style.borderColor = '#ef4444'; nameEl.focus();
+    setTimeout(() => nameEl.style.borderColor = '', 1200); return;
+  }
+  // Validate email
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailEl.style.borderColor = '#ef4444'; emailEl.focus();
+    setTimeout(() => emailEl.style.borderColor = '', 1200); return;
+  }
+
+  userEmail = email;
+  userName  = name;
+
+  // Generate personalized promo code from REAL first name
+  const prefix = name.replace(/[^a-zA-Z]/g,'').substring(0,4).toUpperCase() || 'SCOU';
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const month  = months[new Date().getMonth()];
+  const discountMap = {1:30, 2:35, 3:40, 4:45, 5:50};
+  promoDiscount = discountMap[currentProfile ? currentProfile.level : 3];
+  promoCode = `${prefix}_${month}${promoDiscount}`;
+
+  // Personalize the cinematic slide 3 heading with their name
+  const cs2 = document.getElementById('cs2Text');
+  if (cs2) {
+    cs2.innerHTML = `${name}, your plan<br/>is <em>ready.</em>`;
+  }
+
+  // Fire email (non-blocking — don't make user wait)
+  fetch('/api/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      email,
+      profileName:  currentProfile?.name  || '',
+      profileLevel: currentProfile?.level || 3,
+      score:        currentScore,
+      loss:         currentLoss || currentProfile?.loss  || '$0/mo',
+      promo:        promoCode,
+      discount:     promoDiscount,
+      optIn:        false,  // updated in submitOptIn if they say yes
+    }),
+  }).catch(() => {/* silent — user already moved on */});
+
+  showOptIn();
+}
+
+// ══════════════════════════════════════════
+// OPT-IN
+// ══════════════════════════════════════════
+function showOptIn() {
+  showScreen('screenOptIn');
+}
+
+function submitOptIn(yes) {
+  if (yes) {
+    // Re-fire subscribe with optIn:true so the serverless function can tag them
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:         userName,
+        email:        userEmail,
+        profileName:  currentProfile?.name  || '',
+        profileLevel: currentProfile?.level || 3,
+        score:        currentScore,
+        loss:         currentLoss || currentProfile?.loss  || '$0/mo',
+        promo:        promoCode,
+        discount:     promoDiscount,
+        optIn:        true,
+      }),
+    }).catch(() => {});
+  }
+  showSummaryScreen();
+}
+
+// ══════════════════════════════════════════
+// SUMMARY
+// ══════════════════════════════════════════
+function showSummaryScreen() {
+  if (!currentScore) { currentScore = calcScore(); currentProfile = getProfile(currentScore); currentLoss = calcLoss(currentProfile, answers[7]); }
+  showScreen('screenSummary');
+
+  const score   = currentScore;
+  const profile = currentProfile;
+
+  // Gauge colors by profile level
+  const gaugeColor = profile.color || '#7c3aed';
+
+  // Animate gauge after paint
+  setTimeout(() => {
+    const pct  = score / 100;
+    const fill  = document.getElementById('summaryGaugeFill');
+    const thumb = document.getElementById('summaryGaugeThumb');
+    if (fill)  fill.style.width = (pct * 100) + '%';
+    if (thumb) thumb.style.left  = (pct * 100) + '%';
+
+    const badge = document.getElementById('summaryScoreBadge');
+    if (badge) {
+      badge.textContent        = `Score ${score}/100`;
+      badge.style.color        = gaugeColor;
+      badge.style.background   = gaugeColor + '14';
+    }
+  }, 80);
+
+  // Warning card
+  const warnCard = document.getElementById('summaryWarningCard');
+  const warnText = document.getElementById('summaryWarningText');
+  if (score < 30) {
+    warnCard.style.display = '';
+    warnText.textContent   = "Scores in this range are linked to $400–$520+ in silent monthly leaks — most of it invisible without a tool like Scout.";
+    warnCard.style.borderColor = '#ef4444';
+    warnCard.style.background  = '#fff1f2';
+    warnText.style.color       = '#9f1239';
+  } else if (score < 55) {
+    warnCard.style.display = '';
+    warnText.textContent   = "This range is tied to higher financial stress and missed savings opportunities — typically $180–$390/mo in recoverable leaks.";
+  } else {
+    warnCard.style.display = 'none';
+  }
+
+  // Stats derived from answers
+  const bankFeelings  = ['Feels stressed when checking','Avoids checking accounts','Neutral — it is what it is','Tracks spending regularly'];
+  const spendStyles   = ['Impulsive spender','Careful & deliberate','Mixed spending style','Unaware of own patterns'];
+  const budgetHistory = ['Never tried budgeting','Tried but didn\'t stick','Currently struggling','Needs better tools'];
+
+  const bankLabel  = bankFeelings[answers[2]]  ?? 'Reviewing patterns';
+  const styleLabel = spendStyles[answers[5]]   ?? 'Mixed style';
+  const budgetLabel = budgetHistory[answers[6]] ?? 'Building habits';
+
+  // Anxiety label from scale (0=low, 4=high)
+  const anxVal = typeof answers[4] === 'number' ? answers[4] : 2;
+  const anxLabel = anxVal <= 1 ? 'Low financial stress' : anxVal <= 3 ? 'Moderate financial stress' : 'High financial stress';
+
+  const stats = [
+    { icon: '💸', label: 'Est. monthly leak',       value: currentLoss || profile.loss },
+    { icon: '🏦', label: 'Relationship with money',  value: bankLabel   },
+    { icon: '⚡', label: 'Spending pattern',          value: styleLabel  },
+    { icon: '🧘', label: 'Stress level',              value: anxLabel    },
+  ];
+
+  document.getElementById('summaryStats').innerHTML = stats.map(s => `
+    <div class="summary-stat-pill">
+      <span class="summary-stat-icon">${s.icon}</span>
+      <div class="summary-stat-info">
+        <div class="summary-stat-label">${s.label}</div>
+        <div class="summary-stat-value">${s.value}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// CINEMATIC
+// ══════════════════════════════════════════
+function showCinematic() {
+  showScreen('screenCinematic');
+
+  // Personalize slide 3 with name if we have it, else generic
+  document.getElementById('cs2Text').innerHTML = userName
+    ? `${userName}, your plan<br/>is <em>ready.</em>`
+    : `Your plan<br/>is <em>ready.</em>`;
+
+  let slide = 0;
+  function showSlide(idx) {
+    document.querySelectorAll('.cinematic-slide').forEach((el,i) => el.classList.toggle('cactive', i === idx));
+    document.querySelectorAll('.cdot').forEach((el,i) => el.classList.toggle('cactive', i === idx));
+  }
+  showSlide(0);
+
+  const advance = () => {
+    slide++;
+    if (slide < 3) { showSlide(slide); setTimeout(advance, 2400); }
+    else showResults();
+  };
+  setTimeout(advance, 2400);
+}
+
+// ══════════════════════════════════════════
+// BALLOON POP
+// ══════════════════════════════════════════
+function showBalloon() {
+  showScreen('screenBalloon');
+  balloonTaps = 0;
+
+  // Color balloon + glow to match level
+  const color    = currentProfile ? currentProfile.color    : '#7c3aed';
+  const colorEnd = currentProfile ? currentProfile.colorEnd : '#3b82f6';
+  const body     = document.getElementById('balloonBody');
+  body.style.background = `radial-gradient(circle at 36% 32%, ${color}dd, ${color})`;
+  body.style.boxShadow  = `0 30px 80px ${color}44, 0 10px 30px rgba(0,0,0,0.1)`;
+  document.getElementById('balloonKnot').style.background = color;
+
+  // Inject a level-colored radial glow into the screen background
+  const screen = document.getElementById('screenBalloon');
+  screen.style.background = `radial-gradient(ellipse 70% 55% at 50% 45%, ${color}22 0%, #eef2ff 55%, #e0e7ff 100%)`;
+
+  // Reset balloon state
+  body.style.animation = 'bFloat 3.2s ease-in-out infinite';
+  body.style.opacity   = '1';
+  body.style.transform = '';
+  body.style.filter    = '';
+  const prePop = document.getElementById('balloonPrePop');
+  prePop.style.display = '';
+  prePop.classList.remove('balloon-pop-blurred');
+  document.getElementById('balloonContainer').style.display = 'flex';
+  document.getElementById('screenBalloon').classList.remove('balloon-popped');
+
+  // Reset dots
+  [0,1,2].forEach(i => document.getElementById('bt'+i).classList.remove('filled'));
+  document.getElementById('balloonAlmost').classList.remove('show');
+  document.getElementById('balloonHint').style.opacity = '1';
+  document.getElementById('discountCard').style.display = 'none';
+
+  // Pre-fill discount card
+  document.getElementById('dcPct').innerHTML = `${promoDiscount}<sub>%</sub>`;
+  document.getElementById('dcCode').textContent = promoCode;
+  startStickyTimer(document.getElementById('dcTimer'), false);
+}
+
+function tapBalloon() {
+  if (balloonTaps >= 3) return;
+  balloonTaps++;
+
+  const body = document.getElementById('balloonBody');
+  document.getElementById('bt'+(balloonTaps-1)).classList.add('filled');
+
+  if (balloonTaps === 1) {
+    body.style.animation = 'none';
+    void body.offsetWidth;
+    setTimeout(() => { body.style.animation = 'bWobble1 .5s ease infinite'; }, 20);
+    document.getElementById('balloonHint').textContent = 'one more…';
+  } else if (balloonTaps === 2) {
+    body.style.animation = 'none';
+    void body.offsetWidth;
+    setTimeout(() => { body.style.animation = 'bWobble2 .4s ease infinite'; }, 20);
+    document.getElementById('balloonAlmost').classList.add('show');
+    document.getElementById('balloonHint').textContent = '';
+  } else {
+    popBalloon();
+  }
+}
+
+function popBalloon() {
+  const body = document.getElementById('balloonBody');
+  body.style.animation = 'bPop .5s cubic-bezier(.4,0,.2,1) both';
+  document.getElementById('balloonAlmost').classList.remove('show');
+  document.getElementById('balloonHint').style.opacity = '0';
+
+  // Get balloon center coords for burst origin
+  const br = body.getBoundingClientRect();
+  const cx = br.left + br.width / 2;
+  const cy = br.top + br.height / 2;
+  const color = currentProfile?.color ?? '#7c3aed';
+
+  // Big confetti burst FROM the balloon position
+  launchBurstConfetti(cx, cy);
+
+  // Balloon debris shards that scatter and settle
+  setTimeout(() => spawnBalloonDebris(cx, cy, color), 90);
+
+  // Blur the pre-pop section (leave it visible but frosted)
+  setTimeout(() => {
+    const pp = document.getElementById('balloonPrePop');
+    if (pp) pp.classList.add('balloon-pop-blurred');
+  }, 180);
+
+  // Darken screen + slide up coupon card
+  setTimeout(() => {
+    document.getElementById('screenBalloon').classList.add('balloon-popped');
+    const card = document.getElementById('discountCard');
+    card.style.display = 'flex';
+    startStickyTimer(document.getElementById('dcTimer'), false);
+  }, 460);
+}
+
+function launchBurstConfetti(cx, cy) {
+  const wrap = document.getElementById('confettiWrap');
+  const colors = ['#7c3aed','#a78bfa','#c4b5fd','#3b82f6','#93c5fd','#06b6d4','#67e8f9','#f59e0b','#fbbf24','#10b981','#34d399','#ec4899','#fb7185','#ffffff'];
+  for (let i = 0; i < 72; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-burst-piece';
+    const angle = Math.random() * 360;
+    const dist = 50 + Math.random() * 240;
+    const tx = Math.cos(angle * Math.PI / 180) * dist;
+    const ty = Math.sin(angle * Math.PI / 180) * dist - 80; // bias upward
+    const size = 5 + Math.random() * 9;
+    el.style.cssText = `
+      left:${cx - size / 2}px; top:${cy - size / 2}px;
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius:${Math.random() > 0.45 ? '50%' : '2px'};
+      --tx:${tx}px; --ty:${ty}px;
+      --rot:${200 + Math.random() * 560}deg;
+      --dur:${0.55 + Math.random() * 0.7}s;
+      --delay:${Math.random() * 0.14}s;
+    `;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 1700);
+  }
+}
+
+function spawnBalloonDebris(cx, cy, color) {
+  const wrap = document.getElementById('confettiWrap');
+  const hex = color.replace('#','');
+  for (let i = 0; i < 8; i++) {
+    const el = document.createElement('div');
+    el.className = 'balloon-debris';
+    const angle = (i / 8) * 360 + Math.random() * 28;
+    const dist = 55 + Math.random() * 110;
+    const tx = Math.cos(angle * Math.PI / 180) * dist;
+    const ty = Math.sin(angle * Math.PI / 180) * dist;
+    const w = 14 + Math.random() * 24;
+    const h = 10 + Math.random() * 18;
+    const opacity = 0.45 + Math.random() * 0.4;
+    el.style.cssText = `
+      left:${cx - w / 2}px; top:${cy - h / 2}px;
+      width:${w}px; height:${h}px;
+      background:${color}; opacity:${opacity};
+      --tx:${tx}px; --ty:${ty}px;
+      --rot:${90 + Math.random() * 280}deg;
+      --dur:${0.48 + Math.random() * 0.28}s;
+      --delay:${i * 0.038}s;
+    `;
+    wrap.appendChild(el);
+    // fade out after 1.8–2.4s and remove
+    const fadeDelay = 1800 + i * 90;
+    setTimeout(() => { el.style.opacity = '0'; }, fadeDelay);
+    setTimeout(() => el.remove(), fadeDelay + 1300);
+  }
+}
+
+function copyCode() {
+  navigator.clipboard?.writeText(promoCode).catch(()=>{});
+  const btn = document.querySelector('.dc-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+
+// ══════════════════════════════════════════
+// STICKY TIMER
+// ══════════════════════════════════════════
+const TIMER_KEY = 'ss_promo_expiry';
+const TIMER_DUR = 12 * 60 * 1000;
+
+function startStickyTimer(el, reset) {
+  if (!el) return;
+  const now = Date.now();
+  const stored = localStorage.getItem(TIMER_KEY);
+  let expiry;
+
+  if (reset === true || !stored || parseInt(stored) <= now) {
+    expiry = now + TIMER_DUR;
+    localStorage.setItem(TIMER_KEY, expiry);
+  } else {
+    expiry = parseInt(stored);
+  }
+
+  function tick() {
+    const left = expiry - Date.now();
+    if (left <= 0) { el.textContent = '00:00'; return; }
+    const m = Math.floor(left / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    setTimeout(tick, 500);
+  }
+  tick();
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  ['Annual','Monthly','Lifetime'].forEach(p => {
+    document.getElementById('plan'+p).classList.toggle('featured', p.toLowerCase()===plan);
+  });
+  document.getElementById('pwCta').textContent = plan==='lifetime' ? 'Get lifetime access →' : 'Start free for 7 days →';
+}
+
+function handlePurchase() {
+  const p = new URLSearchParams({ plan:selectedPlan, utm_source:'quiz', promo:promoCode });
+  window.location.href = 'https://spendsignal.app/signup?'+p.toString();
+}
+</script>
+</body>
+</html>

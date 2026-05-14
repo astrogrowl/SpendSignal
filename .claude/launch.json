@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "spendsignal-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "4000", "."],
+      "port": 4000
+    }
+  ]
+}
