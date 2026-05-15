@@ -1047,7 +1047,7 @@ nav {
   border-radius: 2px;
 }
 
-/* ── Plan row (Monthly + Lifetime side-by-side) ── */
+/* ── Plan row ── */
 .plan-row { display: flex; gap: 9px; }
 .plan-mini {
   flex: 1; padding: 13px 12px; cursor: pointer; text-align: center;
@@ -1074,6 +1074,62 @@ nav {
 .plan-perks { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 6px; }
 .plan-perk { font-size: 11px; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 3px; }
 .plan-perk-save { color: #16a34a; font-weight: 700; }
+
+/* ── Billing period toggle ── */
+.billing-toggle { display:flex; gap:7px; margin-bottom:14px; }
+.billing-btn { flex:1; padding:9px 6px 7px; border:1.5px solid rgba(148,163,184,0.3); border-radius:12px; background:rgba(255,255,255,0.7); font-size:12.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:2px; transition:border-color .18s, background .18s, color .18s; }
+.billing-btn:hover { border-color:rgba(124,58,237,.35); background:#faf7ff; }
+.billing-btn.active { border-color:#7c3aed; background:#f5f3ff; color:#6d28d9; }
+.billing-label { font-size:9.5px; font-weight:600; color:#94a3b8; letter-spacing:.2px; }
+.billing-label.best { color:#16a34a; }
+.billing-btn.active .billing-label { color:#9f7aea; }
+.billing-btn.active .billing-label.best { color:#16a34a; }
+
+/* ── Plan feature list ── */
+.plan-features { display:flex; flex-direction:column; gap:3px; margin:8px 0 5px; }
+.plan-feature { font-size:11.5px; color:#475569; font-weight:500; }
+
+/* ── Plan credits badge ── */
+.plan-credits { display:inline-block; font-size:10.5px; font-weight:700; color:#7c3aed; background:rgba(124,58,237,0.09); padding:3px 10px; border-radius:20px; margin:5px 0 2px; }
+
+/* ── Plan positioning tagline ── */
+.plan-positioning { font-size:11px; color:#94a3b8; font-weight:500; margin-top:2px; }
+
+/* ── Pro plan badge ── */
+.plan-badge-pro { background:linear-gradient(135deg,#1e293b,#334155) !important; }
+
+/* ── Free plan row ── */
+.plan-free-row { display:flex; align-items:center; justify-content:center; gap:10px; padding:10px 2px 4px; }
+.plan-free-label { font-size:12px; color:#94a3b8; font-weight:500; }
+.plan-free-btn { background:none; border:none; font-size:12px; font-weight:700; color:#7c3aed; cursor:pointer; font-family:inherit; text-decoration:underline; padding:0; }
+.plan-free-btn:hover { color:#5b21b6; }
+
+/* ── Scout credits FAQ expandable ── */
+.credits-faq { margin:10px 0 14px; border-radius:12px; background:rgba(124,58,237,0.05); border:1px solid rgba(124,58,237,0.15); overflow:hidden; }
+.credits-faq summary { font-size:12px; font-weight:700; color:#7c3aed; padding:11px 15px; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; }
+.credits-faq summary::-webkit-details-marker { display:none; }
+.credits-faq summary::after { content:'▾'; font-size:11px; transition:transform .2s; }
+.credits-faq[open] summary::after { transform:rotate(-180deg); }
+.credits-faq-body { padding:0 15px 13px; font-size:12px; color:#475569; line-height:1.65; border-top:1px solid rgba(124,58,237,0.1); }
+.credits-faq-body p { margin:8px 0 0; }
+.credits-faq-body .cq-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(148,163,184,0.15); font-size:11.5px; }
+.credits-faq-body .cq-row:last-child { border-bottom:none; }
+.credits-faq-body .cq-plan { font-weight:700; color:#0f172a; }
+.credits-faq-body .cq-amt { font-weight:700; color:#7c3aed; }
+.credits-faq-safety { font-size:11px; font-weight:600; color:#16a34a; background:rgba(22,163,74,.08); border-radius:8px; padding:7px 12px; margin-top:10px; text-align:center; }
+
+/* ── Scout recommendation box ── */
+.scout-recommend-box { background:rgba(124,58,237,0.07); border:1.5px solid rgba(124,58,237,0.22); border-radius:18px; padding:16px 18px 18px; margin-bottom:14px; }
+.srb-top { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+.srb-icon { font-size:26px; flex-shrink:0; line-height:1; margin-top:2px; }
+.srb-eyebrow { font-size:10px; font-weight:700; color:#9f7aea; letter-spacing:.7px; text-transform:uppercase; margin-bottom:3px; }
+.srb-headline { font-size:15.5px; font-weight:800; color:#0f172a; letter-spacing:-.3px; line-height:1.25; }
+.srb-headline strong { background:linear-gradient(135deg,#7c3aed,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.srb-reason { font-size:12.5px; color:#475569; line-height:1.65; margin-bottom:12px; border-top:1px solid rgba(124,58,237,0.12); padding-top:11px; }
+.srb-bullets { display:flex; flex-direction:column; gap:6px; }
+.srb-bullet { font-size:12px; color:#1e293b; font-weight:600; display:flex; align-items:flex-start; gap:8px; line-height:1.45; }
+.srb-check { color:#7c3aed; font-weight:800; flex-shrink:0; font-size:13px; }
+.srb-archetype { display:inline-block; font-size:10px; font-weight:700; color:#7c3aed; background:rgba(124,58,237,0.1); border-radius:20px; padding:2px 9px; margin-left:6px; vertical-align:middle; letter-spacing:.2px; }
 
 /* ── Discount badge row (near plan cards) ── */
 .discount-badge-row {
@@ -1300,6 +1356,12 @@ nav {
 .email-btn:hover { transform:translateY(-2px); box-shadow:0 13px 32px rgba(124,58,237,.4); }
 .email-btn:active { transform:scale(.97); }
 .email-privacy { font-size:11.5px; color:#94a3b8; display:flex; align-items:center; justify-content:center; gap:5px; }
+.email-error { font-size:11.5px; color:#ef4444; font-weight:600; text-align:left; margin:-4px 0 10px 4px; min-height:0; max-height:0; overflow:hidden; transition:max-height .2s ease, opacity .2s ease; opacity:0; }
+.email-error.show { max-height:30px; opacity:1; }
+.email-input.err { border-color:#ef4444 !important; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
+.email-input.shake { animation:shake .32s ease; }
+.email-btn.loading { opacity:.7; pointer-events:none; cursor:default; }
 
 /* ─────────────────────────────────────────────
    OPT-IN
@@ -1676,6 +1738,77 @@ nav {
 .dc-tear-line::before { left: -11px; }
 .dc-tear-line::after  { right: -11px; }
 
+/* ─────────────────────────────────────────────
+   CONVERSION POLISH — mobile + premium tweaks
+───────────────────────────────────────────── */
+
+/* Loss amount: clamp so it doesn't overflow on 320px screens */
+.loss-amt { font-size: clamp(36px, 10vw, 48px) !important; }
+
+/* Intro trust row: tighten gaps on small viewports */
+@media (max-width: 380px) {
+  .intro-trust { gap: 8px; }
+  .ti { font-size: 11px; }
+}
+
+/* Paywall: cap plan cards width and ensure comfortable touch targets */
+.plan-card { min-height: 0; }
+.plan-card .plan-badge { font-size: 10px; padding: 3px 11px; }
+
+/* Billing toggle: ensure text fits on narrow screens */
+@media (max-width: 360px) {
+  .billing-btn { font-size: 11.5px; padding: 8px 4px 6px; }
+}
+
+/* Free plan row: wrap gracefully */
+.plan-free-row { flex-wrap: wrap; text-align: center; }
+
+/* Scout recommend box: slightly more breathing room */
+.scout-recommend-box { padding: 18px 20px 20px; }
+
+/* Guarantee box: softer, warmer look */
+.pw-guarantee { border-radius: 18px; }
+
+/* Trust row chips: wrap cleanly, equal heights */
+.trust-row { gap: 7px; }
+.trust-item-sm { flex-shrink: 0; white-space: nowrap; }
+
+/* Results hero: tighter on small screens */
+@media (max-width: 400px) {
+  .results-hero { padding: 20px 16px 18px; }
+  .score-ring-wrap { width: 130px; height: 130px; margin: 10px auto 8px; }
+  .score-ring-svg { width: 130px; height: 130px; }
+}
+
+/* Loading screen: more comfortable bottom padding so CTA is reachable */
+#screenLoading { padding-bottom: 48px; }
+
+/* Checkpoint title: don't overflow on small screens */
+.checkpoint-title { max-width: 70%; }
+@media (max-width: 360px) {
+  .checkpoint-title { max-width: 100%; }
+  .checkpoint-scout { width: 200px; height: 200px; right: -14px; }
+}
+
+/* Email screen: slightly tighter spacing on very small screens */
+@media (max-width: 380px) {
+  .email-title { font-size: 20px; }
+  .email-input { padding: 13px 15px; font-size: 14px; }
+  .email-btn { padding: 14px; font-size: 14px; }
+}
+
+/* Paywall CTA: always full-width, comfortable touch target */
+.pw-cta { min-height: 52px; }
+
+/* Profile tagline color softer when text is default dark */
+.profile-tagline { opacity: 0.9; }
+
+/* Insight carousel: tap hint more subtle */
+.ic-tap-hint { opacity: 0.6; }
+
+/* Lock gate text: slightly more readable */
+.locked-gate-text { line-height: 1.55; }
+
 /* ── Loading milestone step escalation ── */
 .ls-content { display:flex; flex-direction:column; gap:1px; flex:1; }
 .ls-time {
@@ -1735,12 +1868,12 @@ nav {
   <div class="intro-wrap">
     <div class="intro-badge"><span class="bdot"></span> Free · Takes 60 seconds</div>
     <h1 class="intro-title">What's your<br/><span class="grad">money personality?</span></h1>
-    <p class="intro-sub">Answer 6 questions. Scout will analyze your answers and build a personalized plan — completely free.</p>
+    <p class="intro-sub">Answer a few questions. Scout will build a personalized money profile — free to see, no account needed.</p>
     <button class="btn-start" onclick="startQuiz()">Find out now →</button>
     <div class="intro-trust">
       <div class="ti">✓ No account needed</div><div class="ts"></div>
-      <div class="ti">✓ No credit card</div><div class="ts"></div>
-      <div class="ti">✓ 100% free</div>
+      <div class="ti">✓ Free to take</div><div class="ts"></div>
+      <div class="ti">✓ 60 seconds</div>
     </div>
   </div>
 </div>
@@ -1791,7 +1924,7 @@ nav {
 
     <!-- Light hero card: ring + profile name + traits -->
     <div class="results-hero">
-      <div class="results-eye">Your Financial Health Score</div>
+      <div class="results-eye">Your Money Profile · Based on your answers</div>
       <div class="score-ring-wrap">
         <svg class="score-ring-svg" viewBox="0 0 140 140">
           <defs>
@@ -1834,11 +1967,11 @@ nav {
       </div>
     </div>
 
-    <!-- 2. RIGHT NOW YOU'RE LEAKING -->
+    <!-- 2. ESTIMATED MONTHLY LEAK -->
     <div class="loss-banner">
-      <div class="loss-lbl">⚠️ Right now you're leaking</div>
+      <div class="loss-lbl">⚠️ Estimated monthly leak</div>
       <div class="loss-amt" id="lossAmt"></div>
-      <div class="loss-sub">every month without a system</div>
+      <div class="loss-sub">potentially slipping away each month</div>
       <div class="loss-reclaim" id="lossReclaim"></div>
     </div>
 
@@ -1871,14 +2004,14 @@ nav {
           <div class="locked-lock-icon">🔒</div>
           <div class="locked-gate-text">
             Your full breakdown is ready.<br/>
-            <span>Reveal your reward first</span> to unlock it.
+            <span>Claim your reward</span> to unlock it.
           </div>
-          <button class="locked-cta-btn" onclick="showBalloon()">Reveal my reward →</button>
+          <button class="locked-cta-btn" onclick="showBalloon()">Claim my reward →</button>
         </div>
       </div>
     </div>
 
-    <div class="results-note">Free 7-day trial · No credit card required to start</div>
+    <div class="results-note">Free to start · Cancel anytime</div>
   </div>
 </div>
 
@@ -1887,20 +2020,20 @@ nav {
   <div class="paywall-wrap">
     <div class="pw-eye" id="pwEye">📋 Your plan is ready</div>
     <h2 class="pw-title" id="pwTitle">Built for <span class="grad" id="pwProfileSpan">you.</span></h2>
-    <p class="pw-sub" id="pwSub">Most people who start today notice a real difference within their first week.</p>
+    <p class="pw-sub" id="pwSub">Many people who start with a system like Scout find clarity in their spending sooner than they expected.</p>
 
     <!-- Price anchor callout -->
     <div class="pw-anchor-bar" id="pwAnchorBar">
-      <span class="pw-anchor-leak">Your leak: <strong id="pwAnchorLeak">$340/mo</strong></span>
+      <span class="pw-anchor-leak">Potential monthly gap: <strong id="pwAnchorLeak">$340/mo</strong></span>
       <span class="pw-anchor-divider">→</span>
-      <span class="pw-anchor-plan">This plan: <strong>$5.83/mo</strong></span>
+      <span class="pw-anchor-plan">SpendSignal Plus: <strong id="pwAnchorPlanPrice">$3.33/mo</strong></span>
     </div>
 
     <!-- Projection graph card -->
     <div class="pw-graph-card">
       <div class="pw-graph-header">
-        <div class="pw-graph-headline" id="pwGraphHeadline">Reclaim <em id="pwGraphAmt">$340</em> by <em id="pwGraphDate">August</em></div>
-        <div class="pw-graph-sub">Based on your quiz answers — projected 90-day savings recovery</div>
+        <div class="pw-graph-headline" id="pwGraphHeadline">Potentially find up to <em id="pwGraphAmt">$340</em> by <em id="pwGraphDate">August</em></div>
+        <div class="pw-graph-sub">Illustrative estimate based on your quiz answers — individual results vary</div>
       </div>
       <img class="pw-graph-img" id="pwGraphImg" src="" alt=""/>
       <div class="pw-graph-legend">
@@ -1916,7 +2049,7 @@ nav {
         <div class="pw-ms-num">1</div>
         <div class="pw-ms-body">
           <div class="pw-ms-time">🌅 Day 1</div>
-          <div class="pw-ms-text">Scout scans your profile and flags your <strong>single biggest leak category</strong></div>
+          <div class="pw-ms-text">Scout reviews your answers and highlights your <strong>biggest spending area to watch</strong></div>
         </div>
       </div>
       <div class="pw-ms-connector"></div>
@@ -1924,7 +2057,7 @@ nav {
         <div class="pw-ms-num">2</div>
         <div class="pw-ms-body">
           <div class="pw-ms-time">📊 Week 1</div>
-          <div class="pw-ms-text">Your first Leak Report arrives — <strong>real dollar amounts, not estimates</strong></div>
+          <div class="pw-ms-text">Your first Leak Report arrives — <strong>a clear picture of where your money's going</strong></div>
         </div>
       </div>
       <div class="pw-ms-connector"></div>
@@ -1932,7 +2065,7 @@ nav {
         <div class="pw-ms-num">3</div>
         <div class="pw-ms-body">
           <div class="pw-ms-time">💰 Month 1</div>
-          <div class="pw-ms-text">Most users recover <strong>$80–$400</strong> they didn't know they were losing</div>
+          <div class="pw-ms-text">Scout may surface <strong>spending patterns</strong> you didn't know were worth reviewing</div>
         </div>
       </div>
     </div>
@@ -1946,72 +2079,126 @@ nav {
       <div class="test-carousel-dots" id="testCarouselDots"></div>
     </div>
 
+    <!-- Scout plan recommendation (injected by JS) -->
+    <div id="scoutRecommendBox"></div>
+
     <!-- Discount applied badge (injected here by JS) -->
     <div id="discountBadgeWrap"></div>
+
+    <!-- Billing period selector -->
+    <div class="billing-toggle" id="billingToggle">
+      <button class="billing-btn" data-period="monthly" onclick="selectPeriod('monthly')">
+        Monthly<span class="billing-label">Flexible</span>
+      </button>
+      <button class="billing-btn" data-period="quarterly" onclick="selectPeriod('quarterly')">
+        3 months<span class="billing-label">Balanced</span>
+      </button>
+      <button class="billing-btn active" data-period="annual" onclick="selectPeriod('annual')">
+        Annual<span class="billing-label best">Best value</span>
+      </button>
+    </div>
 
     <!-- Plan cards -->
     <div class="plan-cards">
 
-      <!-- Annual hero -->
-      <div class="plan-card featured" id="planAnnual" onclick="selectPlan('annual')">
-        <div class="plan-badge">⭐ Most Popular — Save 55%</div>
+      <!-- Plus — featured/recommended -->
+      <div class="plan-card featured" id="planPlus" onclick="selectPlan('plus')">
+        <div class="plan-badge">⭐ Most popular</div>
         <div class="plan-top">
-          <div class="plan-name">Annual</div>
+          <div>
+            <div class="plan-name">Plus</div>
+            <div class="plan-positioning">Everyday money control</div>
+          </div>
           <div class="plan-price-wrap">
-            <span class="plan-original">$5.83</span>
-            <span class="plan-price" id="annualPriceEl">$3.79<span>/mo</span></span>
+            <span class="plan-original" id="plusOriginalEl"></span>
+            <span class="plan-price" id="plusPriceEl">$3.33<span>/mo</span></span>
           </div>
         </div>
-        <div class="plan-desc" id="annualDescEl">Billed as $45.49/year · 7-day free trial</div>
-        <div class="plan-leak-compare" id="planLeakCompare">
-          <span class="plc-leak">You leak <strong id="plcLeakAmt">$340</strong>/mo</span>
-          <span class="plc-arrow">vs</span>
-          <span class="plc-cost">This costs <strong>$3.79</strong>/mo</span>
+        <div class="plan-desc" id="plusDescEl">Billed as $39.99/year · 7-day Plus trial included</div>
+        <span class="plan-credits">150 Scout credits/month</span>
+        <div class="plan-features">
+          <div class="plan-feature">✓ Smart spending warnings</div>
+          <div class="plan-feature">✓ Weekly reviews &amp; monthly summary</div>
+          <div class="plan-feature">✓ Chat memory &amp; goal tools</div>
+          <div class="plan-feature">✓ Basic export</div>
         </div>
         <div class="plan-perks">
-          <span class="plan-perk">✓ 7-day free trial</span>
-          <span class="plan-perk">☕ Less than one coffee/week</span>
-          <span class="plan-perk plan-perk-save" id="annualSaveEl">Save $86 vs monthly</span>
+          <span class="plan-perk">✓ 7-day Plus trial · 40 Scout credits</span>
+          <span class="plan-perk plan-perk-save" id="plusSaveEl">Save $19.89/yr vs monthly</span>
         </div>
       </div>
 
-      <!-- Monthly + Lifetime side-by-side -->
-      <div class="plan-row">
-        <div class="plan-card plan-mini" id="planMonthly" onclick="selectPlan('monthly')">
-          <div class="plan-mini-name">Monthly</div>
-          <div class="plan-mini-price" id="monthlyPriceEl">$12.99<span>/mo</span></div>
-          <div class="plan-mini-desc">Cancel anytime</div>
+      <!-- Pro -->
+      <div class="plan-card" id="planPro" onclick="selectPlan('pro')">
+        <div class="plan-badge plan-badge-pro">🔬 Power users</div>
+        <div class="plan-top">
+          <div>
+            <div class="plan-name">Pro</div>
+            <div class="plan-positioning">Advanced planning</div>
+          </div>
+          <div class="plan-price-wrap">
+            <span class="plan-original" id="proOriginalEl"></span>
+            <span class="plan-price" id="proPriceEl">$6.67<span>/mo</span></span>
+          </div>
         </div>
-        <div class="plan-card plan-mini" id="planLifetime" onclick="selectPlan('lifetime')">
-          <div class="plan-mini-name">Lifetime</div>
-          <div class="plan-mini-price" id="lifetimePriceEl">$197<span> once</span></div>
-          <div class="plan-mini-desc">Pay once, forever</div>
-          <div class="plan-save" style="margin-top:4px">For serious savers</div>
+        <div class="plan-desc" id="proDescEl">Billed as $79.99/year · No trial at launch</div>
+        <span class="plan-credits">600 Scout credits/month</span>
+        <div class="plan-features">
+          <div class="plan-feature">✓ Advanced forecasts &amp; deep budget reviews</div>
+          <div class="plan-feature">✓ Priority Scout &amp; export tools</div>
+          <div class="plan-feature">✓ Deeper memory &amp; advanced planning</div>
         </div>
+        <div class="plan-perks">
+          <span class="plan-perk plan-perk-save" id="proSaveEl">Save $39.89/yr vs monthly</span>
+        </div>
+      </div>
+
+      <!-- Free option -->
+      <div class="plan-free-row">
+        <span class="plan-free-label">Or start free:</span>
+        <button class="plan-free-btn" onclick="selectPlan('free')">Start Free — basic tracking, 30 credits/month →</button>
       </div>
 
     </div>
 
-    <button class="pw-cta" id="pwCta" onclick="handlePurchase()">Start my free 7-day trial →</button>
-    <div class="pw-cta-note">No credit card required · Cancel in one tap</div>
+    <!-- Scout credits FAQ -->
+    <details class="credits-faq">
+      <summary>What are Scout credits?</summary>
+      <div class="credits-faq-body">
+        <p>Scout credits power deeper AI-powered help — like purchase checks, budget reviews, and money summaries. Basic tracking and simple Scout reactions do not use credits.</p>
+        <div style="margin-top:10px">
+          <div class="cq-row"><span class="cq-plan">Free</span><span class="cq-amt">30 credits/month</span></div>
+          <div class="cq-row"><span class="cq-plan">Plus</span><span class="cq-amt">150 credits/month</span></div>
+          <div class="cq-row"><span class="cq-plan">Pro</span><span class="cq-amt">600 credits/month</span></div>
+        </div>
+        <div class="credits-faq-safety">✓ Basic tracking stays free even when credits run out.</div>
+      </div>
+    </details>
+
+    <button class="pw-cta" id="pwCta" onclick="handlePurchase()">Start 7-day Plus trial →</button>
+    <div class="pw-cta-note" id="pwCtaNote">Trial includes 40 Scout credits · After trial, $4.99/month unless cancelled</div>
 
     <!-- Guarantee -->
     <div class="pw-guarantee">
       <span class="pw-guarantee-icon">🛡️</span>
       <div>
-        <strong>30-day money-back guarantee</strong>
-        <span>If SpendSignal doesn't surface at least one real saving within 30 days of your first charge, contact us and we'll refund every cent. No questions asked.</span>
+        <strong>30-day satisfaction guarantee</strong>
+        <span>If you're not satisfied with SpendSignal within 30 days of your first charge, contact us and we'll refund every cent.</span>
       </div>
     </div>
 
     <div class="trust-row">
-      <div class="trust-item-sm">🔒 Bank-level security</div>
-      <div class="trust-item-sm">✓ 7-day free trial</div>
+      <div class="trust-item-sm">🔐 Privacy-conscious</div>
+      <div class="trust-item-sm">✓ Basic tracking stays free</div>
       <div class="trust-item-sm">🛡️ 30-day guarantee</div>
+      <div class="trust-item-sm">↩ Cancel anytime</div>
     </div>
     <div class="pw-legal">
-      By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.<br/>
-      Subscription renews automatically. Cancel before trial ends to avoid charges.
+      By subscribing, you agree to our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Policy</a>.<br/>
+      Plus trial: 7 days, 40 Scout credits included. After trial, $4.99/month unless cancelled. Pro has no trial at this time.<br/>
+      Subscriptions renew automatically unless cancelled. Cancel anytime.<br/>
+      Scout provides general budgeting information only and is not financial, investment, tax, or legal advice.<br/>
+      <em>Estimates are based on your quiz answers and are not guaranteed. Individual outcomes vary.</em>
     </div>
   </div>
 </div>
@@ -2063,22 +2250,22 @@ nav {
         <div class="loading-step-check"></div>
         <div class="ls-content">
           <span class="ls-time">Week 1</span>
-          <span class="loading-step-text">First leaks found — avg <strong>$47 spotted</strong></span>
+          <span class="loading-step-text">Spending patterns flagged — worth reviewing</span>
         </div>
       </div>
       <div class="loading-step ls-month1" id="ls2">
         <div class="loading-step-check"></div>
         <div class="ls-content">
           <span class="ls-time">🔥 Month 1</span>
-          <span class="loading-step-text">Avg <strong>$380 saved</strong> · Score +28 pts</span>
+          <span class="loading-step-text">Full spending review ready — your plan is set</span>
         </div>
       </div>
     </div>
     <!-- Trajectory graph card -->
     <div class="loading-graph-card" id="loadingGraphCard">
-      <div class="loading-graph-label">📉 Your financial trajectory</div>
+      <div class="loading-graph-label">📊 What a plan can look like</div>
       <canvas id="loadingGraph" width="320" height="100" style="width:100%;height:auto;display:block;"></canvas>
-      <div class="loading-graph-caption">Modeled from users with your spending profile</div>
+      <div class="loading-graph-caption">Illustrative — based on behavioral finance patterns</div>
     </div>
 
     <div id="loadingTest" style="width:100%;"></div>
@@ -2092,11 +2279,13 @@ nav {
       <img class="email-scout" id="emailScout" src="/public/ScoutNoticed.png" alt="Scout" onerror="this.style.display='none'"/>
     </div>
     <h2 class="email-title">Almost there —<br/>who should I address this to?</h2>
-    <p class="email-sub">Your personalized plan is ready. Scout will send it to you — along with a special reward.</p>
-    <input class="email-input" id="nameInput" type="text" placeholder="Your first name" autocomplete="given-name" style="margin-bottom:10px"/>
-    <input class="email-input" id="emailInput" type="email" placeholder="your@email.com" autocomplete="email"/>
-    <button class="email-btn" onclick="submitEmail()">Send me my plan →</button>
-    <div class="email-privacy">🔒 No spam, ever. Unsubscribe in one tap.</div>
+    <p class="email-sub">Scout finished your personalized plan. Tell us where to send it.</p>
+    <input class="email-input" id="nameInput" type="text" placeholder="Your first name" autocomplete="given-name" style="margin-bottom:4px" onkeydown="if(event.key==='Enter')document.getElementById('emailInput').focus()"/>
+    <div class="email-error" id="nameError">Please enter your first name.</div>
+    <input class="email-input" id="emailInput" type="email" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')submitEmail()"/>
+    <div class="email-error" id="emailError">Please enter a valid email address.</div>
+    <button class="email-btn" id="emailBtn" onclick="submitEmail()">Send me my plan →</button>
+    <div class="email-privacy">🔒 No spam. Unsubscribe anytime.</div>
   </div>
 </div>
 
@@ -2105,7 +2294,7 @@ nav {
   <div class="optin-wrap">
     <span class="optin-icon">💌</span>
     <h2 class="optin-title">Want Scout's weekly money tips?</h2>
-    <p class="optin-sub">Short, practical. One email a week. Things like "the $12/month trap most people miss" — that kind of thing.</p>
+    <p class="optin-sub">Short, practical tips once a week — like spending leaks, budgeting resets, and smarter purchase checks. Completely optional.</p>
     <button class="optin-yes" onclick="submitOptIn(true)">Yes, send them →</button>
     <button class="optin-no" onclick="submitOptIn(false)">No thanks</button>
   </div>
@@ -2116,9 +2305,9 @@ nav {
   <div class="trust-wrap">
 
     <!-- Science section -->
-    <div class="trust-badge">🔬 Built on real science</div>
+    <div class="trust-badge">🧠 Inspired by behavioral finance</div>
     <h2 class="trust-title"><span class="grad">SpendSignal</span> isn't<br/>another budget app.</h2>
-    <p class="trust-sub">It's built on behavioral economics — the same science that explains why willpower alone never works with money.</p>
+    <p class="trust-sub">It's designed around behavioral finance principles — the patterns that explain why willpower alone rarely works with money.</p>
 
     <div class="trust-science-card">
       <div class="trust-science-diagram">
@@ -2128,16 +2317,16 @@ nav {
         <div class="tsd-arrow">→</div>
         <div class="tsd-node tsd-reward">Reward</div>
       </div>
-      <p class="trust-science-caption">SpendSignal interrupts bad financial loops and replaces them with better ones — automatically.</p>
+      <p class="trust-science-caption">SpendSignal is designed to interrupt unhelpful financial loops and help build better ones over time.</p>
     </div>
 
     <div class="trust-institutions">
-      <div class="trust-inst-label">Research foundations</div>
+      <div class="trust-inst-label">Design principles</div>
       <div class="trust-inst-list">
-        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Behavioral Economics (Thaler, Kahneman)</div>
-        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Consumer Financial Protection Bureau</div>
-        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>National Financial Educators Council</div>
-        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>MIT AgeLab — Financial Wellbeing Research</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Spending triggers &amp; awareness</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Habit loops &amp; positive reinforcement</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Reward-based consistency</div>
+        <div class="trust-inst-item"><span class="trust-inst-check">✓</span>Budget avoidance patterns</div>
       </div>
     </div>
 
@@ -2146,8 +2335,6 @@ nav {
 
     <!-- Social proof section -->
     <div class="trust-social-hero">
-      <div class="trust-user-count">14,200<span>+</span></div>
-      <div class="trust-user-label">people improved their finances with SpendSignal</div>
       <div class="trust-avatars">
         <img src="/public/Comment1.png" class="trust-avatar" alt=""/>
         <img src="/public/Comment3.png" class="trust-avatar" alt=""/>
@@ -2155,24 +2342,23 @@ nav {
         <img src="/public/Comment2.png" class="trust-avatar" alt=""/>
         <img src="/public/Comment4.png" class="trust-avatar" alt=""/>
       </div>
+      <div class="trust-user-label">Real people working on their money — like you.</div>
     </div>
 
     <div class="trust-ratings">
       <div class="trust-rating-item">
-        <div class="trust-rating-score">4.8</div>
-        <div class="trust-rating-stars">★★★★★</div>
-        <div class="trust-rating-label">App Store</div>
+        <div class="trust-rating-score">🔐</div>
+        <div class="trust-rating-label">Privacy-conscious<br/>design</div>
       </div>
       <div class="trust-rating-divider"></div>
       <div class="trust-rating-item">
-        <div class="trust-rating-score">4.7</div>
-        <div class="trust-rating-stars">★★★★★</div>
-        <div class="trust-rating-label">Google Play</div>
+        <div class="trust-rating-score">🛡️</div>
+        <div class="trust-rating-label">30-day<br/>guarantee</div>
       </div>
     </div>
 
     <button class="trust-cta" onclick="showPaywall()">Get my personalized plan →</button>
-    <p class="trust-cta-note">Free 7-day trial · No credit card required</p>
+    <p class="trust-cta-note">Cancel anytime · Free plan available</p>
   </div>
 </div>
 
@@ -2183,7 +2369,7 @@ nav {
     <h2 class="reassurance-title">We're all human.<br/><em>That's okay.</em></h2>
     <img class="reassurance-scout" src="/public/mainscreen3.png" alt="Scout"/>
     <div class="reassurance-stat-card">
-      <p class="reassurance-stat-text">According to behavioral finance research, <strong>72% of adults</strong> feel financial anxiety — even high earners. It's not a discipline problem.</p>
+      <p class="reassurance-stat-text">Behavioral finance research consistently shows financial anxiety is widespread — <strong>even among high earners</strong>. It's not a discipline problem.</p>
       <p class="reassurance-stat-text" style="margin-top:8px;color:#7c3aed;font-weight:700;">It's a system problem. And Scout fixes systems.</p>
     </div>
     <div class="reassurance-points">
@@ -2197,8 +2383,8 @@ nav {
 <!-- ══════════════ SUMMARY ══════════════ -->
 <div class="screen hidden" id="screenSummary">
   <div class="summary-wrap">
-    <div class="summary-badge">📋 Scout's initial analysis</div>
-    <h2 class="summary-title">Your spending<br/>profile is ready.</h2>
+    <div class="summary-badge">📋 Scout's initial read · Based on your answers</div>
+    <h2 class="summary-title">Your money<br/>profile is ready.</h2>
 
     <!-- Score gauge -->
     <div class="summary-gauge-card">
@@ -2251,8 +2437,8 @@ nav {
     <!-- Pre-pop state -->
     <div id="balloonPrePop">
       <div class="balloon-eyebrow-simple">👀 scout found something for you</div>
-      <h2 class="balloon-title">There's a deal<br/><em>in there.</em></h2>
-      <p class="balloon-sub">Pop it to claim it — expires when you leave.</p>
+      <h2 class="balloon-title">There's a reward<br/><em>in there.</em></h2>
+      <p class="balloon-sub">Pop it to reveal your first-plan discount.</p>
 
       <div class="balloon-container" onclick="tapBalloon()" id="balloonContainer">
         <div class="balloon-body" id="balloonBody">
@@ -2280,16 +2466,16 @@ nav {
 
     <!-- Post-pop: discount card -->
     <div class="discount-card" id="discountCard">
-      <div class="dc-badge">🎉 Your exclusive reward</div>
+      <div class="dc-badge">🎉 Your reward is unlocked</div>
       <div class="dc-pct" id="dcPct">40<sub>%</sub></div>
-      <div class="dc-off">off your first plan — locked in for you</div>
+      <div class="dc-off">off your first plan</div>
       <div class="dc-tear-line"></div>
       <div class="dc-code-wrap">
         <span class="dc-code" id="dcCode">NICO_MAY40</span>
         <button class="dc-copy" onclick="copyCode()">Copy</button>
       </div>
-      <div class="dc-timer-row">⏰ Expires in <span id="dcTimer" style="font-variant-numeric:tabular-nums;">12:00</span> — don't close this tab</div>
-      <div class="dc-note">Code is auto-applied when you continue below</div>
+      <div class="dc-timer-row">⏰ Session reward — valid for <span id="dcTimer" style="font-variant-numeric:tabular-nums;">12:00</span></div>
+      <div class="dc-note">Code is applied automatically when you continue</div>
       <button class="dc-cta" onclick="showTrustScreen()">See my personalized plan →</button>
     </div>
 
@@ -2297,6 +2483,28 @@ nav {
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════════════════
+// ARCHITECTURE NOTE
+// ─────────────────────────────────────────────────────────────────────────
+// This file is the SpendSignal WEB FUNNEL — a standalone marketing property.
+// It has no dependency on the mobile app (../spendsignal).
+//
+// Responsibilities of this file:
+//   • Quiz flow, result scoring, and profile assignment
+//   • Marketing plan display (credits, pricing shown to the user)
+//   • Email capture and Resend transactional email via /api/subscribe
+//   • Checkout/download handoff via FUNNEL_DESTINATIONS
+//
+// NOT responsibilities of this file:
+//   • Real AI credit enforcement (lives in the mobile app)
+//   • Subscription billing state (lives in the mobile app)
+//   • In-app usage metering (lives in the mobile app)
+//   • Importing any file from ../spendsignal
+//
+// Post-funnel flow:
+//   Ad / social → quiz.html → result → paywall → checkout URL or /download
+// ═══════════════════════════════════════════════════════════════════════════
+
 // ══════════════════════════════════════════
 // DATA
 // ══════════════════════════════════════════
@@ -2313,7 +2521,7 @@ const QUESTIONS = [
       { icon: '🧩', text: "No idea where my money goes" },
       { icon: '⚡', text: 'Unexpected expenses keep hitting me' },
     ],
-    scout: "That's 3 or more — which actually tells Scout a lot. Most of those aren't random. There's usually one root cause underneath them all. 🎯"
+    scout: "Scout noticed a pattern. Most of those aren't random — there's usually one root cause underneath them all. 🎯"
   },
   {
     tag: "Quick one",
@@ -2348,7 +2556,7 @@ const QUESTIONS = [
       { icon: '🏖️', text: 'Save for something I actually want' },
       { icon: '🎯', text: 'Feel genuinely in control of my money' },
     ],
-    scout: "Every single one of those is achievable from where you are. Scout has seen people in tougher spots hit all of them. 🙌"
+    scout: "Those are solid goals. Scout shapes your starting point around the one that matters most right now. 🎯"
   },
   {
     tag: "Check in",
@@ -2383,7 +2591,7 @@ const QUESTIONS = [
       { icon: '😤', text: 'Currently trying but struggling' },
       { icon: '🔧', text: 'Yes, but I need tools that actually work' },
     ],
-    scout: "That pattern isn't a character flaw — it's a system problem. The tools most people use aren't built for how people actually behave. That's what Scout fixes. 🚀"
+    scout: "That's more common than you'd think — and it's almost always a system problem, not a discipline problem. That's what Scout is built around. 🔧"
   },
   {
     tag: "Almost done",
@@ -2397,7 +2605,7 @@ const QUESTIONS = [
       { icon: '🚀', text: '$7,000+/mo' },
     ],
     other: true,
-    scout: "Perfect. This is what turns your results from estimates into actual numbers. Scout runs the real math from here. 🎯"
+    scout: "That helps Scout shape estimates that are specific to your situation — not just guesses. 🎯"
   },
   {
     tag: "Last one, I promise",
@@ -2426,13 +2634,13 @@ const PROFILES = [
     percentile: 'higher than 5%',
     tagline: "You took this quiz. That's the first move most people never make.",
     traits: ['💸 Spending on autopilot', '😶 Avoiding the numbers', '⏰ Delaying decisions'],
-    desc: "You're carrying a real weight right now — and you've probably been carrying it alone. The good news nobody tells you: Crisis Spenders actually see the fastest turnaround of any profile we track. Not because it's easy, but because every dollar recovered from this point counts double. Scout knows exactly where to start.",
+    desc: "You're carrying a real weight right now — and you've probably been carrying it alone. The good news: there's often more to work with at this level, which means more opportunity to find. Every action from here tends to have more impact. Scout is built to help find a starting point.",
     loss: '$520/mo',
-    reclaim: '→ Crisis Spenders reclaim an average of $520/month within their first 60 days',
+    reclaim: '→ Scout may help you find up to $520/month worth reviewing based on your answers',
     insights: [
-      { icon: '💙', html: '<strong>84% of Crisis Spenders</strong> who stay with SpendSignal for 30 days reach Level 3 or higher. The gap between where you are and where you want to be is smaller than it feels.' },
-      { icon: '🔍', html: 'Most people at this level have <strong>3–6 invisible spending categories</strong> running on autopilot — charges they\'ve completely forgotten about. Scout finds them in your first session.' },
-      { icon: '🚀', html: '<strong>The fastest results in any profile happen here.</strong> More to fix = more to gain. Scout has a specific starting playbook built for exactly your situation.' },
+      { icon: '💙', html: 'Crisis Spenders who stick with a system often see faster progress than they expected — <strong>because there\'s more to work with</strong>. The gap between where you are and where you want to be is smaller than it feels.' },
+      { icon: '🔍', html: 'Most people at this level have <strong>multiple spending categories</strong> running on autopilot — charges they\'ve completely forgotten about. Scout is designed to surface them early.' },
+      { icon: '🚀', html: '<strong>More to review = more potential to find.</strong> Scout has a specific starting playbook built for exactly your situation.' },
     ],
     testimonials: [
       { img:'public/Comment3.png', text:'"hadn\'t opened my bank app in 4 months bc I was terrified of what I\'d see. Scout made it feel manageable — then <strong>found $430 I was bleeding every month</strong>. still can\'t believe it 😭"', name:'Daniel R.', profile:'Was a Crisis Spender', stars:'★★★★★' },
@@ -2452,11 +2660,11 @@ const PROFILES = [
     traits: ['⚡ Reactive to the moment', '🌀 Patterns feel invisible', '📊 No feedback loop yet'],
     desc: "Reactive Spenders know something is off — they just can't put their finger on exactly what. The spending feels fine in the moment, and then the month ends and the number is wrong again. That's not a character flaw. That's what happens when there's no real-time feedback loop. SpendSignal is that feedback loop.",
     loss: '$340/mo',
-    reclaim: '→ SpendSignal users like you reclaim an average of $340/month',
+    reclaim: '→ Scout estimates up to $340/month worth reviewing based on your answers',
     insights: [
-      { icon: '🔍', html: '<strong>On average, Reactive Spenders have 4 spending categories</strong> they\'re actively losing money in — without being fully aware of it. The worst one is almost never what they expect.' },
-      { icon: '💙', html: 'The fact that you finished this quiz puts you ahead of <strong>79% of people</strong> who start it. Most people bail when they sense the answer will be uncomfortable. You didn\'t.' },
-      { icon: '📈', html: 'Reactive Spenders who use SpendSignal see an average <strong>Financial Health Score increase of 28 points</strong> within 60 days — without changing their income.' },
+      { icon: '🔍', html: 'Reactive Spenders often have <strong>several spending categories</strong> they\'re losing money in without being fully aware of it. The biggest one is almost never what they expect.' },
+      { icon: '💙', html: 'The fact that you finished this quiz is a real signal. Most people bail when they sense the answer will be uncomfortable. <strong>You didn\'t.</strong>' },
+      { icon: '📈', html: 'Reactive Spenders who build a consistent feedback loop often see <strong>measurable improvement in their spending patterns</strong> within the first couple of months.' },
     ],
     testimonials: [
       { img:'public/Comment1.png', text:'"Scout showed me I was spending <strong>$210/month on food delivery</strong> and barely enjoying half of it 💀 that money is now my emergency fund. took like a week to flip"', name:'Maria R.', profile:'Was a Reactive Spender', stars:'★★★★★' },
@@ -2476,11 +2684,11 @@ const PROFILES = [
     traits: ['🧠 High awareness', '🔄 Needs consistency', '🔧 Missing the right tools'],
     desc: "Overthinkers understand money better than most — that's actually part of the problem. You have enough awareness to feel guilty and not enough structure to act consistently. You're not undisciplined. You're carrying the mental load of managing money without the tools to automate it. That changes today.",
     loss: '$210/mo',
-    reclaim: '→ SpendSignal users like you reclaim an average of $210/month',
+    reclaim: '→ Scout estimates up to $210/month worth reviewing based on your answers',
     insights: [
-      { icon: '🎯', html: '<strong>Overthinkers don\'t fail because of willpower.</strong> They fail because they\'re managing too many variables in their head at once. SpendSignal collapses that into a single weekly check-in.' },
-      { icon: '💡', html: 'People with your profile average <strong>4–6 forgotten or underused subscriptions</strong> that have been quietly billing for over 6 months. Scout surfaces all of them in your first session.' },
-      { icon: '📊', html: 'Overthinkers who use SpendSignal <strong>hit their first real savings milestone within the first week</strong> — faster than any other profile. The structure does what willpower couldn\'t.' },
+      { icon: '🎯', html: '<strong>Overthinkers don\'t fail because of willpower.</strong> They fail because they\'re managing too many variables in their head at once. SpendSignal is designed to collapse that into a single weekly check-in.' },
+      { icon: '💡', html: 'People with your profile often have <strong>forgotten or underused subscriptions</strong> that have been quietly billing for months. Scout is built to surface those early.' },
+      { icon: '📊', html: 'Overthinkers who use a structured system often find their <strong>first actionable insight sooner than expected</strong> — because the structure does what mental load management couldn\'t.' },
     ],
     testimonials: [
       { img:'public/Comment2.png', text:'"tried 6 apps before this. the problem was never the app — I just mentally checked out by week 2. <strong>SpendSignal kept running even when I forgot to check it 😅</strong> that\'s the whole difference"', name:'Sofia M.', profile:'Was an Overthinker', stars:'★★★★★' },
@@ -2500,11 +2708,11 @@ const PROFILES = [
     traits: ['📈 Building strong habits', '🎯 Clear direction', '🔍 A few blind spots left'],
     desc: "You're already doing better than most people who sit where you're sitting. You think about your money, you have goals, and you've made real progress. What you're missing isn't motivation — it's precision. There are still patterns running in your spending that you can't see without data. SpendSignal makes them visible.",
     loss: '$150/mo',
-    reclaim: '→ SpendSignal users like you reclaim an average of $150/month',
+    reclaim: '→ Scout estimates up to $150/month worth reviewing based on your answers',
     insights: [
-      { icon: '🚀', html: 'You\'re in the <strong>top 30% of everyone who takes this quiz.</strong> Most people never build the baseline habits you already have — but habits without data still leave money on the table.' },
-      { icon: '🤖', html: '<strong>AI-powered pattern recognition</strong> catches what spreadsheets can\'t: timing windows, impulse triggers, seasonal drift, subscription creep. These are your blind spots right now.' },
-      { icon: '🏆', html: 'Emerging Planners who use SpendSignal for 30 days save an <strong>average of $150/month more</strong> than before — and most say the biggest surprise was how small the changes required were.' },
+      { icon: '🚀', html: 'You\'re scoring ahead of most people who take this quiz. <strong>Most never build the baseline habits you already have</strong> — but habits without data still leave money on the table.' },
+      { icon: '🤖', html: '<strong>AI-powered pattern recognition</strong> is designed to catch what spreadsheets can\'t: timing windows, impulse triggers, seasonal drift, subscription creep — your potential blind spots.' },
+      { icon: '🏆', html: 'Emerging Planners who add a structured system often find that <strong>the biggest wins come from surprisingly small adjustments</strong> — the patterns you couldn\'t see before.' },
     ],
     testimonials: [
       { img:'public/Comment5.png', text:'"thought I was already decent with money. Scout found <strong>$220/month I was losing</strong> across categories I\'d never thought to look at. humbling as hell but honestly so useful 👀"', name:'Priya S.', profile:'Was an Emerging Planner', stars:'★★★★★' },
@@ -2524,11 +2732,11 @@ const PROFILES = [
     traits: ['💎 Disciplined by default', '📊 Data-driven choices', '🚀 Optimizing the edge'],
     desc: "You've built real financial discipline — the kind most people never develop. At this level, the gains don't come from fixing obvious mistakes. They come from precision: catching the slow drift in spending patterns, optimizing savings timing, and making sure your habits are running on autopilot instead of willpower. SpendSignal is an AI layer on top of what you've already built.",
     loss: '$90/mo',
-    reclaim: '→ SpendSignal users like you optimize an average of $90/month more',
+    reclaim: '→ Scout may help you optimize up to $90/month based on your answers',
     insights: [
-      { icon: '💎', html: 'You scored in the <strong>top 12% of all quiz takers.</strong> SpendSignal at this level isn\'t about fixing problems — it\'s about adding a precision layer most people don\'t have access to.' },
-      { icon: '⚡', html: 'Strategic Builders who use SpendSignal reach their financial goals <strong>2.3× faster</strong> than equally disciplined people without it — because data closes the gap that intuition can\'t.' },
-      { icon: '📱', html: '<strong>Real-time spending signals</strong> catch pattern drift before it compounds — the kind of slow erosion that\'s invisible month-to-month but costs thousands annually.' },
+      { icon: '💎', html: 'You\'re scoring ahead of most quiz takers. <strong>SpendSignal at this level isn\'t about fixing problems</strong> — it\'s about adding a precision layer most people don\'t have access to.' },
+      { icon: '⚡', html: 'Strategic Builders who pair their habits with a data layer often reach financial goals <strong>faster than intuition alone allows</strong> — because data closes gaps you can\'t see in real time.' },
+      { icon: '📱', html: '<strong>Real-time spending signals</strong> are designed to catch pattern drift before it compounds — the kind of slow erosion that\'s invisible month-to-month.' },
     ],
     testimonials: [
       { img:'public/Comment1.png', text:'"use SpendSignal like athletes use film review — catching inefficiencies I can\'t see in real time. <strong>savings rate went from 18% to 31% in 5 months 📈</strong>"', name:'Michael B.', profile:'Strategic Builder', stars:'★★★★★' },
@@ -2546,20 +2754,165 @@ const LOADING_TESTS = [
 ];
 
 const PW_SUBS = {
-  'The Crisis Spender':     "Based on your answers, Scout has already identified where to start. Most Crisis Spenders see their first real win within 72 hours — not weeks.",
-  'The Reactive Spender':   "The pattern Scout flagged in your answers is fixable — and faster than you think. Most Reactive Spenders feel a visible difference within their first week.",
-  'The Overthinker':        "You have the awareness. SpendSignal gives you the structure that removes the mental load — and finally makes the awareness stick.",
-  'The Emerging Planner':   "You're 70% of the way there on habits alone. SpendSignal closes the gap and shows you exactly what's still leaking — usually it surprises people.",
-  'The Strategic Builder':  "Your habits are your edge. SpendSignal is the data layer that makes them airtight — and finds what even disciplined savers miss.",
+  'The Crisis Spender':     "Based on your answers, Scout is designed to show you exactly where to start. Many Crisis Spenders find their first actionable insight sooner than expected.",
+  'The Reactive Spender':   "The pattern Scout flagged in your answers is addressable — and with the right feedback loop, potentially faster than you think.",
+  'The Overthinker':        "You have the awareness. SpendSignal gives you the structure that removes the mental load — and helps make that awareness stick.",
+  'The Emerging Planner':   "You're already ahead on habits. SpendSignal is designed to show you what's still potentially leaking — and it often surprises people.",
+  'The Strategic Builder':  "Your habits are your edge. SpendSignal adds the data layer designed to make them airtight — and surface what even disciplined savers may miss.",
+};
+
+// ── Plan recommendation by profile ──
+// Maps each existing profile to a business archetype with a recommended plan,
+// a reason, and 3 personalised bullets. Does not promise specific outcomes.
+const PLAN_RECOMMENDATION = {
+  'The Crisis Spender': {
+    archetype:   'Budget Avoider',
+    ctaPlan:     'plus',
+    planLabel:   'Free → Plus',
+    headline:    'Start Free, grow into Plus',
+    reason:      "Start free if you want to ease in. Plus is recommended when you're ready for Scout to remember your patterns and review your money more deeply.",
+    bullets: [
+      "Money feels easier when it's broken into smaller steps.",
+      "Scout keeps tracking gentle and low-pressure — no judgment.",
+      "Plus is designed to unlock deeper reviews when you're ready.",
+    ],
+  },
+  'The Reactive Spender': {
+    archetype:   'Impulse / Reactive Spender',
+    ctaPlan:     'plus',
+    planLabel:   'Plus',
+    headline:    'Recommended for you: Plus',
+    reason:      "Plus is recommended because Scout can help slow down fast spending decisions with smart warnings, purchase checks, and weekly reviews.",
+    bullets: [
+      "Fast spending decisions can happen before your budget catches up.",
+      "Smart warnings are designed to help you pause before money leaks.",
+      "Purchase checks help you see what may be safe to spend.",
+    ],
+  },
+  'The Overthinker': {
+    archetype:   'Overthinker',
+    ctaPlan:     'plus',
+    planLabel:   'Plus',
+    headline:    'Recommended for you: Plus',
+    reason:      "Plus is recommended because Scout turns messy money decisions into clearer weekly and monthly reviews.",
+    bullets: [
+      "You already have awareness — but decisions can still feel heavy.",
+      "Weekly reviews are designed to turn uncertainty into a clearer next step.",
+      "Scout memory helps keep your plan consistent over time.",
+    ],
+  },
+  'The Emerging Planner': {
+    archetype:   'Goal Builder / Saver',
+    ctaPlan:     'plus',
+    planLabel:   'Plus (or Pro)',
+    headline:    'Recommended for you: Plus',
+    reason:      "Plus is designed to help protect your goals and surface the blind spots you can't see yet. Pro is worth considering if you want deeper forecasting.",
+    bullets: [
+      "Your habits are already solid — the gaps are often smaller than they feel.",
+      "Plus is designed to protect your savings goals and surface spending blind spots.",
+      "Upgrade to Pro when you want deeper forecasting and advanced planning.",
+    ],
+  },
+  'The Strategic Builder': {
+    archetype:   'Stable Planner / Optimizer',
+    ctaPlan:     'pro',
+    planLabel:   'Pro',
+    headline:    'Recommended for you: Pro',
+    reason:      "Pro is recommended because you're ready for advanced planning, deeper reviews, and forecasts that go beyond what Plus covers.",
+    bullets: [
+      "Your awareness and discipline are already in place.",
+      "Pro is designed for precision: advanced forecasts and deeper pattern reviews.",
+      "Scout at this level is built to optimize what you've already built.",
+    ],
+  },
 };
 
 // ══════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════
 let currentQ = 0, answers = [], pendingAns = null;
-let selectedPlan = 'annual', showingScout = false;
+let selectedPlan = 'plus', selectedPeriod = 'annual', showingScout = false;
 let currentProfile = null, currentScore = 0, userAge = null, currentLoss = null;
 let userEmail = '', userName = '', promoCode = '', promoDiscount = 0, balloonTaps = 0;
+
+// ── Marketing plan config ────────────────────────────────────────────────────
+// Single source of truth for plan display data in the web funnel.
+//
+// ⚠  MARKETING DISPLAY VALUES ONLY.
+//    Real entitlement enforcement (credit limits, plan gating, billing state)
+//    lives in the mobile app — not here.
+//    Changing these numbers affects what users see in the funnel.
+//    It does not change what the mobile app actually grants them.
+//
+//    Keep download.html MARKETING_PLANS in sync when editing credit counts.
+const MARKETING_PLANS = {
+  free: {
+    name:         'Free',
+    description:  'Start tracking with Scout',
+    credits:      30,            // Scout credits included per month (display only)
+    hasTrial:     false,
+    trialDays:    0,
+    trialCredits: 0,
+    prices:       { monthly: 0, quarterly: 0, annual: 0 },
+  },
+  plus: {
+    name:         'Plus',
+    description:  'Everyday money control',
+    credits:      150,
+    hasTrial:     true,
+    trialDays:    7,
+    trialCredits: 40,            // credits included during the trial period
+    prices:       { monthly: 4.99, quarterly: 12.99, annual: 39.99 },
+  },
+  pro: {
+    name:         'Pro',
+    description:  'Advanced planning',
+    credits:      600,
+    hasTrial:     false,
+    trialDays:    0,
+    trialCredits: 0,
+    prices:       { monthly: 9.99, quarterly: 24.99, annual: 79.99 },
+  },
+};
+
+// Backward-compat alias used by updatePlanPrices / updateAnchorPrice
+// Points into MARKETING_PLANS so there is only one place to update pricing.
+const PLAN_PRICES = {
+  plus: MARKETING_PLANS.plus.prices,
+  pro:  MARKETING_PLANS.pro.prices,
+};
+
+// ── Funnel destinations ─────────────────────────────────────────────────────
+// Central config for every URL the funnel can send users to.
+// Fill in real URLs when ready. Leave as '' to fall back to /download.
+//
+// ⚠  Do not hardcode https://spendsignal.app/signup unless /signup is an
+//    intentional web-based account creation flow that actually exists.
+//    The funnel's job is to hand users off to checkout, the app stores,
+//    or a waitlist — not to replicate the mobile app's auth screens.
+//
+// Checkout URLs: paste your Lemon Squeezy / Stripe direct checkout links.
+// Store URLs:    paste App Store / Play Store links once the app is published.
+// appDownloadUrl: the local handoff page — always a safe fallback.
+// ───────────────────────────────────────────────────────────────────────────
+const FUNNEL_DESTINATIONS = {
+  // Local handoff page — always used as fallback when a checkout URL is missing
+  appDownloadUrl:           '/download',
+
+  // App store links — leave '' until the app is live
+  appStoreUrl:              '', // e.g. 'https://apps.apple.com/app/id...'
+  playStoreUrl:             '', // e.g. 'https://play.google.com/store/apps/details?id=...'
+
+  // Plus checkout links — direct payment links (Lemon Squeezy, Stripe, etc.)
+  plusCheckoutMonthlyUrl:   '',
+  plusCheckoutQuarterlyUrl: '',
+  plusCheckoutAnnualUrl:    '',
+
+  // Pro checkout links
+  proCheckoutMonthlyUrl:    '',
+  proCheckoutQuarterlyUrl:  '',
+  proCheckoutAnnualUrl:     '',
+};
 let _scoreRafId = null; // track animation frame so we can cancel on retake
 
 // Reset timer if coming from email retargeting link
@@ -2576,9 +2929,12 @@ const _urlPromo = _qs.get('promo') || '';
 // ══════════════════════════════════════════
 function calcScore() {
   let s = 50;
-  const q1 = answers[1]; if (typeof q1 === 'number') s += [-14,-18,0,18][q1] ?? 0;
-  const q3 = answers[3]; if (typeof q3 === 'number') s += [-16,20,0,-12][q3] ?? 0;
-  const q4 = answers[4]; if (typeof q4 === 'number') s += [4,-8,-2,10][q4] ?? 0;
+  // answers[2] = bank feeling (0=stressed,1=avoidant,2=neutral,3=confident)
+  const qBank  = answers[2]; if (typeof qBank  === 'number') s += [-14,-18,0,18][qBank]  ?? 0;
+  // answers[5] = day-to-day spending style (0=impulsive,1=careful,2=mixed,3=unaware)
+  const qStyle = answers[5]; if (typeof qStyle === 'number') s += [-16,20,0,-12][qStyle] ?? 0;
+  // answers[4] = anxiety scale (0=none … 4=high)
+  const qAnx   = answers[4]; if (typeof qAnx   === 'number') s += [4,-8,-2,10,0][qAnx]   ?? 0;
   return Math.max(5, Math.min(98, Math.round(s)));
 }
 function getProfile(s) { return PROFILES.find(p => s >= p.range[0] && s <= p.range[1]) || PROFILES[0]; }
@@ -2973,12 +3329,12 @@ function drawLockedChart(profile) {
   // ── Mini header inside chart ──
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 12px Arial';
-  ctx.fillText('💸  Spending leak breakdown', 16, 24);
+  ctx.fillText('💸  Spending areas to review', 16, 24);
 
   ctx.fillStyle = '#94a3b8';
   ctx.font = '10px Arial';
   const total = cats.reduce((s,c)=>s+c.amt,0);
-  ctx.fillText(`Total identified: $${total}/mo`, 16, 38);
+  ctx.fillText(`Estimated opportunity: ~$${total}/mo`, 16, 38);
 
   // ── Donut chart (right side) ──
   const cx = W - 68, cy = 138, r = 52, innerR = 30;
@@ -3200,7 +3556,7 @@ function drawPaywallGraph(profile) {
 
   // ── End label pill for "With" line ──
   const endX = xOf(n - 1), endY = yOf(withNorm[n - 1]);
-  const lbl = `+$${lossNum} saved`;
+  const lbl = `potential: +$${lossNum}`;
   ctx.font = 'bold 11px Arial';
   const lblW = ctx.measureText(lbl).width + 16;
   const lblX = Math.min(endX - lblW / 2, W - padR - lblW + 6);
@@ -3240,26 +3596,26 @@ function getAgeComparison(score, age) {
 const SOLIDARITY_DATA = {
   3: {
     icon: '💪',
-    head: "You're one system away from level up.",
-    stat: '47%',
-    context: 'of quiz takers score in this range',
-    follow: "Of those, 81% improved by at least one full level within 30 days using SpendSignal — not by earning more, but by plugging what was quietly leaking.",
+    head: "You're one system away from a level up.",
+    stat: '💡',
+    context: 'This range is more common than you\'d think',
+    follow: "People here who add the right feedback loop often see meaningful progress faster than they expected — not by earning more, but by plugging what was quietly leaking.",
     bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.18)', statColor: '#7c3aed'
   },
   4: {
     icon: '🤝',
     head: "More people than you think are right here.",
-    stat: '38%',
-    context: 'of people who take this quiz score in this range',
-    follow: "71% of them reach Level 3 or higher within 30 days with a system. Not willpower — just the right feedback loop, running quietly.",
+    stat: '🫂',
+    context: 'You\'re far from alone in this range',
+    follow: "Many people at this level reach a noticeably better place within 30 days with a system. Not willpower — just the right feedback loop, running quietly.",
     bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.18)', statColor: '#3b82f6'
   },
   5: {
     icon: '🫂',
     head: "This is not a verdict. It's a starting point.",
-    stat: '1 in 4',
-    context: 'quiz takers score in this range — you are far from alone',
-    follow: "Crisis Spenders show the fastest score improvement of any profile we track. Because there's more to recover, every action counts double. Scout knows exactly where to start.",
+    stat: '❤️',
+    context: 'You are far from alone — this is more common than it feels',
+    follow: "There's often more to work with at this level — which means more room to improve. Scout is built to help you find a starting point, one step at a time.",
     bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.18)', statColor: '#7c3aed'
   }
 };
@@ -3305,7 +3661,7 @@ function showResults() {
   const displayLoss = currentLoss || profile.loss;
   document.getElementById('lossAmt').textContent = displayLoss;
   const reclaimAmt = displayLoss.replace('/mo','').trim();
-  document.getElementById('lossReclaim').textContent = `→ SpendSignal users like you reclaim an average of ${reclaimAmt}/month`;
+  document.getElementById('lossReclaim').textContent = `→ Scout estimates up to ${reclaimAmt}/month worth reviewing based on your answers`;
 
   // ── Insight carousel ──
   (function() {
@@ -3432,8 +3788,8 @@ function showPaywall() {
     const pw = document.querySelector('.paywall-wrap');
     pw.insertAdjacentHTML('afterbegin', `
       <div class="timer-bar" id="timerBar" style="background:linear-gradient(135deg,#7c3aed,#3b82f6)">
-        <span>⏰</span>
-        <span>${promoDiscount}% discount expires in</span>
+        <span>🎁</span>
+        <span>Your ${promoDiscount}% reward — valid this session</span>
         <span class="timer-count" id="timerCount">12:00</span>
       </div>
     `);
@@ -3446,37 +3802,23 @@ function showPaywall() {
     discountWrap.innerHTML = `
       <div class="discount-badge-row">
         <span class="dbr-check">✓</span>
-        <span class="dbr-text">Discount applied — <strong>${promoCode || 'SCOUT' + promoDiscount}</strong></span>
+        <span class="dbr-text">Your reward is applied — <strong>${promoCode || 'SCOUT' + promoDiscount}</strong></span>
         <span class="dbr-off">${promoDiscount}% off</span>
       </div>`;
   }
 
-  // ── Apply discounted prices ──
-  if (promoDiscount > 0) {
-    const m = 1 - promoDiscount / 100;
-    const annYr = (45.49 * m).toFixed(2);
-    const annMo = (annYr / 12).toFixed(2);
-    const mon   = (12.99 * m).toFixed(2);
-    const life  = Math.round(197 * m);
-    document.getElementById('annualPriceEl').innerHTML = `$${annMo}<span>/mo</span>`;
-    document.querySelector('#planAnnual .plan-original').textContent = `$3.79`;
-    document.getElementById('annualDescEl').textContent = `Billed as $${annYr}/year · ${promoDiscount}% off applied`;
-    document.getElementById('annualSaveEl').textContent = `Save $${Math.round((12.99*m - annYr/12)*12)} vs monthly`;
-    document.getElementById('monthlyPriceEl').innerHTML = `$${mon}<span>/mo</span>`;
-    document.getElementById('lifetimePriceEl').innerHTML = `$${life}<span> once</span>`;
-  }
-
-  // ── Update leak compare in Annual card ──
-  const lossNum = (currentLoss || (currentProfile && currentProfile.loss) || '$340/mo').replace(/[^0-9]/g,'');
-  const plcEl = document.getElementById('plcLeakAmt');
-  if (plcEl) plcEl.textContent = '$' + lossNum;
+  // ── Apply plan prices (handles discounts via updatePlanPrices) ──
+  updatePlanPrices();
 
   if (currentProfile) {
+    // ── Title: safer, warmer copy ──
+    const rec = PLAN_RECOMMENDATION[currentProfile.name];
+    document.getElementById('pwEye').textContent = '🦝 Scout has your plan ready';
     document.getElementById('pwTitle').innerHTML = userName
-      ? `<span class="grad">${userName.endsWith('s') ? userName + "'" : userName + "'s"}</span> personalized plan.`
-      : `Built for <span class="grad" id="pwProfileSpan">${currentProfile.name}.</span>`;
-    const ageSuffix = userAge ? ` Built specifically for people in their ${Math.floor(userAge/10)*10}s.` : '';
-    document.getElementById('pwSub').textContent = (PW_SUBS[currentProfile.name] || "Most people who start today notice a real difference within the first week.") + ageSuffix;
+      ? `<span class="grad">${userName.endsWith('s') ? userName + "'" : userName + "'s"}</span> personalized plan is ready.`
+      : 'Your Scout plan is ready.';
+    const ageSuffix = userAge ? ` Tailored for people in their ${Math.floor(userAge/10)*10}s.` : '';
+    document.getElementById('pwSub').textContent = (PW_SUBS[currentProfile.name] || "Based on your answers, Scout matched you with a plan designed to help.") + ageSuffix;
     // ── Projection graph ──
     const lossAmt = (currentLoss || currentProfile.loss || '$200/mo').replace('/mo','').trim();
     const targetDate = new Date(); targetDate.setMonth(targetDate.getMonth() + 3);
@@ -3488,14 +3830,13 @@ function showPaywall() {
     drawPaywallGraph(currentProfile);
 
     // ── Social proof bar ──
-    const liveCount = Math.floor(Math.random() * 60) + 180;
     document.getElementById('socialProofBar').innerHTML = `
       <div class="social-proof-bar">
         <div class="live-counter-badge">
           <span class="live-dot"></span>
-          ${liveCount} people taking this right now
+          Others are working through this right now
         </div>
-        <div class="social-count-line"><strong>2,400+</strong> financial profiles analyzed this month</div>
+        <div class="social-count-line">Based on your quiz answers — not your bank data</div>
       </div>`;
 
     // ── Testimonial carousel ──
@@ -3577,6 +3918,31 @@ function showPaywall() {
     clearInterval(tcAuto);
     tcAuto = setInterval(() => tcGoTo((tcIdx + 1) % tests.length), 5200);
     renderTC();
+
+    // ── Scout recommendation box ──
+    const recBox = document.getElementById('scoutRecommendBox');
+    if (recBox && rec) {
+      const archetypeTag = rec.archetype
+        ? `<span class="srb-archetype">${rec.archetype}</span>`
+        : '';
+      recBox.innerHTML = `
+        <div class="scout-recommend-box">
+          <div class="srb-top">
+            <span class="srb-icon">🦝</span>
+            <div>
+              <div class="srb-eyebrow">Based on your answers${archetypeTag}</div>
+              <div class="srb-headline">${rec.headline.replace(/(Plus|Pro)/g, '<strong>$1</strong>')}</div>
+            </div>
+          </div>
+          <div class="srb-reason">${rec.reason}</div>
+          <div class="srb-bullets">
+            ${rec.bullets.map(b => `<div class="srb-bullet"><span class="srb-check">✓</span><span>${b}</span></div>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    // ── Set the featured plan card based on recommendation ──
+    if (rec) selectPlan(rec.ctaPlan);
   }
 }
 
@@ -3850,58 +4216,154 @@ function showEmailCapture() {
   showScreen('screenEmail');
 }
 
-function submitEmail() {
-  const nameEl  = document.getElementById('nameInput');
-  const emailEl = document.getElementById('emailInput');
-  const name  = nameEl.value.trim();
-  const email = emailEl.value.trim();
+// ══════════════════════════════════════════
+// LEAD DATA
+// ══════════════════════════════════════════
 
-  // Validate name
+// Assembles a structured lead object for backend / CRM handoff.
+// TODO: Wire storeLead() output to your email platform (Resend, ConvertKit,
+//       Klaviyo, etc.) and/or a database (Supabase, Airtable, PlanetScale).
+function buildLead() {
+  const rec        = currentProfile ? PLAN_RECOMMENDATION[currentProfile.name] : null;
+  const safeAnswers = answers.map(a => a instanceof Set ? [...a] : a);
+  return {
+    // Identity
+    first_name:              userName,
+    email:                   userEmail,
+    // Quiz result
+    quiz_result:             currentProfile?.name   || '',
+    quiz_level:              currentProfile?.level  ?? null,
+    quiz_score:              currentScore           || null,
+    quiz_answers:            safeAnswers,
+    estimated_loss:          currentLoss || currentProfile?.loss || '',
+    // Recommendation
+    recommended_plan:        rec?.ctaPlan           || 'plus',
+    recommended_archetype:   rec?.archetype         || '',
+    // Pricing intent (captured at time of email submit)
+    selected_plan:           selectedPlan,
+    selected_billing_period: selectedPeriod,
+    // Discount / reward
+    reward_code:             promoCode              || '',
+    discount_percent:        promoDiscount          || 0,
+    // Opt-in (updated in submitOptIn)
+    weekly_tips_opt_in:      false,
+    // Attribution
+    utm_source:              _qs.get('utm_source')   || '',
+    utm_medium:              _qs.get('utm_medium')   || '',
+    utm_campaign:            _qs.get('utm_campaign') || '',
+    utm_content:             _qs.get('utm_content')  || '',
+    referrer:                document.referrer        || '',
+    // Meta
+    created_at:              new Date().toISOString(),
+  };
+}
+
+// Persists lead locally.
+// Full lead goes to sessionStorage; a slim cache for retargeting goes to localStorage.
+function storeLead(lead) {
+  try {
+    sessionStorage.setItem('ss_lead', JSON.stringify(lead));
+    localStorage.setItem('ss_lead_cache', JSON.stringify({
+      email:            lead.email,
+      first_name:       lead.first_name,
+      reward_code:      lead.reward_code,
+      discount_percent: lead.discount_percent,
+      quiz_result:      lead.quiz_result,
+      recommended_plan: lead.recommended_plan,
+      created_at:       lead.created_at,
+    }));
+  } catch(e) { /* blocked in privacy mode — non-fatal */ }
+}
+
+function getStoredLead() {
+  try { return JSON.parse(sessionStorage.getItem('ss_lead') || 'null'); } catch(e) { return null; }
+}
+
+// ══════════════════════════════════════════
+// EMAIL CAPTURE
+// ══════════════════════════════════════════
+function _emailShowError(inputEl, errEl, msg) {
+  if (inputEl) { inputEl.classList.add('err'); inputEl.classList.remove('shake'); void inputEl.offsetWidth; inputEl.classList.add('shake'); }
+  if (errEl)   { errEl.textContent = msg; errEl.classList.add('show'); }
+}
+function _emailClearError(inputEl, errEl) {
+  if (inputEl) { inputEl.classList.remove('err', 'shake'); }
+  if (errEl)   { errEl.classList.remove('show'); }
+}
+
+function submitEmail() {
+  const nameEl     = document.getElementById('nameInput');
+  const emailEl    = document.getElementById('emailInput');
+  const nameErrEl  = document.getElementById('nameError');
+  const emailErrEl = document.getElementById('emailError');
+  const btn        = document.getElementById('emailBtn');
+
+  const name  = (nameEl?.value  || '').trim();
+  const email = (emailEl?.value || '').trim();
+
+  // Reset prior errors
+  _emailClearError(nameEl,  nameErrEl);
+  _emailClearError(emailEl, emailErrEl);
+
+  let valid = true;
   if (!name) {
-    nameEl.style.borderColor = '#ef4444'; nameEl.focus();
-    setTimeout(() => nameEl.style.borderColor = '', 1200); return;
+    _emailShowError(nameEl, nameErrEl, 'Please enter your first name.');
+    nameEl?.focus();
+    valid = false;
   }
-  // Validate email
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    emailEl.style.borderColor = '#ef4444'; emailEl.focus();
-    setTimeout(() => emailEl.style.borderColor = '', 1200); return;
+    _emailShowError(emailEl, emailErrEl, 'Please enter a valid email address.');
+    if (valid) emailEl?.focus(); // only steal focus if name was ok
+    valid = false;
   }
+  if (!valid) return;
+
+  // Loading state
+  if (btn) btn.classList.add('loading');
 
   userEmail = email;
   userName  = name;
 
-  // Generate personalized promo code from REAL first name
-  const prefix = name.replace(/[^a-zA-Z]/g,'').substring(0,4).toUpperCase() || 'SCOU';
-  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const month  = months[new Date().getMonth()];
-  const discountMap = {1:30, 2:35, 3:40, 4:45, 5:50};
-  promoDiscount = discountMap[currentProfile ? currentProfile.level : 3];
-  promoCode = `${prefix}_${month}${promoDiscount}`;
+  // Generate personalised promo code from first name + current month
+  const prefix      = name.replace(/[^a-zA-Z]/g,'').substring(0,4).toUpperCase() || 'SCOU';
+  const months      = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const month       = months[new Date().getMonth()];
+  const discountMap = { 1:30, 2:35, 3:40, 4:45, 5:50 };
+  promoDiscount = discountMap[currentProfile ? currentProfile.level : 3] || 40;
+  promoCode     = `${prefix}_${month}${promoDiscount}`;
 
-  // Personalize the cinematic slide 3 heading with their name
+  // Personalise cinematic slide 3 heading
   const cs2 = document.getElementById('cs2Text');
-  if (cs2) {
-    cs2.innerHTML = `${name}, your plan<br/>is <em>ready.</em>`;
-  }
+  if (cs2) cs2.innerHTML = `${name}, your plan<br/>is <em>ready.</em>`;
 
-  // Fire email (non-blocking — don't make user wait)
+  // Build and store lead snapshot
+  const lead = buildLead();
+  storeLead(lead);
+
+  // Fire email non-blocking — user should not wait on this
+  // TODO: Also push lead to CRM / database here
   fetch('/api/subscribe', {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    body:    JSON.stringify({
       name,
       email,
       profileName:  currentProfile?.name  || '',
       profileLevel: currentProfile?.level || 3,
       score:        currentScore,
-      loss:         currentLoss || currentProfile?.loss  || '$0/mo',
+      loss:         currentLoss || currentProfile?.loss || '$0/mo',
       promo:        promoCode,
       discount:     promoDiscount,
-      optIn:        false,  // updated in submitOptIn if they say yes
+      optIn:        false,
+      lead,         // full structured lead for backend logging / CRM
     }),
-  }).catch(() => {/* silent — user already moved on */});
+  }).catch(() => { /* silent — user already advancing */ });
 
-  showOptIn();
+  // Brief pause so loading state is perceptible, then advance
+  setTimeout(() => {
+    if (btn) btn.classList.remove('loading');
+    showOptIn();
+  }, 380);
 }
 
 // ══════════════════════════════════════════
@@ -3912,21 +4374,34 @@ function showOptIn() {
 }
 
 function submitOptIn(yes) {
+  // Update locally-stored lead with opt-in choice
+  try {
+    const stored = JSON.parse(sessionStorage.getItem('ss_lead') || 'null');
+    if (stored) {
+      stored.weekly_tips_opt_in = yes;
+      sessionStorage.setItem('ss_lead', JSON.stringify(stored));
+    }
+  } catch(e) {}
+
   if (yes) {
-    // Re-fire subscribe with optIn:true so the serverless function can tag them
+    // Re-fire subscribe so server can tag the contact as opted-in
+    // TODO: Fire CRM opt-in tag / list add here (e.g. ConvertKit, Klaviyo)
+    const lead = buildLead();
+    lead.weekly_tips_opt_in = true;
     fetch('/api/subscribe', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body:    JSON.stringify({
         name:         userName,
         email:        userEmail,
         profileName:  currentProfile?.name  || '',
         profileLevel: currentProfile?.level || 3,
         score:        currentScore,
-        loss:         currentLoss || currentProfile?.loss  || '$0/mo',
+        loss:         currentLoss || currentProfile?.loss || '$0/mo',
         promo:        promoCode,
         discount:     promoDiscount,
         optIn:        true,
+        lead,
       }),
     }).catch(() => {});
   }
@@ -3967,13 +4442,13 @@ function showSummaryScreen() {
   const warnText = document.getElementById('summaryWarningText');
   if (score < 30) {
     warnCard.style.display = '';
-    warnText.textContent   = "Scores in this range are linked to $400–$520+ in silent monthly leaks — most of it invisible without a tool like Scout.";
+    warnText.textContent   = "Scores in this range are often associated with multiple spending areas running on autopilot — the kind that are hard to see without a dedicated system.";
     warnCard.style.borderColor = '#ef4444';
     warnCard.style.background  = '#fff1f2';
     warnText.style.color       = '#9f1239';
   } else if (score < 55) {
     warnCard.style.display = '';
-    warnText.textContent   = "This range is tied to higher financial stress and missed savings opportunities — typically $180–$390/mo in recoverable leaks.";
+    warnText.textContent   = "This range is often associated with higher financial stress and missed savings opportunities — a system can help make the gaps visible.";
   } else {
     warnCard.style.display = 'none';
   }
@@ -4225,17 +4700,159 @@ function startStickyTimer(el, reset) {
   tick();
 }
 
+// ── Billing period selector ──
+function selectPeriod(period) {
+  selectedPeriod = period;
+  document.querySelectorAll('.billing-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.period === period);
+  });
+  updatePlanPrices();
+}
+
+// ── Update all displayed plan prices ──
+function updatePlanPrices() {
+  const discount = 1 - promoDiscount / 100;
+  const divs = { monthly: 1, quarterly: 3, annual: 12 };
+  const moDiv = divs[selectedPeriod] || 12;
+
+  ['plus', 'pro'].forEach(plan => {
+    const base      = PLAN_PRICES[plan][selectedPeriod];
+    if (base == null) return;
+    const discounted = +(base * discount).toFixed(2);
+    const moEquiv    = +(discounted / moDiv).toFixed(2);
+    const origMoEquiv = +(base / moDiv).toFixed(2);
+    const moBase     = PLAN_PRICES[plan].monthly;
+
+    const priceEl = document.getElementById(plan + 'PriceEl');
+    const origEl  = document.getElementById(plan + 'OriginalEl');
+    const descEl  = document.getElementById(plan + 'DescEl');
+    const saveEl  = document.getElementById(plan + 'SaveEl');
+    if (!priceEl) return;
+
+    priceEl.innerHTML = `$${moEquiv.toFixed(2)}<span>/mo</span>`;
+
+    // Strike-through original when discounted
+    if (origEl) origEl.textContent = promoDiscount > 0 ? `$${origMoEquiv.toFixed(2)}` : '';
+
+    // Description line
+    if (descEl) {
+      const promoNote = promoDiscount > 0 ? ` · ${promoDiscount}% off applied` : '';
+      if (selectedPeriod === 'monthly') {
+        const trialLine = plan === 'plus' ? ' · 7-day Plus trial' : '';
+        descEl.textContent = `Billed monthly${trialLine} · Cancel anytime${promoNote}`;
+      } else if (selectedPeriod === 'quarterly') {
+        const trialLine = plan === 'plus' ? ' · 7-day Plus trial' : '';
+        descEl.textContent = `Billed as $${discounted.toFixed(2)}/3 months${trialLine}${promoNote}`;
+      } else {
+        const trialLine = plan === 'plus' ? ' · 7-day Plus trial' : ' · No trial at launch';
+        descEl.textContent = `Billed as $${discounted.toFixed(2)}/year${trialLine}${promoNote}`;
+      }
+    }
+
+    // Real savings label — only show if positive and meaningful
+    if (saveEl) {
+      if (selectedPeriod === 'monthly') {
+        saveEl.textContent = '';
+      } else {
+        const monthlyDiscounted = +(moBase * discount).toFixed(2);
+        const saved = +(monthlyDiscounted * moDiv - discounted).toFixed(2);
+        saveEl.textContent = saved > 0.5 ? `Save $${saved.toFixed(2)} vs monthly` : '';
+      }
+    }
+  });
+
+  updateAnchorPrice();
+}
+
+// ── Update anchor bar plan cost ──
+function updateAnchorPrice() {
+  if (!PLAN_PRICES[selectedPlan]) return;
+  const base = PLAN_PRICES[selectedPlan][selectedPeriod];
+  if (base == null) return;
+  const discount = 1 - promoDiscount / 100;
+  const discounted = +(base * discount).toFixed(2);
+  const moDiv = { monthly: 1, quarterly: 3, annual: 12 }[selectedPeriod] || 12;
+  const moEquiv = +(discounted / moDiv).toFixed(2);
+  const el = document.getElementById('pwAnchorPlanPrice');
+  if (el) el.textContent = `$${moEquiv.toFixed(2)}/mo`;
+}
+
+// ── Plan selection ──
 function selectPlan(plan) {
   selectedPlan = plan;
-  ['Annual','Monthly','Lifetime'].forEach(p => {
-    document.getElementById('plan'+p).classList.toggle('featured', p.toLowerCase()===plan);
+  ['Plus','Pro'].forEach(p => {
+    const el = document.getElementById('plan' + p);
+    if (!el) return;
+    // When Free is selected keep Plus highlighted as the recommended paid option
+    const isFeatured = p.toLowerCase() === plan || (plan === 'free' && p === 'Plus');
+    el.classList.toggle('featured', isFeatured);
   });
-  document.getElementById('pwCta').textContent = plan==='lifetime' ? 'Get lifetime access →' : 'Start free for 7 days →';
+  const ctaEl  = document.getElementById('pwCta');
+  const noteEl = document.getElementById('pwCtaNote');
+  if (plan === 'free') {
+    const mp = MARKETING_PLANS.free;
+    if (ctaEl)  ctaEl.textContent  = 'Start Free →';
+    if (noteEl) noteEl.textContent = `Basic tracking · ${mp.credits} Scout credits/month · Always free`;
+  } else if (plan === 'pro') {
+    const mp = MARKETING_PLANS.pro;
+    if (ctaEl)  ctaEl.textContent  = 'Go Pro →';
+    if (noteEl) noteEl.textContent = `${mp.credits} Scout credits/month · No trial at launch · Cancel anytime`;
+  } else {
+    const mp = MARKETING_PLANS.plus;
+    if (ctaEl)  ctaEl.textContent  = `Start ${mp.trialDays}-day Plus trial →`;
+    if (noteEl) noteEl.textContent = `Trial includes ${mp.trialCredits} Scout credits · After trial, $${mp.prices.monthly.toFixed(2)}/month unless cancelled`;
+  }
+  updateAnchorPrice();
 }
 
 function handlePurchase() {
-  const p = new URLSearchParams({ plan:selectedPlan, utm_source:'quiz', promo:promoCode });
-  window.location.href = 'https://spendsignal.app/signup?'+p.toString();
+  const rec = currentProfile ? PLAN_RECOMMENDATION[currentProfile.name] : null;
+
+  // ── 1. Build safe metadata params ────────────────────────────────────────
+  // No email address. No sensitive data. Safe to appear in referrer headers.
+  const meta = {};
+  if (selectedPlan)          meta.plan            = selectedPlan;
+  if (selectedPeriod)        meta.period          = selectedPeriod;
+  if (currentProfile?.name)  meta.quizResult      = encodeURIComponent(currentProfile.name);
+  if (rec?.ctaPlan)          meta.recommendedPlan = rec.ctaPlan;
+  if (promoCode)             meta.rewardCode      = promoCode;
+  if (userName)              meta.firstName        = encodeURIComponent(userName);
+  meta.source = 'funnel';
+  // Preserve UTM attribution from the original ad click
+  ['utm_source', 'utm_medium', 'utm_campaign'].forEach(k => {
+    const v = _qs.get(k); if (v) meta[k] = v;
+  });
+  if (!meta.utm_source) meta.utm_source = 'quiz';
+
+  const metaStr = new URLSearchParams(meta).toString();
+
+  // ── 2. Resolve destination URL based on plan + billing period ────────────
+  // Priority: configured checkout URL → appDownloadUrl fallback → '/download'
+  let dest = '';
+
+  if (selectedPlan === 'free') {
+    // Free: always goes to the download/handoff page
+    dest = FUNNEL_DESTINATIONS.appDownloadUrl || '/download';
+
+  } else if (selectedPlan === 'plus') {
+    if      (selectedPeriod === 'annual')    dest = FUNNEL_DESTINATIONS.plusCheckoutAnnualUrl;
+    else if (selectedPeriod === 'quarterly') dest = FUNNEL_DESTINATIONS.plusCheckoutQuarterlyUrl;
+    else                                     dest = FUNNEL_DESTINATIONS.plusCheckoutMonthlyUrl;
+
+  } else if (selectedPlan === 'pro') {
+    if      (selectedPeriod === 'annual')    dest = FUNNEL_DESTINATIONS.proCheckoutAnnualUrl;
+    else if (selectedPeriod === 'quarterly') dest = FUNNEL_DESTINATIONS.proCheckoutQuarterlyUrl;
+    else                                     dest = FUNNEL_DESTINATIONS.proCheckoutMonthlyUrl;
+  }
+
+  // Fallback: checkout URL not yet configured → send to download/handoff page
+  if (!dest) {
+    dest = FUNNEL_DESTINATIONS.appDownloadUrl || '/download';
+  }
+
+  // ── 3. Navigate ───────────────────────────────────────────────────────────
+  const sep = dest.includes('?') ? '&' : '?';
+  window.location.href = dest + sep + metaStr;
 }
 </script>
 </body>

@@ -1,3 +1,16 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// api/subscribe.js — SpendSignal WEB FUNNEL email handler (Vercel serverless)
+//
+// Sends a transactional result email via Resend after a user completes the quiz.
+// Belongs to spendsignalweb (the marketing funnel), not to the mobile app.
+//
+// This file does NOT:
+//   • Grant or enforce subscriptions
+//   • Manage in-app AI credits or billing state
+//   • Import anything from the mobile app (../spendsignal)
+//
+// Environment variable required: RESEND_API_KEY (set in Vercel project settings)
+// ─────────────────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -5,8 +18,25 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, email, profileName, profileLevel, score, loss, promo, discount, optIn } = req.body || {};
+  const { name, email, profileName, profileLevel, score, loss, promo, discount, optIn, lead } = req.body || {};
   if (!email || !name) return res.status(400).json({ error: 'Missing name or email' });
+
+  // TODO (CRM): pipe `lead` to your database / analytics sink here.
+  // `lead` contains the full structured quiz result, pricing intent, UTM attribution,
+  // opt-in preference, and promo details. Shape: see buildLead() in quiz.html.
+  // Example: await db.leads.upsert({ where: { email: lead.email }, data: lead });
+  if (lead) {
+    console.log('[subscribe] lead captured', {
+      email:            lead.email,
+      quiz_result:      lead.quiz_result,
+      recommended_plan: lead.recommended_plan,
+      selected_plan:    lead.selected_plan,
+      selected_period:  lead.selected_billing_period,
+      reward_code:      lead.reward_code,
+      weekly_tips:      lead.weekly_tips_opt_in,
+      utm_source:       lead.utm_source,
+    });
+  }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'Email service not configured' });
@@ -291,9 +321,8 @@ export default async function handler(req, res) {
           <tr>
             <td style="padding:16px 20px;">
               <p style="margin:0;font-size:13px;color:#64748b;line-height:1.7;">
-                <strong style="color:#0f172a;">P.S.</strong> — Most people who start SpendSignal notice
-                their first real saving within the first week. Not months.
-                <em style="color:#7c3aed;font-style:normal;font-weight:700;">One week.</em>
+                <strong style="color:#0f172a;">P.S.</strong> — Many people find their first spending clarity moment sooner than expected.
+                <em style="color:#7c3aed;font-style:normal;font-weight:700;">Your quiz results are waiting.</em>
                 Your ${discount}% code is ready when you are.
               </p>
             </td>

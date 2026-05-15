@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Get SpendSignal — Download the App</title>
+<meta name="description" content="Download SpendSignal and start tracking your spending with AI."/>
+<link rel="icon"           type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="shortcut icon"  type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="apple-touch-icon"                href="public/Logo4.png?v=2"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 55%, #fdf4ff 100%);
+  color: #0f172a; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 32px 22px;
+}
+
+/* ── Card ── */
+.dl-card {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 28px;
+  box-shadow: 0 4px 40px rgba(124,58,237,0.13), 0 1px 4px rgba(0,0,0,0.06);
+  max-width: 440px; width: 100%;
+  padding: 44px 36px 40px;
+  text-align: center;
+  animation: fadeUp .5s ease both;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Logo / wordmark ── */
+.dl-logo {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-bottom: 28px;
+}
+.dl-logo img { width: 32px; height: 32px; border-radius: 9px; }
+.dl-logo-text {
+  font-size: 18px; font-weight: 900; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ── Scout image ── */
+.dl-scout {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px;
+  box-shadow: 0 8px 28px rgba(124,58,237,0.28);
+}
+.dl-scout img { width: 64px; height: 64px; object-fit: cover; }
+.dl-scout-emoji { font-size: 44px; line-height: 1; }
+
+/* ── Plan badge ── */
+.dl-plan-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(124,58,237,0.09); border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 50px; padding: 5px 14px;
+  font-size: 12px; font-weight: 700; color: #7c3aed;
+  margin-bottom: 18px; letter-spacing: 0.2px;
+}
+.dl-plan-badge.badge-pro {
+  background: rgba(59,130,246,0.09); border-color: rgba(59,130,246,0.22); color: #2563eb;
+}
+.dl-plan-badge.badge-free {
+  background: rgba(16,185,129,0.09); border-color: rgba(16,185,129,0.22); color: #059669;
+}
+
+/* ── Headline + body ── */
+.dl-headline {
+  font-size: clamp(22px, 5vw, 28px); font-weight: 900;
+  line-height: 1.18; letter-spacing: -0.8px;
+  margin-bottom: 12px;
+}
+.dl-body {
+  font-size: 15px; color: #64748b; line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+/* ── Reward code ── */
+.dl-reward {
+  background: #faf5ff; border: 1.5px dashed rgba(167,139,250,0.55);
+  border-radius: 14px; padding: 14px 20px; margin-bottom: 28px;
+}
+.dl-reward-label { font-size: 11px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+.dl-reward-code { font-size: 22px; font-weight: 900; letter-spacing: 3px; color: #0f172a; font-family: 'Courier New', monospace; }
+.dl-reward-note { font-size: 12px; color: #94a3b8; margin-top: 5px; }
+
+/* ── Store buttons ── */
+.dl-store-row {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 20px;
+}
+.dl-store-btn {
+  display: flex; align-items: center; justify-content: center; gap: 11px;
+  background: #0f172a; color: #ffffff;
+  border: none; border-radius: 14px; padding: 14px 24px;
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  transition: transform .18s, box-shadow .18s;
+  box-shadow: 0 4px 18px rgba(15,23,42,0.22);
+}
+.dl-store-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(15,23,42,0.3); }
+.dl-store-btn svg { flex-shrink: 0; }
+.dl-store-btn-inner { display: flex; flex-direction: column; align-items: flex-start; }
+.dl-store-btn-sub { font-size: 10px; font-weight: 500; opacity: 0.7; letter-spacing: 0.3px; line-height: 1; margin-bottom: 2px; }
+.dl-store-btn-label { font-size: 15px; font-weight: 800; line-height: 1; }
+
+/* ── Waitlist section ── */
+.dl-waitlist { }
+.dl-waitlist-heading {
+  font-size: 16px; font-weight: 800; color: #0f172a;
+  margin-bottom: 8px;
+}
+.dl-waitlist-sub {
+  font-size: 14px; color: #64748b; line-height: 1.6;
+  margin-bottom: 20px;
+}
+.dl-waitlist-form { display: flex; flex-direction: column; gap: 10px; }
+.dl-waitlist-input {
+  width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0;
+  border-radius: 12px; font-size: 15px; font-family: inherit;
+  background: #fff; color: #0f172a; outline: none;
+  transition: border-color .2s;
+}
+.dl-waitlist-input:focus { border-color: #7c3aed; }
+.dl-waitlist-btn {
+  width: 100%; padding: 15px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: #fff; font-size: 15px; font-weight: 800;
+  font-family: inherit; cursor: pointer;
+  box-shadow: 0 6px 22px rgba(124,58,237,0.32);
+  transition: transform .18s, box-shadow .18s;
+}
+.dl-waitlist-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.42); }
+.dl-waitlist-success {
+  display: none; padding: 16px; border-radius: 12px;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+  color: #065f46; font-size: 14px; font-weight: 600; line-height: 1.5;
+}
+
+/* ── Divider ── */
+.dl-divider {
+  height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  margin: 24px 0;
+}
+
+/* ── Footer note ── */
+.dl-footer-note {
+  font-size: 12px; color: #94a3b8; line-height: 1.6; margin-top: 18px;
+}
+.dl-footer-note a { color: #7c3aed; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="dl-card" id="dlCard">
+
+  <!-- Logo -->
+  <div class="dl-logo">
+    <img src="public/Logo4.png" alt="SpendSignal" onerror="this.style.display='none'"/>
+    <span class="dl-logo-text">SpendSignal</span>
+  </div>
+
+  <!-- Scout visual -->
+  <div class="dl-scout" id="dlScout">
+    <span class="dl-scout-emoji">🦝</span>
+  </div>
+
+  <!-- Plan badge -->
+  <div class="dl-plan-badge" id="dlPlanBadge">Your plan is ready</div>
+
+  <!-- Headline -->
+  <h1 class="dl-headline" id="dlHeadline">Download SpendSignal</h1>
+
+  <!-- Body copy -->
+  <p class="dl-body" id="dlBody">
+    Get the app to start tracking your spending with AI.
+  </p>
+
+  <!-- Reward code (shown if rewardCode param is present) -->
+  <div class="dl-reward" id="dlReward" style="display:none;">
+    <div class="dl-reward-label">🎁 Your reward code</div>
+    <div class="dl-reward-code" id="dlRewardCode"></div>
+    <div class="dl-reward-note">Apply this at checkout — it's saved to your account automatically.</div>
+  </div>
+
+  <!-- Store buttons (shown if URLs are configured) -->
+  <div class="dl-store-row" id="dlStoreRow" style="display:none;">
+
+    <a class="dl-store-btn" id="dlAppStoreBtn" href="#" style="display:none;" target="_blank" rel="noopener">
+      <!-- Apple logo -->
+      <svg width="22" height="26" viewBox="0 0 22 26" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.04 13.78c-.03-3.16 2.58-4.7 2.7-4.77-1.48-2.16-3.77-2.46-4.58-2.49-1.95-.2-3.8 1.15-4.79 1.15-.99 0-2.52-1.12-4.14-1.09-2.13.03-4.1 1.24-5.2 3.14C-.04 13.73.62 20.1 2.74 23.6c1.05 1.52 2.3 3.22 3.94 3.16 1.58-.06 2.18-.99 4.1-.99 1.91 0 2.47.99 4.14.96 1.7-.03 2.79-1.53 3.83-3.06a14.1 14.1 0 001.73-3.55c-.04-.01-3.4-1.3-3.44-5.34z"/>
+        <path d="M14.86 4.45c.87-1.06 1.46-2.53 1.3-4-.25.01-5.57 2.64-5.57 5.54v.4c.3.02.6.04.9.04 1.6 0 3.5-.9 3.37-1.98z"/>
+      </svg>
+      <div class="dl-store-btn-inner">
+        <span class="dl-store-btn-sub">Download on the</span>
+        <span class="dl-store-btn-label">App Store</span>
+      </div>
+    </a>
+
+    <a class="dl-store-btn" id="dlPlayStoreBtn" href="#" style="display:none;" target="_blank" rel="noopener">
+      <!-- Play Store icon -->
+      <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.07.56C.7.96.47 1.58.47 2.37v19.27c0 .79.23 1.41.6 1.81l.1.09 10.8-10.8v-.25L1.17.47l-.1.09z" fill="#fff" opacity=".9"/>
+        <path d="M15.6 15.37l-3.6-3.6v-.27l3.6-3.6.08.05 4.27 2.43c1.22.69 1.22 1.82 0 2.51l-4.27 2.43-.08.05z" fill="#fff" opacity=".9"/>
+        <path d="M15.68 15.32L11.97 11.6 1.07 22.5c.4.43 1.06.48 1.8.05l12.81-7.23" fill="#fff" opacity=".8"/>
+        <path d="M15.68 8.68L2.87 1.45C2.13 1.02 1.47 1.07 1.07 1.5l10.9 10.9 3.71-3.72z" fill="#fff" opacity=".8"/>
+      </svg>
+      <div class="dl-store-btn-inner">
+        <span class="dl-store-btn-sub">Get it on</span>
+        <span class="dl-store-btn-label">Google Play</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Divider between stores and waitlist (only when both shown) -->
+  <div class="dl-divider" id="dlDivider" style="display:none;"></div>
+
+  <!-- Waitlist / launch reminder (shown when no store URLs configured, or as supplement) -->
+  <div class="dl-waitlist" id="dlWaitlist">
+    <div class="dl-waitlist-heading" id="dlWaitlistHeading">SpendSignal is launching soon.</div>
+    <p class="dl-waitlist-sub" id="dlWaitlistSub">
+      Leave your email and we'll send your download link the moment it's live — with your plan and discount code already saved.
+    </p>
+    <form class="dl-waitlist-form" id="dlWaitlistForm" onsubmit="submitWaitlist(event)">
+      <input
+        class="dl-waitlist-input"
+        id="dlWaitlistEmail"
+        type="email"
+        placeholder="Your email address"
+        autocomplete="email"
+        required
+      />
+      <button class="dl-waitlist-btn" type="submit" id="dlWaitlistBtn">Notify me when it's live →</button>
+    </form>
+    <div class="dl-waitlist-success" id="dlWaitlistSuccess">
+      ✓ You're on the list. We'll email you as soon as SpendSignal is available — with your plan details included.
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <p class="dl-footer-note">
+    By continuing you agree to our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Policy</a>.<br/>
+    Scout provides general budgeting information only — not financial advice.
+  </p>
+
+</div>
+
+<script>
+// ── Store URLs ────────────────────────────────────────────────────────────
+// Fill these in when the app is live. Leave '' to show the waitlist instead.
+const APP_STORE_URL  = ''; // e.g. 'https://apps.apple.com/app/id...'
+const PLAY_STORE_URL = ''; // e.g. 'https://play.google.com/store/apps/details?id=...'
+
+// ── Marketing plan config (display only) ─────────────────────────────────
+// Keep in sync with MARKETING_PLANS in quiz.html.
+// This is for handoff page copy — not for in-app entitlement enforcement.
+const MARKETING_PLANS = {
+  free: { name: 'Free',  credits: 30,  trialCredits: 0,  hasTrial: false },
+  plus: { name: 'Plus',  credits: 150, trialCredits: 40, hasTrial: true,  trialDays: 7  },
+  pro:  { name: 'Pro',   credits: 600, trialCredits: 0,  hasTrial: false },
+};
+
+// ── Plan handoff copy ─────────────────────────────────────────────────────
+// Uses MARKETING_PLANS above so credit numbers stay in sync with quiz.html.
+const PLAN_COPY = {
+  free: {
+    badge:    `${MARKETING_PLANS.free.name} Plan`,
+    badgeCls: 'badge-free',
+    headline: 'Your Scout profile is ready.',
+    body:     `Start free with basic tracking and ${MARKETING_PLANS.free.credits} Scout credits per month. No payment required — download the app to get started.`,
+    btnLabel: 'Get the app — it\'s free',
+  },
+  plus: {
+    badge:    `${MARKETING_PLANS.plus.name} Plan`,
+    badgeCls: '',
+    headline: 'Your Plus plan is ready.',
+    body:     `Plus includes smart spending warnings, weekly reviews, Scout memory, and ${MARKETING_PLANS.plus.credits} Scout credits per month.`,
+    btnLabel: 'Download SpendSignal Plus',
+  },
+  pro: {
+    badge:    `${MARKETING_PLANS.pro.name} Plan`,
+    badgeCls: 'badge-pro',
+    headline: 'Your Pro plan is ready.',
+    body:     `Pro includes advanced forecasts, deep spending reviews, priority Scout access, and ${MARKETING_PLANS.pro.credits} Scout credits per month.`,
+    btnLabel: 'Download SpendSignal Pro',
+  },
+};
+
+// ── Read URL params ───────────────────────────────────────────────────────
+const qs          = new URLSearchParams(window.location.search);
+const plan        = qs.get('plan')        || 'free';
+const rewardCode  = qs.get('rewardCode')  || '';
+const quizResult  = qs.get('quizResult')  ? decodeURIComponent(qs.get('quizResult')) : '';
+
+// ── Apply plan copy ───────────────────────────────────────────────────────
+const copy = PLAN_COPY[plan] || PLAN_COPY.free;
+
+const badge = document.getElementById('dlPlanBadge');
+badge.textContent = copy.badge;
+if (copy.badgeCls) badge.classList.add(copy.badgeCls);
+
+document.getElementById('dlHeadline').textContent = copy.headline;
+document.getElementById('dlBody').textContent      = copy.body;
+
+// ── Reward code ───────────────────────────────────────────────────────────
+if (rewardCode) {
+  document.getElementById('dlRewardCode').textContent = rewardCode;
+  document.getElementById('dlReward').style.display   = 'block';
+}
+
+// ── Store buttons ─────────────────────────────────────────────────────────
+const hasAppStore  = !!APP_STORE_URL;
+const hasPlayStore = !!PLAY_STORE_URL;
+const hasAnyStore  = hasAppStore || hasPlayStore;
+
+if (hasAnyStore) {
+  document.getElementById('dlStoreRow').style.display = 'flex';
+
+  if (hasAppStore) {
+    const btn = document.getElementById('dlAppStoreBtn');
+    btn.href = APP_STORE_URL;
+    btn.style.display = 'flex';
+  }
+  if (hasPlayStore) {
+    const btn = document.getElementById('dlPlayStoreBtn');
+    btn.href = PLAY_STORE_URL;
+    btn.style.display = 'flex';
+  }
+
+  // Show divider between store buttons and waitlist only if both are present
+  // (waitlist stays visible as a supplemental email capture even after launch)
+  document.getElementById('dlDivider').style.display = 'block';
+  document.getElementById('dlWaitlistHeading').textContent = 'Get notified about updates';
+  document.getElementById('dlWaitlistSub').textContent     = 'We\'ll email you when your plan is confirmed and ready.';
+  document.getElementById('dlWaitlistBtn').textContent     = 'Keep me updated →';
+}
+
+// ── Prefill waitlist email from quiz if stored ────────────────────────────
+try {
+  const cached = JSON.parse(sessionStorage.getItem('ss_lead') || 'null');
+  if (cached?.email) {
+    document.getElementById('dlWaitlistEmail').value = cached.email;
+  }
+} catch(e) { /* non-fatal */ }
+
+// ── Waitlist submit ───────────────────────────────────────────────────────
+async function submitWaitlist(e) {
+  e.preventDefault();
+  const email = document.getElementById('dlWaitlistEmail').value.trim();
+  if (!email) return;
+
+  const btn = document.getElementById('dlWaitlistBtn');
+  btn.textContent = '…';
+  btn.disabled = true;
+
+  // Build waitlist payload — preserves plan + quiz metadata for CRM
+  const payload = {
+    email,
+    plan,
+    quizResult,
+    rewardCode,
+    period:         qs.get('period')          || '',
+    recommendedPlan:qs.get('recommendedPlan') || '',
+    source:         qs.get('source')          || 'download',
+    utm_source:     qs.get('utm_source')      || '',
+    utm_medium:     qs.get('utm_medium')      || '',
+    utm_campaign:   qs.get('utm_campaign')    || '',
+    created_at:     new Date().toISOString(),
+  };
+
+  try {
+    // POST to /api/waitlist when that endpoint exists.
+    // For now this logs locally and shows success — wire to your backend when ready.
+    console.log('[waitlist] signup', payload);
+
+    // TODO: uncomment when /api/waitlist is implemented
+    // const res = await fetch('/api/waitlist', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload),
+    // });
+    // if (!res.ok) throw new Error('Request failed');
+
+    document.getElementById('dlWaitlistForm').style.display    = 'none';
+    document.getElementById('dlWaitlistSuccess').style.display = 'block';
+
+    // Persist to sessionStorage so the confirmation can be shown on return
+    try { sessionStorage.setItem('ss_waitlist_email', email); } catch(err) { /* ok */ }
+
+  } catch(err) {
+    console.error('[waitlist] error', err);
+    btn.textContent = 'Try again →';
+    btn.disabled    = false;
+  }
+}
+</script>
+</body>
+</html>
