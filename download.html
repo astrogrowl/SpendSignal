@@ -130,19 +130,26 @@ body {
   transition: border-color .2s;
 }
 .dl-waitlist-input:focus { border-color: #7c3aed; }
+.dl-waitlist-input.input-error { border-color: #ef4444; }
 .dl-waitlist-btn {
   width: 100%; padding: 15px; border: none; border-radius: 12px;
   background: linear-gradient(135deg, #7c3aed, #3b82f6);
   color: #fff; font-size: 15px; font-weight: 800;
   font-family: inherit; cursor: pointer;
   box-shadow: 0 6px 22px rgba(124,58,237,0.32);
-  transition: transform .18s, box-shadow .18s;
+  transition: transform .18s, box-shadow .18s, opacity .18s;
 }
-.dl-waitlist-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.42); }
+.dl-waitlist-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.42); }
+.dl-waitlist-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 .dl-waitlist-success {
   display: none; padding: 16px; border-radius: 12px;
   background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
   color: #065f46; font-size: 14px; font-weight: 600; line-height: 1.5;
+}
+.dl-waitlist-error {
+  display: none; padding: 12px 16px; border-radius: 12px;
+  background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+  color: #b91c1c; font-size: 13px; font-weight: 600; line-height: 1.5;
 }
 
 /* ── Divider ── */
@@ -240,6 +247,7 @@ body {
         autocomplete="email"
         required
       />
+      <div class="dl-waitlist-error" id="dlWaitlistError" role="alert"></div>
       <button class="dl-waitlist-btn" type="submit" id="dlWaitlistBtn">Notify me when it's live →</button>
     </form>
     <div class="dl-waitlist-success" id="dlWaitlistSuccess">
@@ -353,55 +361,84 @@ try {
   }
 } catch(e) { /* non-fatal */ }
 
-// ── Waitlist submit ───────────────────────────────────────────────────────
+// ── Waitlist submit ────────────────────────────────────────────
 async function submitWaitlist(e) {
   e.preventDefault();
-  const email = document.getElementById('dlWaitlistEmail').value.trim();
-  if (!email) return;
 
-  const btn = document.getElementById('dlWaitlistBtn');
-  btn.textContent = '…';
-  btn.disabled = true;
+  const emailInput = document.getElementById('dlWaitlistEmail');
+  const btn        = document.getElementById('dlWaitlistBtn');
+  const errEl      = document.getElementById('dlWaitlistError');
 
-  // Build waitlist payload — preserves plan + quiz metadata for CRM
+  const email = emailInput.value.trim();
+
+  // Reset error state
+  errEl.style.display = 'none';
+  errEl.textContent   = '';
+  emailInput.classList.remove('input-error');
+
+  if (!email) {
+    showWaitlistError(emailInput, errEl, 'Please enter your email address.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showWaitlistError(emailInput, errEl, 'Please enter a valid email address.');
+    return;
+  }
+
+  btn.textContent = 'Saving your spot…';
+  btn.disabled    = true;
+
+  // Build payload — all URL params included for full attribution
   const payload = {
     email,
     plan,
     quizResult,
     rewardCode,
-    period:         qs.get('period')          || '',
-    recommendedPlan:qs.get('recommendedPlan') || '',
-    source:         qs.get('source')          || 'download',
-    utm_source:     qs.get('utm_source')      || '',
-    utm_medium:     qs.get('utm_medium')      || '',
-    utm_campaign:   qs.get('utm_campaign')    || '',
-    created_at:     new Date().toISOString(),
+    period:          qs.get('period')          || '',
+    recommendedPlan: qs.get('recommendedPlan') || '',
+    source:          qs.get('source')          || 'download',
+    utm_source:      qs.get('utm_source')      || '',
+    utm_medium:      qs.get('utm_medium')      || '',
+    utm_campaign:    qs.get('utm_campaign')    || '',
+    utm_content:     qs.get('utm_content')     || '',
+    utm_term:        qs.get('utm_term')        || '',
   };
 
   try {
-    // POST to /api/waitlist when that endpoint exists.
-    // For now this logs locally and shows success — wire to your backend when ready.
-    console.log('[waitlist] signup', payload);
+    const response = await fetch('/api/waitlist', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
 
-    // TODO: uncomment when /api/waitlist is implemented
-    // const res = await fetch('/api/waitlist', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload),
-    // });
-    // if (!res.ok) throw new Error('Request failed');
+    const data = await response.json().catch(() => ({}));
 
+    if (!response.ok) {
+      const msg = data?.message || 'Something went wrong. Please try again.';
+      showWaitlistError(emailInput, errEl, msg);
+      btn.textContent = 'Try again →';
+      btn.disabled    = false;
+      return;
+    }
+
+    // Success
     document.getElementById('dlWaitlistForm').style.display    = 'none';
     document.getElementById('dlWaitlistSuccess').style.display = 'block';
+    try { sessionStorage.setItem('ss_waitlist_email', email); } catch (_) { /* ok */ }
 
-    // Persist to sessionStorage so the confirmation can be shown on return
-    try { sessionStorage.setItem('ss_waitlist_email', email); } catch(err) { /* ok */ }
-
-  } catch(err) {
-    console.error('[waitlist] error', err);
+  } catch (err) {
+    console.error('[waitlist] network error', err);
+    showWaitlistError(emailInput, errEl, 'Could not connect. Please check your connection and try again.');
     btn.textContent = 'Try again →';
     btn.disabled    = false;
   }
+}
+
+function showWaitlistError(inputEl, errEl, message) {
+  inputEl.classList.add('input-error');
+  errEl.textContent   = message;
+  errEl.style.display = 'block';
+  inputEl.focus();
 }
 </script>
 </body>

@@ -2,15 +2,39 @@
 // api/subscribe.js — SpendSignal WEB FUNNEL email handler (Vercel serverless)
 //
 // Sends a transactional result email via Resend after a user completes the quiz.
-// Belongs to spendsignalweb (the marketing funnel), not to the mobile app.
+// Also sends a structured lead notification to LEADS_EMAIL so no quiz completion
+// is ever silently lost.
+//
+// Belongs to spendsignalweb (the marketing funnel), NOT the mobile app.
 //
 // This file does NOT:
 //   • Grant or enforce subscriptions
 //   • Manage in-app AI credits or billing state
 //   • Import anything from the mobile app (../spendsignal)
 //
-// Environment variable required: RESEND_API_KEY (set in Vercel project settings)
+// Environment variables (set in Vercel project settings):
+//   RESEND_API_KEY  — required for all email sending
+//   LEADS_EMAIL     — operator email that receives lead notifications
+//                     e.g. "you@gmail.com". If not set, leads are console-logged only.
+//
+// TODO (database): When you add Supabase to spendsignalweb, persist leads here:
+//
+//   import { createClient } from '@supabase/supabase-js'
+//   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+//   const { error } = await supabase.from('funnel_leads').insert([normalizedLead])
+//   if (error) console.error('[subscribe] db insert error', error)
+//
+//   Table: funnel_leads
+//   Columns: id, first_name, email, quiz_result, recommended_plan, quiz_answers (jsonb),
+//            selected_plan, selected_billing_period, reward_code, discount_percent,
+//            weekly_tips_opt_in, source, utm_source, utm_medium, utm_campaign,
+//            utm_content, utm_term, created_at
 // ─────────────────────────────────────────────────────────────────────────────
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -19,27 +43,93 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { name, email, profileName, profileLevel, score, loss, promo, discount, optIn, lead } = req.body || {};
-  if (!email || !name) return res.status(400).json({ error: 'Missing name or email' });
 
-  // TODO (CRM): pipe `lead` to your database / analytics sink here.
-  // `lead` contains the full structured quiz result, pricing intent, UTM attribution,
-  // opt-in preference, and promo details. Shape: see buildLead() in quiz.html.
-  // Example: await db.leads.upsert({ where: { email: lead.email }, data: lead });
-  if (lead) {
-    console.log('[subscribe] lead captured', {
-      email:            lead.email,
-      quiz_result:      lead.quiz_result,
-      recommended_plan: lead.recommended_plan,
-      selected_plan:    lead.selected_plan,
-      selected_period:  lead.selected_billing_period,
-      reward_code:      lead.reward_code,
-      weekly_tips:      lead.weekly_tips_opt_in,
-      utm_source:       lead.utm_source,
-    });
+  // ── Validate required fields ──────────────────────────────────────────────
+  const cleanEmail = (email || '').toString().trim().toLowerCase();
+  const cleanName  = (name  || '').toString().trim();
+  if (!cleanEmail || !cleanName) {
+    return res.status(400).json({ error: 'Missing name or email' });
+  }
+  if (!isValidEmail(cleanEmail)) {
+    return res.status(400).json({ error: 'Invalid email address' });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
+  // ── Normalize and log structured lead ────────────────────────────────────
+  // The `lead` object comes from buildLead() in quiz.html and contains the full
+  // structured quiz result, pricing intent, UTM attribution, and promo details.
+  const normalizedLead = {
+    first_name:              cleanName,
+    email:                   cleanEmail,
+    quiz_result:             lead?.quiz_result             || null,
+    recommended_plan:        lead?.recommended_plan        || null,
+    quiz_answers:            lead?.quiz_answers            || null,
+    selected_plan:           lead?.selected_plan           || null,
+    selected_billing_period: lead?.selected_billing_period || null,
+    reward_code:             lead?.reward_code || promo    || null,
+    discount_percent:        lead?.discount_percent != null ? Number(lead.discount_percent) : (discount != null ? Number(discount) : null),
+    weekly_tips_opt_in:      lead?.weekly_tips_opt_in === true || optIn === true || false,
+    source:                  lead?.utm_source || 'quiz',
+    utm_source:              lead?.utm_source              || null,
+    utm_medium:              lead?.utm_medium              || null,
+    utm_campaign:            lead?.utm_campaign            || null,
+    utm_content:             lead?.utm_content             || null,
+    utm_term:                lead?.utm_term                || null,
+    created_at:              new Date().toISOString(),
+  };
+
+  // Always log to Vercel function logs (visible in Vercel dashboard)
+  console.log('[subscribe] quiz lead captured', {
+    email:            normalizedLead.email,
+    quiz_result:      normalizedLead.quiz_result,
+    recommended_plan: normalizedLead.recommended_plan,
+    selected_plan:    normalizedLead.selected_plan,
+    selected_period:  normalizedLead.selected_billing_period,
+    reward_code:      normalizedLead.reward_code,
+    discount_percent: normalizedLead.discount_percent,
+    weekly_tips:      normalizedLead.weekly_tips_opt_in,
+    utm_source:       normalizedLead.utm_source,
+    utm_campaign:     normalizedLead.utm_campaign,
+  });
+
+  const apiKey     = process.env.RESEND_API_KEY;
+  const leadsEmail = process.env.LEADS_EMAIL;
   if (!apiKey) return res.status(500).json({ error: 'Email service not configured' });
+
+  // ── Operator lead notification (fire-and-forget, does not block user email) ──
+  // Sends a compact lead summary to LEADS_EMAIL so every quiz completion is
+  // captured in your inbox even without a database.
+  if (leadsEmail) {
+    const leadRows = Object.entries(normalizedLead)
+      .filter(([, v]) => v !== null && v !== false && v !== '')
+      .map(([k, v]) => {
+        const val = typeof v === 'object' ? JSON.stringify(v) : String(v).replace(/</g, '&lt;');
+        return `<tr><td style="padding:5px 14px 5px 0;font-size:13px;color:#64748b;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:5px 0;font-size:13px;color:#0f172a;font-weight:600;">${val}</td></tr>`;
+      }).join('');
+    const operatorHtml = `<!DOCTYPE html><html lang="en"><body style="margin:0;padding:32px 16px;background:#f8fafc;font-family:Arial,sans-serif;">
+<div style="max-width:520px;margin:0 auto;background:#fff;border-radius:16px;padding:28px 32px;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+<p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;">SpendSignal · Quiz Lead</p>
+<h2 style="margin:0 0 6px;font-size:20px;font-weight:900;color:#0f172a;">New quiz completion</h2>
+<p style="margin:0 0 24px;font-size:14px;color:#64748b;">${normalizedLead.email}</p>
+<table style="width:100%;border-collapse:collapse;border-top:1px solid #e2e8f0;">
+<tr><td style="padding:12px 0 6px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;" colspan="2">Lead details</td></tr>
+${leadRows}
+</table>
+</div></body></html>`;
+    fetch('https://api.resend.com/emails', {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from:    'SpendSignal <scout@spendsignal.app>',
+        to:      [leadsEmail],
+        subject: `🦝 Quiz lead — ${normalizedLead.email}`,
+        html:    operatorHtml,
+      }),
+    }).then(r => r.json())
+      .then(d => { if (d.error) console.error('[subscribe] operator notify error', d); })
+      .catch(err => console.error('[subscribe] operator notify failed', err.message));
+  } else {
+    console.warn('[subscribe] LEADS_EMAIL not set — operator notification skipped. Set it in Vercel to receive lead emails.');
+  }
 
   // Level-specific data
   const levelColors = { 1:'#16A34A', 2:'#CA8A04', 3:'#EA580C', 4:'#DC2626', 5:'#7F1D1D' };
