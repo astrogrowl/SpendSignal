@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>30-Day Satisfaction Guarantee — SpendSignal</title>
+<meta name="description" content="SpendSignal's 30-day satisfaction guarantee policy."/>
+<link rel="icon"          type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="shortcut icon" type="image/png" href="public/Logo4.png?v=2"/>
+<link rel="apple-touch-icon"               href="public/Logo4.png?v=2"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 55%, #fdf4ff 100%);
+  color: #0f172a; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 22px 64px;
+}
+
+/* ── Back link ── */
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: #7c3aed;
+  text-decoration: none; margin-bottom: 28px;
+  opacity: 0.8; transition: opacity .15s;
+}
+.back-link:hover { opacity: 1; }
+
+/* ── Card ── */
+.g-card {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 28px;
+  box-shadow: 0 4px 40px rgba(124,58,237,0.10), 0 1px 4px rgba(0,0,0,0.05);
+  max-width: 600px; width: 100%;
+  padding: 48px 44px;
+  animation: fadeUp .45s ease both;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Logo ── */
+.g-logo {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 32px;
+}
+.g-logo img { width: 28px; height: 28px; border-radius: 8px; }
+.g-logo-text {
+  font-size: 16px; font-weight: 900; letter-spacing: -0.4px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ── Shield icon ── */
+.g-shield {
+  width: 64px; height: 64px; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(59,130,246,0.12));
+  border: 1.5px solid rgba(124,58,237,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; margin-bottom: 24px;
+}
+
+/* ── Eyebrow ── */
+.g-eyebrow {
+  font-size: 11px; font-weight: 700; color: #7c3aed;
+  text-transform: uppercase; letter-spacing: 1.8px;
+  margin-bottom: 10px;
+}
+
+/* ── Title ── */
+.g-title {
+  font-size: clamp(24px, 5vw, 32px); font-weight: 900;
+  line-height: 1.15; letter-spacing: -0.8px;
+  margin-bottom: 16px;
+}
+
+/* ── Intro ── */
+.g-intro {
+  font-size: 16px; color: #475569; line-height: 1.7;
+  margin-bottom: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* ── Section heading ── */
+.g-section-heading {
+  font-size: 12px; font-weight: 700; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 16px;
+}
+
+/* ── Conditions list ── */
+.g-conditions {
+  list-style: none;
+  margin-bottom: 36px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.g-conditions li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: #334155; line-height: 1.6;
+}
+.g-conditions li::before {
+  content: '✓';
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  background: rgba(124,58,237,0.1);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #7c3aed;
+  margin-top: 1px;
+  line-height: 20px; text-align: center;
+}
+
+/* ── Divider ── */
+.g-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  margin: 32px 0;
+}
+
+/* ── Contact box ── */
+.g-contact {
+  background: linear-gradient(135deg, rgba(124,58,237,0.06), rgba(59,130,246,0.06));
+  border: 1.5px solid rgba(124,58,237,0.15);
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+.g-contact-label {
+  font-size: 12px; font-weight: 700; color: #7c3aed;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 8px;
+}
+.g-contact-body {
+  font-size: 14px; color: #475569; line-height: 1.65;
+  margin-bottom: 16px;
+}
+.g-contact-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 12px 22px; font-size: 14px; font-weight: 700;
+  font-family: inherit; cursor: pointer; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.28);
+  transition: transform .15s, box-shadow .15s;
+}
+.g-contact-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(124,58,237,0.36); }
+
+/* ── Disclaimer ── */
+.g-disclaimer {
+  font-size: 12px; color: #94a3b8; line-height: 1.65;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+.g-disclaimer a { color: #7c3aed; text-decoration: none; }
+
+@media (max-width: 480px) {
+  .g-card { padding: 32px 24px; }
+  .g-title { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<a href="/quiz" class="back-link">← Back to quiz</a>
+
+<div class="g-card">
+
+  <!-- Logo -->
+  <div class="g-logo">
+    <img src="public/Logo4.png" alt="SpendSignal" onerror="this.style.display='none'"/>
+    <span class="g-logo-text">SpendSignal</span>
+  </div>
+
+  <!-- Shield -->
+  <div class="g-shield">🛡️</div>
+
+  <!-- Eyebrow -->
+  <p class="g-eyebrow">Refund Policy</p>
+
+  <!-- Title -->
+  <h1 class="g-title">30-Day Satisfaction Guarantee</h1>
+
+  <!-- Intro -->
+  <p class="g-intro">
+    We want SpendSignal to feel genuinely useful. If you try a paid plan and feel it did not help you understand your spending or build a clearer money plan within your first 30 days, contact us and we'll review your refund request.
+  </p>
+
+  <!-- Conditions -->
+  <p class="g-section-heading">Conditions</p>
+  <ul class="g-conditions">
+    <li>Applies to the first paid subscription charge only.</li>
+    <li>Requests must be sent within 30 days of your first charge.</li>
+    <li>Refunds are reviewed using the payment provider's refund process.</li>
+    <li>This guarantee does not promise specific savings or financial outcomes.</li>
+    <li>AI and budget estimates are based on your inputs and are not guaranteed results.</li>
+    <li>Abuse, repeated refund requests, or violations of our Terms of Use may be excluded from this guarantee.</li>
+  </ul>
+
+  <div class="g-divider"></div>
+
+  <!-- Contact -->
+  <div class="g-contact">
+    <p class="g-contact-label">Contact support</p>
+    <p class="g-contact-body">
+      To submit a refund request, email us with your account email and a brief description of your experience. We respond within 2 business days.
+    </p>
+    <a href="mailto:support@spendsignal.app" class="g-contact-btn">
+      ✉️ support@spendsignal.app
+    </a>
+  </div>
+
+  <!-- Disclaimer -->
+  <p class="g-disclaimer">
+    SpendSignal and Scout provide general budgeting information only. They are not financial, investment, tax, or legal advice. Estimates shown during the quiz and in the app are based on your inputs and are not guaranteed savings or outcomes.<br/><br/>
+    By using SpendSignal you agree to our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Policy</a>.
+  </p>
+
+</div>
+
+</body>
+</html>

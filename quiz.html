@@ -2179,18 +2179,18 @@ nav {
     <div class="pw-cta-note" id="pwCtaNote">Trial includes 40 Scout credits · After trial, $4.99/month unless cancelled</div>
 
     <!-- Guarantee -->
-    <div class="pw-guarantee">
+    <a href="/guarantee" class="pw-guarantee" style="text-decoration:none;color:inherit;display:flex;align-items:flex-start;gap:12px;">
       <span class="pw-guarantee-icon">🛡️</span>
       <div>
         <strong>30-day satisfaction guarantee</strong>
-        <span>If you're not satisfied with SpendSignal within 30 days of your first charge, contact us and we'll refund every cent.</span>
+        <span>Try a paid plan for 30 days. If it does not feel useful, contact support and we'll review your refund request. No specific savings are promised.</span>
       </div>
-    </div>
+    </a>
 
     <div class="trust-row">
       <div class="trust-item-sm">🔐 Privacy-conscious</div>
       <div class="trust-item-sm">✓ Basic tracking stays free</div>
-      <div class="trust-item-sm">🛡️ 30-day guarantee</div>
+      <a href="/guarantee" class="trust-item-sm" style="text-decoration:none;color:inherit;">🛡️ 30-day guarantee</a>
       <div class="trust-item-sm">↩ Cancel anytime</div>
     </div>
     <div class="pw-legal">
@@ -2520,6 +2520,7 @@ const QUESTIONS = [
       { icon: '📉', text: "Debt I can't seem to shake" },
       { icon: '🧩', text: "No idea where my money goes" },
       { icon: '⚡', text: 'Unexpected expenses keep hitting me' },
+      { icon: '🔁', text: 'Subscriptions and small charges add up' },
     ],
     scout: "Scout noticed a pattern. Most of those aren't random — there's usually one root cause underneath them all. 🎯"
   },
@@ -2746,6 +2747,35 @@ const PROFILES = [
   },
 ];
 
+// ── Subscription Leaker — 6th profile, detected by answer pattern ────────────
+// Defined separately from PROFILES so the level dot bar stays at "Level X of 5".
+// getProfile() returns this when the user selected the subscription answer (Q0
+// option index 5) and scores in the middle range (25–68).
+const SUBSCRIPTION_LEAKER_PROFILE = {
+  level: 3,
+  range: [-1, -1], // not used for score-range matching — pattern-detected only
+  color: '#7C3AED',
+  colorEnd: '#8B5CF6',
+  scoutEmoji: '🔍',
+  name: 'The Subscription Leaker',
+  percentile: 'higher than 45%',
+  tagline: "Your money may not be disappearing — it may be leaking.",
+  traits: ['🔁 Recurring costs', '👻 Quiet leaks', '🔍 Needs visibility'],
+  desc: "Small recurring payments and forgotten subscriptions can quietly drain your budget. Scout helps you spot patterns, review recurring costs, and catch leaks before they become normal. You do not need to panic-cut everything — you need visibility into the quiet charges that keep stacking up.",
+  loss: '$180/mo',
+  reclaim: '→ Scout estimates up to $180/month in potential recurring costs worth reviewing based on your answers',
+  insights: [
+    { icon: '🔍', html: 'Subscription Leakers often have <strong>4–7 recurring charges</strong> they haven\'t consciously reviewed in months. The total is usually higher than expected.' },
+    { icon: '💙', html: 'This isn\'t a willpower problem. <strong>Recurring charges are designed to be invisible.</strong> Scout is built to surface them without making you dig through statements.' },
+    { icon: '📊', html: 'A weekly review with Scout is often enough to <strong>catch recurring spending patterns</strong> before they quietly compound into a real monthly number.' },
+  ],
+  testimonials: [
+    { img:'public/Comment1.png', text:'"Scout flagged 4 subscriptions I hadn\'t used in over a year. That was $94 a month just sitting there."', name:'Maria R.', profile:'Was a Subscription Leaker', stars:'★★★★★' },
+    { img:'public/Comment4.png', text:'"I thought I was good with money. Turns out I had <strong>$210 in recurring charges I\'d completely forgotten about</strong>. Scout found them in week 1 😅"', name:'James K.', profile:'Was a Subscription Leaker', stars:'★★★★★' },
+    { img:'public/Comment2.png', text:'"the subscription creep was real. <strong>11 services I was paying for</strong>, using maybe 3. Scout showed me the pattern and I actually cleaned it up 👀"', name:'Priya S.', profile:'Was a Subscription Leaker', stars:'★★★★★' },
+  ],
+};
+
 const LOADING_TESTS = [
   { img:'public/Comment1.png', text:'"Scout flagged 4 subscriptions I hadn\'t used in over a year. That was $94 a month just sitting there."', name:'Maria R.', profile:'Reactive Spender → Level 2', stars:'★★★★★' },
   { img:'public/Comment2.png', text:'"I hit my first $1,000 emergency fund in 6 weeks. I\'d been trying to do that for two years."', name:'Carlos T.', profile:'Former Overthinker', stars:'★★★★★' },
@@ -2759,6 +2789,7 @@ const PW_SUBS = {
   'The Overthinker':        "You have the awareness. SpendSignal gives you the structure that removes the mental load — and helps make that awareness stick.",
   'The Emerging Planner':   "You're already ahead on habits. SpendSignal is designed to show you what's still potentially leaking — and it often surprises people.",
   'The Strategic Builder':  "Your habits are your edge. SpendSignal adds the data layer designed to make them airtight — and surface what even disciplined savers may miss.",
+  'The Subscription Leaker': "The pattern Scout noticed in your answers is surprisingly common — and often easier to address than it looks. A clear view of recurring costs is usually the first step.",
 };
 
 // ── Plan recommendation by profile ──
@@ -2823,6 +2854,18 @@ const PLAN_RECOMMENDATION = {
       "Your awareness and discipline are already in place.",
       "Pro is designed for precision: advanced forecasts and deeper pattern reviews.",
       "Scout at this level is built to optimize what you've already built.",
+    ],
+  },
+  'The Subscription Leaker': {
+    archetype:   'Subscription Leaker',
+    ctaPlan:     'plus',
+    planLabel:   'Plus',
+    headline:    'Recommended for you: Plus',
+    reason:      "Plus is recommended because smart warnings, weekly reviews, and monthly summaries help Scout surface recurring spending patterns and quiet leaks.",
+    bullets: [
+      "Small recurring charges are easy to ignore — until they compound into a real monthly number.",
+      "Weekly reviews are designed to surface recurring costs before they become invisible background noise.",
+      "Monthly summaries give you a clear picture of where money quietly drains each month.",
     ],
   },
 };
@@ -2937,7 +2980,16 @@ function calcScore() {
   const qAnx   = answers[4]; if (typeof qAnx   === 'number') s += [4,-8,-2,10,0][qAnx]   ?? 0;
   return Math.max(5, Math.min(98, Math.round(s)));
 }
-function getProfile(s) { return PROFILES.find(p => s >= p.range[0] && s <= p.range[1]) || PROFILES[0]; }
+function getProfile(s) {
+  // Subscription Leaker override: user selected "Subscriptions and small charges add up"
+  // (Q0 multi-select option index 5) and scored in the middle band where this pattern
+  // is most meaningful (not a crisis level, not already optimizing).
+  const q0Picks = answers[0] instanceof Set ? answers[0] : new Set();
+  if (q0Picks.has(5) && s >= 25 && s <= 68) {
+    return SUBSCRIPTION_LEAKER_PROFILE;
+  }
+  return PROFILES.find(p => s >= p.range[0] && s <= p.range[1]) || PROFILES[0];
+}
 
 // income bracket midpoints (answers[7]) and level leak percentages
 function calcLoss(profile, incomeVal) {

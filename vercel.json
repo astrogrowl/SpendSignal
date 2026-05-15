@@ -7,8 +7,9 @@
     { "src": "api/*.js",   "use": "@vercel/node"   }
   ],
   "routes": [
-    { "src": "/quiz",     "dest": "/quiz.html"     },
-    { "src": "/download", "dest": "/download.html" },
-    { "src": "/",         "dest": "/index.html"    }
+    { "src": "/quiz",       "dest": "/quiz.html"       },
+    { "src": "/download",   "dest": "/download.html"   },
+    { "src": "/guarantee",  "dest": "/guarantee.html"  },
+    { "src": "/",           "dest": "/index.html"      }
   ]
 }
